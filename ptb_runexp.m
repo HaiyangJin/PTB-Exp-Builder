@@ -2,19 +2,21 @@ function ptb_runexp(param)
 
 %% Preparation
 % Initilize the screen
+clc;
 param.expStartTime = now();
-expStartTime = GetSecs();
+% param = ptb_initialize(param);
 param = ptb_initialize(param);
 
 % Load stimuli
 stimuli = [];
 
 % Build the experiment design
-param.ed = ptb_builded(param.conditionsArray, param.blockByCondition);
+param.ed = ptb_expdesignbuilder(param.conditionsArray, param.blockByCondition);
 param.tn = size(param.ed, 1);  % trial number
 
 % Keys
-param.respKeys = arrayfun(KbName, param.respKeyNames);
+KbName('UnifyKeyNames');
+param.respKeys = arrayfun(@KbName, param.respKeyNames);
 param.expKey = KbName(param.expKeyName);
 param.instructKey = KbName(param.instructKeyName);
 
@@ -30,22 +32,25 @@ param.fixarray = ptb_fixcross(param.screenX, param.screenY, param.widthFix, para
 
 %% Do the trial
 quitNow = 0;
+expStartTime = GetSecs();
 
 for ttn = 1 : param.tn  % this trial number 
     
     [output, quitNow] = Do_Trial(ttn, param, stimuli, quitNow);
     dtStruct(ttn) = output;
     
-    ptb_checkbreak;
+    ptb_checkbreak(ttn, param);
     
-    if (quitnow), break; end
+    if (quitNow), break; end
 
 end
+
+expEndTime = GetSecs();
 
 param.dtTable = struct2table(dtStruct);
 
 % create the experiment information table
-xInfor = size(dtStruct, 1);
+xInfor = length(dtStruct);
 ExperimentAbbv = repmat({param.expAbbv}, xInfor, 1);
 ExpCode = repmat({param.expCode}, xInfor, 1);
 SubjCode = repmat({param.subjCode}, xInfor, 1);
@@ -57,15 +62,14 @@ param.dtTable = [expInforTable, struct2table(dtStruct)];
 
 %% Finishing
 if (~quitNow)
-    breakText = sprintf('This part is finished!\n \nPlease contact the experimenter.');
+    breakText = sprintf('The current session is finished!\n \nPlease contact the experimenter.');
     DrawFormattedText(param.w, breakText, 'center', 'center', param.forecolor);
     Screen('Flip', param.w);
     RestrictKeysForKbCheck(param.instructKey);
-    KbWait([],2)
+    KbWait([],2);
     clear doneText;
 end
 
-expEndTime = GetSecs();
 param.expDuration = expEndTime - expStartTime;
 
 Screen('CloseAll');

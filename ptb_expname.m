@@ -25,17 +25,17 @@ param.conditionsArray = {...
     };
 param.blockByCondition = 'blocks'; % Which condition is used to block the trials? (balance the randomization so that unique conditions appear in different blocks). just use doublequotes (='') if you don't want to use.
 
-% screen settings
-param.winrect = [];  % [100 100 600 600]
-
 % response keys
-param.expKeyName = 'ESC';
+param.expKeyName = 'escape';
 param.instructKeyName = 'q';
-
 param.respKeyNames = {'1!', '2@'};
 
 % instructions
 param.instructText = 'Insert instructions here...';
+
+% breaks
+param.trialsPerRest = 40;
+param.restMinimumTime = 10; % seconds
 
 
 %% Trial parameters
@@ -54,17 +54,16 @@ param.respDuration = 1;
 param.blankDuration = 0.5;
 
 
-%% Seeting for the screen
+%% Setting for the screen
 param.frameExpected = 60;
 param.forecolor = 'white';  %  (white, black, grey or numbers)
 param.backcolor = 'grey';  %  (white, black, grey or numbers)
-
+param.winrect = [100 100 600 600];  % [] Window Rect
 
 %% Parameters of fonts used in this exp
 param.textSize = 20;
 param.textFont = 'Helvetica';
 param.textColor = 255; 
-
 
 %% Run the Experiment
 ptb_runexp(param);

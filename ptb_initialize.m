@@ -3,14 +3,12 @@ function param = ptb_initialize(param)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Clear the workspace and the screen
 sca;
-clc;
 close all;
 
 % Here we call some default settings for setting up Psychtoolbox
 PsychDefaultSetup(2);
  
 commandwindow;
-KbName('UnifyKeyNames');
 Priority(1);
 warning('off','MATLAB:sprintf:InputForPercentSIsNotOfClassChar');
 warning('off','MATLAB:fprintf:InputForPercentSIsNotOfClassChar');
@@ -29,7 +27,7 @@ whichScreen = max(screens);
 % Define black and white (white will be 1 and black 0). This is because
 % in general luminace values are defined between 0 and 1 with 255 steps in
 % between. All values in Psychtoolbox are defined between 0 and 1
-colorCode.white = WhiteIndex(whichScreen);
+colorCode.white = WhiteIndex(whichScreen) * 255;
 colorCode.black = BlackIndex(whichScreen);
 
 % Do a simply calculation to calculate the luminance value for grey. This
@@ -45,7 +43,8 @@ if max(pixelSizes) < 32 && ispc
     return;
 end
 
-[window, screenRect] = Screen('OpenWindow',whichScreen, param.backcolor,param.winrect,max(pixelSizes));
+[window, screenRect] = Screen('OpenWindow', whichScreen, param.backcolor, ...
+    param.winrect, max(pixelSizes));
 [screenCenX,screenCenY] = RectCenter(screenRect);
 screenX = screenRect(3);
 screenY = screenRect(4);
@@ -64,18 +63,17 @@ flipSlack = .5 * msPerFrame; % needed so that Screen('Flip') can be prepared whe
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%% Set font, size, and color for texts
+Screen('TextSize', window, param.textSize);
+if ~ismac, Screen('TextFont', window, param.textFont); end
+Screen('TextColor', window, param.forecolor);
+
 %% Matlab is loading the program...
 % Screen('DrawText', window, 'Experiment is loading... Please wait.', screenX/2, screenY/2, white);
 loadingText = sprintf('Experiment is loading... Please wait...');
 DrawFormattedText(window, loadingText,'center','center', param.forecolor);
 
 Screen('Flip', window);
-
-
-%% Set font, size, and color for texts
-Screen('TextSize', window, param.textSize);
-if ~ismac, Screen('TextFont', window, param.textFont); end
-Screen('TextColor', window, param.forecolor);
 
 
 %% output for ptb_initialize

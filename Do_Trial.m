@@ -38,8 +38,8 @@ trialEndedAt = Screen('Flip',param.w);
 totalTrialDuration = trialEndedAt - trialBeginsAt;
 
 %%%%%%%%%% Post-processing %%%%%%%%%%
-if sum(keyCode(para.responseKeys))==1 
-    Resp = mod(find(keyCode(para.respKeys))-1,2)+1;
+if sum(keyCode(param.respKeys))==1 
+    Resp = mod(find(keyCode(param.respKeys))-1,2)+1;
     ACC = double(Resp == correctAns);
     reactionTime = pressTime - responseBegins;
     

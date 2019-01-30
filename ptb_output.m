@@ -9,10 +9,12 @@ saveDir = ['Matlab Data' filesep];
 thisDateVector = now;
 theDateString = datestr(thisDateVector,'yyyy-mm-dd-HHMM');
 % theDate8 = str2double(datestr(thisDateVector,'yyyymmdd'));
-theDataFilename = [param.subjCode '_' param.expNum '_' param.experimentAbbv '_' theDateString];
+theDataFilename = [param.subjCode '_' param.expCode '_' param.expAbbv '_' theDateString];
 theExcelFile = [excelDir theDataFilename excelExtension];
 theMatlabFile = [saveDir theDataFilename '.mat'];
 
+if ~exist(excelDir, 'dir'); mkdir(excelDir); end
+if ~exist(saveDir, 'dir'); mkdir(saveDir); end
 
 %% save the files
 save(theMatlabFile, 'param', 'stimuli');
