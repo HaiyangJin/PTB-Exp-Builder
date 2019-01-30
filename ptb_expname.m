@@ -1,6 +1,6 @@
 function ptb_expname(subjCode)
 
-addpath('Utilities');
+addpath('Common_Functions/');
 
 if nargin < 1  
     subjCode = '000';
@@ -31,7 +31,10 @@ param.instructKeyName = 'q';
 param.respKeyNames = {'1!', '2@'};
 
 % instructions
-param.instructText = 'Insert instructions here...';
+param.instructText = sprintf(['Insert instructions here... \n', ...
+    'Press "%s" or "%s" for each trial. \n', ...
+    '(Press "%s" to continue...)'], ...
+    param.respKeyNames{1}, param.respKeyNames{2}, param.instructKeyName);
 
 % breaks
 param.trialsPerRest = 40;
