@@ -1,16 +1,29 @@
 function ptb_expname(subjCode)
+% Example experiment main body.
+%
+% Input:
+%    subjCode      subject code
+%
+% Created by Haiyang Jin (2018).
 
-addpath('Common_Functions/');
+% add the functions folder to the path
+clc;
+addpath('functions/');
 
-if nargin < 1  
+if nargin < 1
     subjCode = '000';
-    warning(['Debug mode is on... \n', 'The subjCode is %s'], subjCode);
 elseif isnumeric(subjCode)  % the subjCode should be a string
     subjCode = num2str(subjCode);
 end
 
+if strcmp(subjCode, '0')
+    param.isDebug = 1;
+    warning(['Debug mode is on... \n', 'The subjCode is %s'], subjCode);
+else
+    param.isDebug = 0;
+end
+
 param.subjCode = subjCode;
-    
 
 %% Experiment inforamtion
 param.expCode = '000';
@@ -21,14 +34,16 @@ clear param.conditionsArray;
 param.conditionsArray = {...
     'IV1', 1:4; ... % 1 (all the study are whole) 0 (study will be part or whole)
     'IV2', 0:1; ... % 0 = part condition; 1 = whole condition (only for test face)
-    'blocks', 1; ... % 
+    'blocks', 1; ... %
     };
 param.blockByCondition = 'blocks'; % Which condition is used to block the trials? (balance the randomization so that unique conditions appear in different blocks). just use doublequotes (='') if you don't want to use.
 
 % response keys
 param.expKeyName = 'escape';
 param.instructKeyName = 'q';
-param.respKeyNames = {'1!', '2@'};
+param.respKeyNames = {...
+    '1!', '2@';
+    '1', '2'};
 
 % instructions
 param.instructText = sprintf(['Insert instructions here... \n', ...
@@ -39,7 +54,6 @@ param.instructText = sprintf(['Insert instructions here... \n', ...
 % breaks
 param.trialsPerRest = 40;
 param.restMinimumTime = 10; % seconds
-
 
 %% Trial parameters
 % fixations
@@ -61,12 +75,12 @@ param.blankDuration = 0.5;
 param.frameExpected = 60;
 param.forecolor = 'white';  %  (white, black, grey or numbers)
 param.backcolor = 'grey';  %  (white, black, grey or numbers)
-param.winrect = [100 100 600 600];  % [] Window Rect
+param.winrect = []; % [] Window Rect; % default [100 100 1300 900];  %[100 100 600 600];
 
 %% Parameters of fonts used in this exp
 param.textSize = 20;
 param.textFont = 'Helvetica';
-param.textColor = 255; 
+param.textColor = 255;
 
 %% Run the Experiment
 ptb_runexp(param);

@@ -43,18 +43,24 @@ if max(pixelSizes) < 32 && ispc
     return;
 end
 
+if param.isDebug
+    param.winrect = [100 100 1300 900]; % default for debug mode
+end
+
 [window, screenRect] = Screen('OpenWindow', whichScreen, param.backcolor, ...
     param.winrect, max(pixelSizes));
 [screenCenX,screenCenY] = RectCenter(screenRect);
 screenX = screenRect(3);
 screenY = screenRect(4);
 
-HideCursor;
+if ~param.isDebug
+    HideCursor;
+end
 
 Screen('BlendFunction', window, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 frameRate = Screen('NominalFrameRate', window); % the Hz refresh rate
-if (frameRate ~= param.frameExpected)
+if (frameRate ~= param.frameExpected) && ispc
    beep;
    disp(['WARNING... the framerate is not ', num2str(frameRateExpected), '; it''s ' num2str(frameRate) ' Hz. This may cause timing issues.']);
 end
@@ -75,7 +81,6 @@ DrawFormattedText(window, loadingText,'center','center', param.forecolor);
 
 Screen('Flip', window);
 
-
 %% output for ptb_initialize
 param.w = window;
 param.screenCenX = screenCenX;
@@ -83,7 +88,6 @@ param.screenCenY = screenCenY;
 param.screenX = screenX;
 param.screenY = screenY;
 param.flipSlack = flipSlack;
-
 
 end
 
