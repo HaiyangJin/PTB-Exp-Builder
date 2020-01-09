@@ -13,7 +13,7 @@ param.expStartTime = now();
 param = ptb_initialize(param);
 
 % Load stimuli
-stimuli = [];
+stimuli = ptb_loadstim('jpg', param.w);
 
 % Build the experiment design
 param.ed = ptb_expdesignbuilder(param.conditionsArray, param.blockByCondition);
@@ -36,13 +36,13 @@ param.fixarray = ptb_fixcross(param.screenX, param.screenY, param.widthFix, para
 
 %% Do the trial
 expStartTime = GetSecs();
-dtStruct = struct;
+% dtStruct = struct;
 
 for ttn = 1 : param.tn  % this trial number 
     
     % run each trial
     [output, quitNow] = do_trial(ttn, param, stimuli);
-    dtStruct(ttn) = output;
+    dtStruct(ttn) = output; %#ok<AGROW>
     
     % break check
     ptb_checkbreak(ttn, param);
