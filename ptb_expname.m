@@ -41,9 +41,7 @@ param.blockByCondition = 'blocks'; % Which condition is used to block the trials
 % response keys
 param.expKeyName = 'escape';
 param.instructKeyName = 'q';
-param.respKeyNames = {...
-    '1!', '2@';
-    '1', '2'};
+param.respKeyNames = {'1!', '2@'};
 
 % instructions
 param.instructText = sprintf(['Insert instructions here... \n', ...
