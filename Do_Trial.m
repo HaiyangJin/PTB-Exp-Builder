@@ -1,10 +1,24 @@
-function [output, quitNow] = Do_Trial(ttn, param, stimuli, quitNow)
+function [output, quitNow] = do_trial(ttn, param, stimuli)
+% Example do trial.
+%
+% Inputs:
+%    ttn         this trial number
+%    param       experiment parameters
+%    stimuli     stimuli structure
+% Outputs:
+%    output      output from this trial
+%    quitNow     if the experiment should quite now
+%
+% Created by Haiyang Jin
 
+%% set quitNow as false by default
+quitNow = 0;
 
 %% Independent variables
 IV1 = {'11', '12', '13', '14'};
 IV2 = {'20', '21'};
 
+% experiment design
 ed = param.ed;
 
 iv1 = ed(ttn).IV1;
@@ -14,6 +28,7 @@ correctAns = 1;
 
 %% Do the trial
 trialBeginsAt = GetSecs;
+
 %%%%%%%%%%%%%% fixation %%%%%%%%%%%%%%
 Screen('FillRect', param.w, param.forecolor, param.fixarray);
 
@@ -28,7 +43,7 @@ responseBegins = Screen('Flip', param.w, testBeginsWhen);
 RestrictKeysForKbCheck([param.respKeys, param.expKey]);  % , KbName('5')
 [pressTime, keyCode] = KbWait([],0);
 
-% quit if F12
+% quit if the experimenter key is pressed
 if keyCode(param.expKey)
     quitNow = 1;
 end
@@ -46,7 +61,7 @@ if sum(keyCode(param.respKeys))==1
 else
     % wrong key, double key or timeout
     Resp = '';
-    if quitNow; ACC = 0; else ACC = NaN; end
+    if quitNow; ACC = 0; else; ACC = NaN; end
     reactionTime = NaN;
     beep;
     noResponseText = 'Something wrong happens. Press any key.';
@@ -66,6 +81,5 @@ output.isCorrect = ACC;
 output.ReactionTime = reactionTime;
 output.FixDuration = param.fixDuration;
 output.TrialDuration = totalTrialDuration;
-
 
 end

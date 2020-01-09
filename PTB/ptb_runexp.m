@@ -1,10 +1,15 @@
 function ptb_runexp(param)
+% Example of running experiments.
+%
+% Input:
+%    param     experiment parameters. (created by ptb_expname)
+%
+% Created by Haiyang Jin (2018)
 
 %% Preparation
-% Initilize the screen
-clc;
 param.expStartTime = now();
-% param = ptb_initialize(param);
+
+% Initilize the screen
 param = ptb_initialize(param);
 
 % Load stimuli
@@ -29,36 +34,34 @@ KbWait([],2);
 % Fixations
 param.fixarray = ptb_fixcross(param.screenX, param.screenY, param.widthFix, param.lengthFix);
 
-
 %% Do the trial
-quitNow = 0;
 expStartTime = GetSecs();
+dtStruct = struct;
 
 for ttn = 1 : param.tn  % this trial number 
     
-    [output, quitNow] = Do_Trial(ttn, param, stimuli, quitNow);
+    % run each trial
+    [output, quitNow] = do_trial(ttn, param, stimuli);
     dtStruct(ttn) = output;
     
+    % break check
     ptb_checkbreak(ttn, param);
     
     if (quitNow), break; end
-
 end
 
+% exp end time
 expEndTime = GetSecs();
 
-param.dtTable = struct2table(dtStruct);
-
 % create the experiment information table
-xInfor = length(dtStruct);
-ExperimentAbbv = repmat({param.expAbbv}, xInfor, 1);
-ExpCode = repmat({param.expCode}, xInfor, 1);
-SubjCode = repmat({param.subjCode}, xInfor, 1);
-expInforTable = table(ExperimentAbbv, ExpCode, SubjCode);
+nRow_Info = length(dtStruct);
+ExperimentAbbv = repmat({param.expAbbv}, nRow_Info, 1);
+ExpCode = repmat({param.expCode}, nRow_Info, 1);
+SubjCode = repmat({param.subjCode}, nRow_Info, 1);
+expInfoTable = table(ExperimentAbbv, ExpCode, SubjCode);
 
 % combine the exp information table and data table
-param.dtTable = [expInforTable, struct2table(dtStruct)];
-
+param.dtTable = [expInfoTable, struct2table(dtStruct)];
 
 %% Finishing
 if (~quitNow)
@@ -70,8 +73,10 @@ if (~quitNow)
     clear doneText;
 end
 
+% experiment duration
 param.expDuration = expEndTime - expStartTime;
 
+% close all screens
 Screen('CloseAll');
 
 %% Saving the output
@@ -80,3 +85,4 @@ ptb_output(param, stimuli);
 fprintf('\nThe current session lasts %2.2f minutes.\n', param.expDuration/60);
 disp(['Mean Accuracy: ' num2str(100*mean(param.dtTable.isCorrect),'%2.1f%%')]);
 
+end
