@@ -33,11 +33,15 @@ trialBeginsAt = GetSecs;
 Screen('FillRect', param.w, param.forecolor, param.fixarray);
 
 fixationBeganAt = Screen('Flip', param.w);
-testBeginsWhen = fixationBeganAt + param.fixDuration - param.flipSlack;
+stimBeginsWhen = fixationBeganAt + param.fixDuration - param.flipSlack;
 
+%%%%%%%%%%%%%% stimuli %%%%%%%%%%%%%%
+Screen('DrawTexture', param.w, stimuli(ttn).texture,[]); %OffsetRect(faceTopRect,100*(1-ed(ttn).isAligned)*(1-ed(ttn).topIsCued),0)
+stimBeganAt = Screen('Flip', param.w, stimBeginsWhen);
+respBeginsWhen = stimBeganAt + param.stimDuration - param.flipSlack;
 
 %%%%%%%%%%%%%% response %%%%%%%%%%%%%%
-responseBegins = Screen('Flip', param.w, testBeginsWhen);
+responseBegins = Screen('Flip', param.w, respBeginsWhen);
 
 %%%%%%%%%% Response (keys) %%%%%%%%%%
 RestrictKeysForKbCheck([param.respKeys, param.expKey]);  % , KbName('5')
@@ -59,12 +63,19 @@ if sum(keyCode(param.respKeys))==1
     reactionTime = pressTime - responseBegins;
     
 else
+    
+    if quitNow
+        ACC = 0; 
+        noResponseText = 'Press any key to quit the program.';
+    else
+        ACC = NaN;
+        noResponseText = 'Something wrong happens. Press any key.';
+    end
+    
     % wrong key, double key or timeout
     Resp = '';
-    if quitNow; ACC = 0; else; ACC = NaN; end
     reactionTime = NaN;
     beep;
-    noResponseText = 'Something wrong happens. Press any key.';
     DrawFormattedText(param.w, noResponseText, 'center', 'center', param.forecolor);
     Screen('Flip',param.w);
     RestrictKeysForKbCheck([]);
