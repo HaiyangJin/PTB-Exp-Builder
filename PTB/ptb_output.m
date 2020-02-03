@@ -1,4 +1,4 @@
-function ptb_output(param, stimuli, output_path)
+function acc = ptb_output(param, stimuli, outputPath)
 % Save the experiment parameters, stimuli structure, and save the output as
 % *.xlsx and *.csv.
 % 
@@ -9,18 +9,24 @@ function ptb_output(param, stimuli, output_path)
 %
 % Created by Haiyang Jin (2018)
 
+% quit if param.dtTable is empty
+if isempty(param.dtTable)
+    acc = 0;
+    return;
+end
+
 % Do not save files if debug model is on
 if param.isDebug
     return;
 end
 
-if nargin < 3 || isempty(output_path)
-    output_path = pwd;
+if nargin < 3 || isempty(outputPath)
+    outputPath = pwd;
 end
 
 %% filenames
-excelDir = fullfile(output_path, 'Excel Data');
-saveDir = fullfile(output_path, 'Matlab Data');
+excelDir = fullfile(outputPath, 'Excel Data');
+saveDir = fullfile(outputPath, 'Matlab Data');
 if ~exist(excelDir, 'dir'); mkdir(excelDir); end
 if ~exist(saveDir, 'dir'); mkdir(saveDir); end
 % backupDir = ['']; % this should be the full path to the dropbox on the main experiment computer
@@ -37,5 +43,7 @@ theMatlabFile = fullfile(saveDir, [theDataFilename '.mat']);
 %% save the files
 save(theMatlabFile, 'param', 'stimuli');
 writetable(param.dtTable, theExcelFile);
+
+acc = 100*mean(param.dtTable.isCorrect);
 
 end
