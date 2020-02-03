@@ -8,7 +8,7 @@ function ptb_expname(subjCode)
 
 % add the functions folder to the path
 clc;
-addpath('functions/');
+addpath('PTB/');
 
 if nargin < 1
     subjCode = '000';
@@ -26,7 +26,7 @@ end
 param.subjCode = subjCode;
 
 %% Experiment inforamtion
-param.expCode = '000';
+param.expCode = '999';
 param.expAbbv = 'ExpAbbv';
 
 % experiment design (ed)
@@ -36,7 +36,10 @@ param.conditionsArray = {...
     'IV2', 0:1; ... % 0 = part condition; 1 = whole condition (only for test face)
     'blocks', 1; ... %
     };
-param.blockByCondition = 'blocks'; % Which condition is used to block the trials? (balance the randomization so that unique conditions appear in different blocks). just use doublequotes (='') if you don't want to use.
+% Which condition is used to block the trials? (balance the randomization 
+% so that unique conditions appear in different blocks). 
+% just use doublequotes (='') if you don't want to use.
+param.blockByCondition = 'blocks'; 
 
 % response keys
 param.expKeyName = 'escape';
