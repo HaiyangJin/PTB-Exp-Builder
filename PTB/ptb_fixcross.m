@@ -1,15 +1,28 @@
-function fixArray = ptb_fixcross(screenX, screenY, widthFix, lengthFix)
+function fixArray = ptb_fixcross(winX, winY, fixWidth, fixLength)
+% This function creates the matrix for the fixation cross.
+%
+% Inputs:
+%     winX            <integer> the width of the window
+%     winY            <integer> the height of the window
+%     fixWidth        <integer> the width of the horizontal and vertical
+%                     "white" lines
+%     fixLength       <integer> the length of the horizontal and vertical
+%                     "white" lines
+% Output:
+%     fixArray        the fixation array
+%
+% Created by Haiyang Jin (2018)
 
 if nargin < 3
-    widthFix = 4;
+    fixWidth = 4;
 end
 if nargin < 4
-    lengthFix = 20;
+    fixLength = 20;
 end
 
-fixArray = ([screenX/2-widthFix/2, screenY/2-lengthFix/2,...
-    screenX/2+widthFix/2, screenY/2+lengthFix/2; % vertical
-    screenX/2-lengthFix/2, screenY/2-widthFix/2, ...
-    screenX/2+lengthFix/2, screenY/2+widthFix/2])'; % horizontal
+fixArray = ([winX/2-fixWidth/2, winY/2-fixLength/2,...
+    winX/2+fixWidth/2, winY/2+fixLength/2; % vertical matrix
+    winX/2-fixLength/2, winY/2-fixWidth/2, ...
+    winX/2+fixLength/2, winY/2+fixWidth/2])'; % horizontal matrix
 
 end
