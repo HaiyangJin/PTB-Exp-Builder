@@ -26,6 +26,7 @@ for iImage = 1:nImage
     
     tmp.filename = imgDir(iImage).name;
     tmp.folder = imgDir(iImage).folder;
+    tmp.condition = imgDir(iImage).condition;
     
     % load images as different layers for different types of images
     [~, ~, imagetype] = fileparts(tmp.filename);
@@ -40,9 +41,7 @@ for iImage = 1:nImage
             error('Please define the processing for %s. (You may wanna to contact the author)',...
                 imagetype(2:end));
     end
-    
-    [~, tmp.category] = fileparts(tmp.folder);
-    
+        
     % save the info in stim_dir
     if iImage == 1
         stimDir = repmat(tmp, nImage, 1);
