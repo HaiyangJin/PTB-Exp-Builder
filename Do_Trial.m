@@ -48,7 +48,7 @@ RestrictKeysForKbCheck([param.respKeys, param.expKey]);  % , KbName('5')
 [pressTime, keyCode] = KbWait([],0);
 
 % quit if the experimenter key is pressed
-if keyCode(param.expKey)
+if any(keyCode(param.expKey))
     quitNow = 1;
 end
 
