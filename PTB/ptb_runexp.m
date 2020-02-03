@@ -9,6 +9,9 @@ function ptb_runexp(param)
 %% Preparation
 param.expStartTime = now();
 
+% stop receiving typed characters
+ListenChar(2);
+
 % Initilize the screen
 param = ptb_initialize(param);
 
@@ -61,7 +64,11 @@ SubjCode = repmat({param.subjCode}, nRow_Info, 1);
 expInfoTable = table(ExperimentAbbv, ExpCode, SubjCode);
 
 % combine the exp information table and data table
-param.dtTable = [expInfoTable, struct2table(dtStruct)];
+if numel(dtStruct) > 1
+    param.dtTable = [expInfoTable, struct2table(dtStruct)];
+else
+    param.dtTable = [];
+end
 
 %% Finishing
 if (~quitNow)
@@ -80,9 +87,12 @@ param.expDuration = expEndTime - expStartTime;
 Screen('CloseAll');
 
 %% Saving the output
-ptb_output(param, stimuli);
+acc = ptb_output(param, stimuli);
 
-fprintf('\nThe current session lasts %2.2f minutes.\n', param.expDuration/60);
-disp(['Mean Accuracy: ' num2str(100*mean(param.dtTable.isCorrect),'%2.1f%%')]);
+fprintf('\nThe current session lasts %2.2f minutes.\n', param.expDuration/60); 
+fprintf('Mean Accuracy: %s\n', num2str(acc, '%2.1f%%'));
+
+% start receiving typed characters
+ListenChar(0);
 
 end
