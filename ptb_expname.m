@@ -42,7 +42,7 @@ param.conditionsArray = {...
 param.blockByCondition = 'blocks'; 
 
 % response keys
-param.expKeyName = 'escape';
+param.expKeyName = {'escape', '=+'};
 param.instructKeyName = 'q';
 param.respKeyNames = {'1!', '2@'};
 
