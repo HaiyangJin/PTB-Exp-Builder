@@ -13,7 +13,7 @@ param.expStartTime = now();
 param = ptb_initialize(param);
 
 % Load stimuli
-stimuli = ptb_loadstim('jpg', param.w);
+stimuli = ptb_loadstimdir(param.imgDir, param.w);
 
 % Build the experiment design
 param.ed = ptb_expdesignbuilder(param.conditionsArray, param.blockByCondition);
