@@ -53,6 +53,10 @@ param.instructText = sprintf(['Insert instructions here... \n', ...
 param.trialsPerRest = 40;
 param.restMinimumTime = 10; % seconds
 
+%% Stimuli
+stimPath = fullfile('stimuli', filesep);
+param.stimuli = ptb_dirstim(stimPath, {'jpg'});
+
 %% Trial parameters
 % fixations
 param.widthFix = 4;
