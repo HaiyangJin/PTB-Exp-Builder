@@ -13,6 +13,8 @@ function acc = ptb_output(param, stimuli, outputPath)
 if isempty(param.dtTable)
     acc = 0;
     return;
+else
+    acc = 100*mean(param.dtTable.isCorrect);
 end
 
 % Do not save files if debug model is on
@@ -43,7 +45,5 @@ theMatlabFile = fullfile(saveDir, [theDataFilename '.mat']);
 %% save the files
 save(theMatlabFile, 'param', 'stimuli');
 writetable(param.dtTable, theExcelFile);
-
-acc = 100*mean(param.dtTable.isCorrect);
 
 end
