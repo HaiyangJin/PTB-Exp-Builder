@@ -88,6 +88,7 @@ param.textFont = 'Helvetica';
 param.textColor = 255;
 
 %% Run the Experiment
+param.do_trial = @do_example_trial;
 ptb_runexp(param);
 
 end

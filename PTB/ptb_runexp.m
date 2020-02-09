@@ -45,7 +45,7 @@ expStartTime = GetSecs();
 for ttn = 1 : param.tn  % this trial number 
     
     % run each trial
-    [output, quitNow] = do_trial(ttn, param, stimuli);
+    [output, quitNow] = param.do_trial(ttn, param, stimuli);
     dtStruct(ttn) = output; %#ok<AGROW>
     
     % break check
