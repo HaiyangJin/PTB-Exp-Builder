@@ -3,7 +3,7 @@ function stimDir = ptb_loadstimdir(imgDir, window)
 % and .texture for displaying images later.
 %
 % Inputs:
-%     stimDir       <structure> created by ptb_dirstim.m
+%     stimDir       <structure> or <cell of structure> created by ptb_dirstim.m
 %     window        <double> should be param.w
 %
 % Output:
@@ -11,11 +11,24 @@ function stimDir = ptb_loadstimdir(imgDir, window)
 %
 % Created by Haiyang Jin (3-Feb-2020)
 
-% skip if the dir is empty
-if isempty(imgDir) % load files if there is any image
+% return if the dir is empty
+if isempty(imgDir) 
     stimDir = '';
     return;
 end
+
+if iscell(imgDir)
+    % run cellfun if imgDir is a cell (load texture)
+    stimDir = cellfun(@(x) load_stimdir(x, window), imgDir, 'uni', false); 
+else
+    % load texture
+    stimDir = load_stimdir(imgDir, window);
+end
+
+end
+
+function stimDir = load_stimdir(imgDir, window)
+% function to load texture and other infomation
 
 % number of images
 nImage = numel(imgDir);
