@@ -1,4 +1,4 @@
-function ptb_expname(subjCode)
+function ptb_example(subjCode)
 % Example experiment main body.
 %
 % Input:

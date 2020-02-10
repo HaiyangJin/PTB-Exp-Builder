@@ -1,4 +1,4 @@
-function [output, quitNow] = do_trial(ttn, param, stimuli)
+function [output, quitNow] = do_example_trial(ttn, param, stimuli)
 % Example do trial.
 %
 % Inputs:
