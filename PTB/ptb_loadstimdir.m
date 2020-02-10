@@ -3,7 +3,7 @@ function stimDir = ptb_loadstimdir(imgDir, window)
 % and .texture for displaying images later.
 %
 % Inputs:
-%     stimDir       <structure> or <cell of structure> created by ptb_dirstim.m
+%     stimDir       <structure> or <array of structure> created by ptb_dirstim.m
 %     window        <double> should be param.w
 %
 % Output:
@@ -17,9 +17,9 @@ if isempty(imgDir)
     return;
 end
 
-if iscell(imgDir)
-    % run cellfun if imgDir is a cell (load texture)
-    stimDir = cellfun(@(x) load_stimdir(x, window), imgDir, 'uni', false); 
+if size(imgDir, 2) > 1 % if it is an array
+    % run arrayfun if imgDir is an array (load texture)
+    stimDir = arrayfun(@(x) load_stimdir(x, window), imgDir, 'uni', false); 
 else
     % load texture
     stimDir = load_stimdir(imgDir, window);
