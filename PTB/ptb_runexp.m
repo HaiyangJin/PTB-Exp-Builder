@@ -17,6 +17,10 @@ param = ptb_initialize(param);
 
 % Load stimuli
 stimuli = ptb_loadstimdir(param.imgDir, param.w);
+% get the information about stimuli
+if isfield(param, 'stiminfo') && ~isempty(param.stiminfo)
+    param = param.stiminfo(param);
+end
 
 % Build the experiment design
 param.ed = ptb_expdesignbuilder(param.conditionsArray, param.blockByCondition);
