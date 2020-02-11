@@ -19,7 +19,7 @@ param = ptb_initialize(param);
 stimuli = ptb_loadstimdir(param.imgDir, param.w);
 % get the information about stimuli
 if isfield(param, 'stiminfo') && ~isempty(param.stiminfo)
-    param = param.stiminfo(param);
+    param = param.stiminfo(param, stimuli);
 end
 
 % Build the experiment design
@@ -40,7 +40,8 @@ ptb_instruction(param);
 % KbWait([],2);
 
 % Fixations
-param.fixarray = ptb_fixcross(param.screenX, param.screenY, param.widthFix, param.lengthFix);
+param.fixarray = ptb_fixcross(param.screenX, param.screenY, ...
+    param.widthFix, param.lengthFix);
 
 %% Do the trial
 expStartTime = GetSecs();
