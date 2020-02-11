@@ -15,7 +15,7 @@ if ischar(subjCode)
     subjCode = str2double(subjCode);
 end
 
-if naring < 3 || isempty(method)
+if nargin < 3 || isempty(method)
     method = 1;
 end
 
@@ -23,7 +23,7 @@ switch method
     case 1 % method 1
         %
         if mod(subjCode, 2)
-            respKeys = respKeys(:, 2, 1);
+            respKeys = respKeys(:, [2, 1]);
         end
         
 end
