@@ -18,8 +18,8 @@ param = ptb_initialize(param);
 % Load stimuli
 stimuli = ptb_loadstimdir(param.imgDir, param.w);
 % get the information about stimuli
-if isfield(param, 'stiminfo') && ~isempty(param.stiminfo)
-    param = param.stiminfo(param, stimuli);
+if isfield(param, 'do_stim') && ~isempty(param.do_stim)
+    param = param.do_stim(param, stimuli);
 end
 
 % Build the experiment design
@@ -45,13 +45,14 @@ param.fixarray = ptb_fixcross(param.screenX, param.screenY, ...
 
 %% Do the trial
 expStartTime = GetSecs();
-% dtStruct = struct;
+
+dtTable = table;
 
 for ttn = 1 : param.tn  % this trial number 
     
     % run each trial
     [output, quitNow] = param.do_trial(ttn, param, stimuli);
-    dtStruct(ttn) = output; %#ok<AGROW>
+    dtTable(ttn, :) = struct2table(output); 
     
     % break check
     ptb_checkbreak(ttn, param);
@@ -63,23 +64,19 @@ end
 expEndTime = GetSecs();
 
 % create the experiment information table
-nRow_Info = length(dtStruct);
-ExperimentAbbv = repmat({param.expAbbv}, nRow_Info, 1);
-ExpCode = repmat({param.expCode}, nRow_Info, 1);
-SubjCode = repmat({param.subjCode}, nRow_Info, 1);
-expInfoTable = table(ExperimentAbbv, ExpCode, SubjCode);
+nRowInfo = size(dtTable,1);
+ExpAbbv = repmat(param.expAbbv, nRowInfo, 1);
+ExpCode = repmat(param.expCode, nRowInfo, 1);
+SubjCode = repmat(param.subjCode, nRowInfo, 1);
+expInfoTable = table(ExpAbbv, ExpCode, SubjCode);
 
-% combine the exp information table and data table
-if numel(dtStruct) > 1
-    param.dtTable = [expInfoTable, struct2table(dtStruct)];
-else
-    param.dtTable = [];
-end
+% process the output
+param.dtTable = param.do_output(dtTable, expInfoTable);
 
 %% Finishing
 if (~quitNow)
-    breakText = sprintf('The current session is finished!\n \nPlease contact the experimenter.');
-    DrawFormattedText(param.w, breakText, 'center', 'center', param.forecolor);
+    doneText = sprintf('The current session is finished!\n \nPlease contact the experimenter.');
+    DrawFormattedText(param.w, doneText, 'center', 'center', param.forecolor);
     Screen('Flip', param.w);
     RestrictKeysForKbCheck(param.instructKey);
     KbWait([],2);
