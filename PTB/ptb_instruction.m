@@ -15,6 +15,8 @@ function ptb_instruction(param)
 %                         each frame.
 %     .w                  window code in PTB.
 %     .forecolor          color of instruction texts
+%
+% created by Haiyang Jin (10-Feb-2020)
 
 % convert the instructText to cell if it is char
 if ischar(param.instructText)
