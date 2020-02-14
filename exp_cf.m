@@ -111,6 +111,13 @@ param.faceSelector = ...
 % misaligned percentage
 param.misalignPerc = 0.5;
 
+% cues
+param.showCue = 0; % 0: not show cue, 1: show cues
+param.cuePixel = 6; 
+param.cueLength = 1.5; % times of the wide of stimuli (face)
+param.cueSideLength = 22;  % the "hook" part (even number)
+param.cuePosition = 22;  % distance from the position to the middle of the screen
+
 % fixations
 param.widthFix = 4;
 param.lengthFix = 20;

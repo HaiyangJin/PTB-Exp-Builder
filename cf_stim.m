@@ -8,10 +8,13 @@ function param = cf_stim(param, stimuli)
 % Output:
 %     param           <structure> parameters of the exp
 
+% screen dimenstions
 screenRect = param.screenRect;
+screenX = screenRect(3);
+screenY = screenRect(4);
 
 % stimulus dimentions
-[faceY, faceX] = size(stimuli(1,1).matrix);
+[faceY, faceX, ~] = size(stimuli(1,1).matrix);
 faceCenter = CenterRect([0 0 faceX faceY], screenRect);
 param.faceY = faceY;
 param.faceX = faceX;
@@ -33,9 +36,21 @@ param.faceBottomPosition =[faceCenter(1) ...
 
 % white line information
 misalignSize = param.faceX * param.misalignPerc;
-param.lineRect = [screenRect(3)/2-(3*misalignSize + (faceCenter(3)-faceCenter(1)))/2 ...
-    screenRect(4)/2-1 ...
-    screenRect(3)/2+(3*misalignSize+(faceCenter(3)-faceCenter(1)))/2 ...
-    screenRect(4)/2+2];
+param.lineRect = [screenX/2-(3*misalignSize + (faceCenter(3)-faceCenter(1)))/2 ...
+    screenY/2-1 ...
+    screenX/2+(3*misalignSize+(faceCenter(3)-faceCenter(1)))/2 ...
+    screenY/2+2];
+
+% cue position (in the middle of the screen)
+cuePixel = param.cuePixel;
+cueLengthHalf = param.cueLength * faceX/2;
+cueSideLength = param.cueSideLength;
+
+param.cuePosi = [screenX/2-cueLengthHalf screenY/2-cuePixel/2 ...
+    screenX/2+cueLengthHalf screenY/2+cuePixel/2];
+param.cuePosiL = [screenX/2-cueLengthHalf screenY/2-cueSideLength/2 ...
+    screenX/2-cueLengthHalf+cuePixel screenY/2+cueSideLength/2];
+param.cuePosiR = [screenX/2+cueLengthHalf-cuePixel screenY/2-cueSideLength/2 ...
+    screenX/2+cueLengthHalf screenY/2+cueSideLength/2];
 
 end

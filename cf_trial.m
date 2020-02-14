@@ -41,15 +41,21 @@ yOffsetRand = offsets(randperm(numel(offsets),1))*5; %
 
 alignTestOffset = param.faceX * param.misalignPerc * (1-ed.isTestAligned);
 
+% study faces
 xStudyTopOffset = 0;
 yStudyTopOffset = 0;
 yStudyBottomOffset = 0;
 xStudyBottomOffset = 0;
 
+% test faces
 xTestTopOffset = xOffsetRand + alignTestOffset * (1-ed.isTopCued);
 xTestBottomOffset = xOffsetRand + alignTestOffset * ed.isTopCued;
 yTestTopOffset = yOffsetRand;
 yTestBottomOffset = yOffsetRand;
+
+% test cues
+yTestCue = yOffsetRand + (-2*ed.isTopCued+1) * (param.cuePosition+param.faceY/2);
+yTestCueLR = yTestCue + (2*ed.isTopCued-1) * param.cueSideLength/2;
 
 % trial began time
 trialBeginsAt = GetSecs;
@@ -87,6 +93,12 @@ maskBeginWhen = studyBeganAt + param.studyDuration - flipSlack;
 % maskTexture = masks(ed.maskID).texture;
 % Screen('DrawTexture',window,maskTexture,[],maskDestRect);
 
+if param.showCue
+    Screen('FillRect', w, forecolor, OffsetRect(param.cuePosi, xOffsetRand, yTestCue));
+    Screen('FillRect', w, forecolor, OffsetRect(param.cuePosiL, xOffsetRand, yTestCueLR));
+    Screen('FillRect', w, forecolor, OffsetRect(param.cuePosiR, xOffsetRand, yTestCueLR));
+end
+
 maskBeganAt = Screen('Flip', w, maskBeginWhen);
 testBeginWhen = maskBeganAt + param.maskDuration - flipSlack;
 
@@ -100,6 +112,12 @@ Screen('DrawTexture', w, faceTestTop.texture, param.faceTopRect,...
 Screen('DrawTexture', w, faceTestBott.texture, param.faceBottomRect,...
     bottomTestPosition, [], [], alpha);
 Screen('FillRect', w, forecolor, OffsetRect(param.lineRect, xOffsetRand, yOffsetRand));
+
+if param.showCue
+    Screen('FillRect', w, forecolor, OffsetRect(param.cuePosi, xOffsetRand, yTestCue));
+    Screen('FillRect', w, forecolor, OffsetRect(param.cuePosiL, xOffsetRand, yTestCueLR));
+    Screen('FillRect', w, forecolor, OffsetRect(param.cuePosiR, xOffsetRand, yTestCueLR));
+end
 
 responseBegins = Screen('Flip', w, testBeginWhen);
 
