@@ -14,15 +14,8 @@ function [output, quitNow] = do_example_trial(ttn, param, stimuli)
 %% set quitNow as false by default
 quitNow = 0;
 
-%% Independent variables
-IV1 = {'11', '12', '13', '14'};
-IV2 = {'20', '21'};
-
 % experiment design
 ed = param.ed;
-
-iv1 = ed(ttn).IV1;
-iv2 = ed(ttn).IV2;
 
 correctAns = 1;
 
@@ -73,7 +66,7 @@ else
     end
     
     % wrong key, double key or timeout
-    Resp = '';
+    Resp = NaN;
     reactionTime = NaN;
     beep;
     DrawFormattedText(param.w, noResponseText, 'center', 'center', param.forecolor);
