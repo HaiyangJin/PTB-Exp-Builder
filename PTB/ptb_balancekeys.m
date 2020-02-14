@@ -22,7 +22,7 @@ end
 switch method
     case 1 % method 1
         %
-        if mod(subjCode, 2)
+        if ~mod(subjCode, 2) % switch keys for even subjCode
             respKeys = respKeys(:, [2, 1]);
         end
         
