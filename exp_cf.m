@@ -26,7 +26,7 @@ end
 param.subjCode = subjCode;
 
 %% Stimuli
-stimPath = fullfile('CFFaces', filesep);
+stimPath = fullfile('CF_LineFaces', filesep); % CFFaces  CF_LineFaces
 imgDir = ptb_dirimg(stimPath, {'png'});
 param.nFacePerGroup = 4;
 nGroup = numel(unique({imgDir.condition}));  % number of groups (folders)
