@@ -19,7 +19,7 @@ end
 
 if size(imgDir, 2) > 1 % if it is an array
     % run arrayfun if imgDir is an array (load texture)
-    stimDir = arrayfun(@(x) load_stimdir(x, window), imgDir, 'uni', false); 
+    stimDir = arrayfun(@(x) load_stimdir(x, window), imgDir); 
 else
     % load texture
     stimDir = load_stimdir(imgDir, window);
