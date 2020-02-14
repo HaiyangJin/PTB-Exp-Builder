@@ -65,13 +65,18 @@ expEndTime = GetSecs();
 
 % create the experiment information table
 nRowInfo = size(dtTable,1);
-ExpAbbv = repmat(param.expAbbv, nRowInfo, 1);
-ExpCode = repmat(param.expCode, nRowInfo, 1);
-SubjCode = repmat(param.subjCode, nRowInfo, 1);
-expInfoTable = table(ExpAbbv, ExpCode, SubjCode);
 
-% process the output
-param.dtTable = param.do_output(dtTable, expInfoTable);
+if nRowInfo > 1
+    ExpAbbv = repmat(param.expAbbv, nRowInfo, 1);
+    ExpCode = repmat(param.expCode, nRowInfo, 1);
+    SubjCode = repmat(param.subjCode, nRowInfo, 1);
+    expInfoTable = table(ExpAbbv, ExpCode, SubjCode);
+    
+    % process the output
+    param.dtTable = param.do_output(dtTable, expInfoTable);
+else
+    param.dtTable = '';
+end
 
 %% Finishing
 if (~quitNow)
