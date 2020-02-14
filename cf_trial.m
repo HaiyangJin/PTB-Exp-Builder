@@ -142,6 +142,11 @@ else
     KbWait([], 2);
 end
 
+% display feedback if necessary
+if param.isFeedback
+    ptb_feedback(ACC, param.w);
+end
+
 %% Clean up
 RestrictKeysForKbCheck([]);
 

@@ -135,6 +135,8 @@ param.respDuration = 1;
 % interval
 param.ITInterval = 0.5;
 
+% feedback
+param.isFeedback = 0;
 
 %% Setting for the screen
 param.frameExpected = 60;
