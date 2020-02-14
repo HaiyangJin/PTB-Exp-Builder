@@ -89,6 +89,8 @@ param.textColor = 255;
 
 %% Run the Experiment
 param.do_trial = @example_trial;
+param.do_output = @example_output;
+
 ptb_runexp(param);
 
 end
