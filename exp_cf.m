@@ -65,7 +65,10 @@ param.instructKeyName = 'q';
 respKeyNames = {
     '1', '2';
     '1!', '2@'};
+
+if param.isDebug; subjCode = 1; end
 param.respKeyNames = ptb_balancekeys(subjCode, respKeyNames); % counterbalance keys
+
 
 % instructions
 param.instructText = sprintf(['Welcome to this experiment.'...
@@ -83,7 +86,7 @@ param.instructText = sprintf(['Welcome to this experiment.'...
     'please press KEY %s.'...
     '\n \n \n \n'...
     'Please respond as quickly and accurately as possible.'], ...
-    param.respKeyNames{1,1}, param.respKeyNames{1,2}, param.instructKeyName);
+    param.respKeyNames{1,1}, param.respKeyNames{1,2});
 
 % breaks
 param.trialsPerRest = 40;
