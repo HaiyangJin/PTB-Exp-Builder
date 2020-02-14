@@ -85,6 +85,7 @@ Screen('Flip', window);
 param.w = window;
 param.screenCenX = screenCenX;
 param.screenCenY = screenCenY;
+param.screenRect = screenRect;
 param.screenX = screenX;
 param.screenY = screenY;
 param.flipSlack = flipSlack;
