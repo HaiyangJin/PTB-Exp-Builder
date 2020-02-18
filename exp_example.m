@@ -58,7 +58,7 @@ param.restMinimumTime = 10; % seconds
 
 %% Stimuli
 stimPath = fullfile('stimuli', filesep);
-param.imgDir = ptb_dirimg(stimPath, {'jpg'});
+param.imgDir = im_dir(stimPath, {'jpg'});
 
 %% Trial parameters
 % fixations

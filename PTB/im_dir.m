@@ -1,4 +1,4 @@
-function imgDir = ptb_dirimg(imgPath, imgExt)
+function imgDir = im_dir(imgPath, imgExt)
 % This function get the directory information of all the images matching the
 % image extension in the imgPath and its subfolders.
 %
