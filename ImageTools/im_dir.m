@@ -1,4 +1,6 @@
 function imgDir = im_dir(imgPath, imgExt)
+% imgDir = im_dir(imgPath, imgExt)
+%
 % This function get the directory information of all the images matching the
 % image extension in the imgPath and its subfolders.
 %
@@ -19,7 +21,7 @@ if nargin < 1 || isempty(imgPath)
 end
 
 if nargin < 2 || isempty(imgExt)
-    imgExt = {'png'};
+    imgExt = {''};
 elseif ischar(imgExt)
     imgExt = {imgExt};
 end
@@ -28,6 +30,7 @@ end
 mainDir = dir(imgPath);
 % remove the "hidden" files or folders
 mainDir(cellfun(@(x) strcmp(x(1), '.'), {mainDir.name})) = [];
+mainDir(cellfun(@(x) startsWith(x, 'Icon'), {mainDir.name})) = [];
 
 % image files matching imgExt in the imgPath
 isExt = endsWith({mainDir.name}, imgExt);
