@@ -12,7 +12,7 @@ function im_writedir(stimDir, matrixFieldname, imgExt, outputPath, imgString)
 %                       be saved as their original formats.
 %     outputPath        <string> the path to the output folder
 %     imgString         <string> extra strings to be added at the end of
-%                       the filename.
+%                       the file name.
 %
 % Output:
 %     creat images in the outputPath
@@ -80,7 +80,7 @@ for iImg = 1:nImg
     thisImg = stimDir(iImg);
     
     % add new extension if needed
-    [~, fn, ext] = fileparts(thisImg.filename);
+    [~, fn, ext] = fileparts(thisImg.fn);
     
     % add the image strings
     theFn = [fn imgString];

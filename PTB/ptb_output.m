@@ -26,7 +26,7 @@ if nargin < 3 || isempty(outputPath)
     outputPath = pwd;
 end
 
-%% filenames
+%% file names
 excelDir = fullfile(outputPath, 'Excel Data');
 saveDir = fullfile(outputPath, 'Matlab Data');
 if ~exist(excelDir, 'dir'); mkdir(excelDir); end
@@ -37,9 +37,9 @@ thisDateVector = now;
 theDateString = datestr(thisDateVector,'yyyy-mm-dd-HHMM');
 % theDate8 = str2double(datestr(thisDateVector,'yyyymmdd'));
 
-theDataFilename = [param.subjCode '_' param.expCode '_' param.expAbbv '_' theDateString];
-theExcelFile = fullfile(excelDir, [theDataFilename '.xlsx']);
-theMatlabFile = fullfile(saveDir, [theDataFilename '.mat']);
+theDataFn = [param.subjCode '_' param.expCode '_' param.expAbbv '_' theDateString];
+theExcelFile = fullfile(excelDir, [theDataFn '.xlsx']);
+theMatlabFile = fullfile(saveDir, [theDataFn '.mat']);
 
 
 %% save the files

@@ -25,18 +25,18 @@ for iImage = 1:nImage
     
     clear tmp
     
-    tmp.filename = imgDir(iImage).name;
+    tmp.fn = imgDir(iImage).name;
     tmp.folder = imgDir(iImage).folder;
     tmp.condition = imgDir(iImage).condition;
     
     % load images as different layers for different types of images
-    [~, ~, imagetype] = fileparts(tmp.filename);
+    [~, ~, imagetype] = fileparts(tmp.fn);
     switch imagetype(2:end)
         case 'png'
-            [tmp.matrix, ~, tmp.alpha] = imread(fullfile(tmp.folder, tmp.filename));
+            [tmp.matrix, ~, tmp.alpha] = imread(fullfile(tmp.folder, tmp.fn));
             tmp.texture = im_mktexture(window, cat(3, tmp.matrix, tmp.alpha));
         case {'jpg', 'tif', 'bmp'}
-            tmp.matrix = imread(fullfile(tmp.folder, tmp.filename));
+            tmp.matrix = imread(fullfile(tmp.folder, tmp.fn));
             tmp.alpha = ''; % creat NaN array
             tmp.texture = im_mktexture(window, tmp.matrix);
         otherwise
@@ -55,7 +55,7 @@ end
 
 % remove the field names if all the values are empty
 names = fieldnames(stimDir);
-% the values of which filename is empty 
+% the values of which fieldname is empty 
 isRmove = cellfun(@(x) all(cellfun(@isempty, {stimDir.(x)})), names);
 
 % trim stimDir
