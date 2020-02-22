@@ -15,7 +15,8 @@ warning('off','MATLAB:fprintf:InputForPercentSIsNotOfClassChar');
 
 Screen('Preference', 'SkipSyncTests', 1);
 
-rand('twister',sum(100*clock));
+% setup the randomizations
+ptb_setuprand; 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
