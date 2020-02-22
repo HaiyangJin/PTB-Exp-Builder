@@ -93,10 +93,10 @@ param.flipSlack = flipSlack;
 end
 
 % local function
-function color = colorconverter(color, colorCode)
+function color = colorconverter(colorString, colorCode)
 % convert the color (string) to color (num)
-if ischar(color)
-    switch color
+if ischar(colorString)
+    switch colorString
         case 'white'
             color = colorCode.white;
         case 'black'
@@ -108,7 +108,7 @@ if ischar(color)
         otherwise
             error('Failed to identify the color...');
     end
-elseif ~isnumeric(color)
+elseif ~isnumeric(colorString)
     error('Failed to identify the color...');
 end
 
