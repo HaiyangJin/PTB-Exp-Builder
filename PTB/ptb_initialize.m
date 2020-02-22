@@ -13,7 +13,15 @@ Priority(1);
 warning('off','MATLAB:sprintf:InputForPercentSIsNotOfClassChar');
 warning('off','MATLAB:fprintf:InputForPercentSIsNotOfClassChar');
 
-Screen('Preference', 'SkipSyncTests', 1);
+% if it is in debug mode
+if param.isDebug
+    param.winrect = [100 100 1300 900]; % default for debug mode
+    param.SkipSyncTests = 1;  % skip screen sync test
+elseif ismac
+    param.SkipSyncTests = 1;  % skip screen sync test
+end
+
+Screen('Preference', 'SkipSyncTests', param.SkipSyncTests);
 
 % setup the randomizations
 ptb_setuprand; 
@@ -42,10 +50,6 @@ pixelSizes = Screen('PixelSizes', whichScreen);
 if max(pixelSizes) < 32 && ispc
     warning('Sorry, I need a screen that supports 32-bit pixelSize.\n');
     return;
-end
-
-if param.isDebug
-    param.winrect = [100 100 1300 900]; % default for debug mode
 end
 
 [window, screenRect] = Screen('OpenWindow', whichScreen, param.backcolor, ...

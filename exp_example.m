@@ -1,4 +1,4 @@
-function ptb_example(subjCode)
+function exp_example(subjCode)
 % Example experiment main body.
 %
 % Input:
@@ -7,8 +7,10 @@ function ptb_example(subjCode)
 % Created by Haiyang Jin (2018).
 
 % add the functions folder to the path
-clc;
+% clc;
 addpath('PTB/');
+
+param.SkipSyncTests = 0;
 
 if nargin < 1
     subjCode = '000';

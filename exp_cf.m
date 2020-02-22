@@ -10,6 +10,8 @@ function exp_cf(subjCode)
 clc;
 addpath('PTB/');
 
+param.SkipSyncTests = 0;
+
 if nargin < 1
     subjCode = '000';
 elseif isnumeric(subjCode)  % the subjCode should be a string
