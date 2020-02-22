@@ -7,7 +7,7 @@ close all;
 
 % Here we call some default settings for setting up Psychtoolbox
 PsychDefaultSetup(2);
- 
+
 commandwindow;
 Priority(1);
 warning('off','MATLAB:sprintf:InputForPercentSIsNotOfClassChar');
@@ -89,6 +89,9 @@ param.screenRect = screenRect;
 param.screenX = screenX;
 param.screenY = screenY;
 param.flipSlack = flipSlack;
+
+% the actual size of the screen
+param = ptb_screensize(param);
 
 end
 
