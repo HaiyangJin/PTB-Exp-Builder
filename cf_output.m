@@ -21,6 +21,11 @@ dtTable.Alignment = transpose(alignment(2 - dtTable.Alignment));
 dtTable.Congruency = transpose(congruency(2 - dtTable.Congruency));
 dtTable.SameDifferent = transpose(samediff(2 - dtTable.SameDifferent));
 
+% save the strings for responses
+isNaN = arrayfun(@isnan, dtTable.Resp);
+dtTable.RespString(~isNaN) = transpose(samediff(dtTable.Resp(~isNaN)));
+dtTable.RespString(isNaN) = {'NA'};
+
 % combine the exp information table and data table
 if size(dtTable,1) > 1
     outTable = horzcat(expInfoTable, dtTable);
