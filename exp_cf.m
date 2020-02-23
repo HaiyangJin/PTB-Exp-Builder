@@ -68,7 +68,7 @@ respKeyNames = {
     '1', '2';
     '1!', '2@'};
 
-if param.isDebug; subjCode = 1; end
+if param.isDebug || strcmp(subjCode, '000'); subjCode = 1; end
 param.respKeyNames = ptb_balancekeys(subjCode, respKeyNames); % counterbalance keys
 
 
