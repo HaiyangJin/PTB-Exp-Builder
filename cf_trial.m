@@ -179,6 +179,7 @@ output.StudyBottom = {faceStudyBott.fn};
 output.TestTop = {faceTestTop.fn};
 output.TestBottom = {faceTestBott.fn};
 output.thisResponse = Resp;
+output.keyPressed = KbName(keyCode);  % the name of pressed key
 output.isCorrect = ACC;
 output.reactionTime = reactionTime;
 output.studyDuration = param.studyDuration;
