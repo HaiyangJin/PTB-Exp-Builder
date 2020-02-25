@@ -38,10 +38,8 @@ param.conditionsArray = {...
     'IV2', 0:1; ... % 0 = part condition; 1 = whole condition (only for test face)
     'blocks', 1; ... %
     };
-% Which condition is used to block the trials? (balance the randomization 
-% so that unique conditions appear in different blocks). 
-% just use doublequotes (='') if you don't want to use.
-param.blockByCondition = 'blocks'; 
+param.randBlock = '';
+param.sortBlock = 'blocks'; 
 
 % response keys
 param.expKeyName = {'escape', '=+'};

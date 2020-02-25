@@ -23,7 +23,8 @@ if isfield(param, 'do_stim') && ~isempty(param.do_stim)
 end
 
 % Build the experiment design
-param.ed = ptb_expdesignbuilder(param.conditionsArray, param.blockByCondition);
+param.ed = ptb_expdesignbuilder(param.conditionsArray, ...
+    param.randBlock, param.sortBlock);
 param.tn = size(param.ed, 1);  % trial number
 
 % Keys

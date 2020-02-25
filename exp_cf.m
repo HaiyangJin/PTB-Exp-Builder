@@ -56,10 +56,8 @@ param.conditionsArray = {...
     'withinBlockReps', 1; ... % 
     'blockNumber', 1; ... % 
     };
-% Which condition is used to block the trials? (balance the randomization 
-% so that unique conditions appear in different blocks). 
-% just use doublequotes (='') if you don't want to use.
-param.blockByCondition = 'blockNumber'; 
+param.randBlock = '';
+param.sortBlock = 'blockNumber'; 
 
 % response keys
 param.expKeyName = {'escape', '=+'};
@@ -70,7 +68,6 @@ respKeyNames = {
 
 if param.isDebug || strcmp(subjCode, '000'); subjCode = 1; end
 param.respKeyNames = ptb_balancekeys(subjCode, respKeyNames); % counterbalance keys
-
 
 % instructions
 param.instructText = sprintf(['Welcome to this experiment.'...
