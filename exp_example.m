@@ -59,8 +59,8 @@ param.trialsPerRest = 40;
 param.restMinimumTime = 10; % seconds
 
 %% Stimuli
-stimPath = fullfile('stimuli', filesep);
-param.imgDir = im_dir(stimPath, {'jpg'});
+stimPath = fullfile('CF_LineFaces', filesep);
+param.imgDir = im_dir(stimPath, {'png'});
 
 %% Trial parameters
 % fixations
