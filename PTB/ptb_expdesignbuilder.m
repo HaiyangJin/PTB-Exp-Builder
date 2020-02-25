@@ -198,16 +198,15 @@ if isRand
 end
 
 
-%% Replace double numbers in designFF with "real" values
+%% Replace double numbers in designFF with "real" level values
+% temporary row and column indices
+[rowTemp, colTemp] = ndgrid(1:size(designFF, 1), 1:size(designFF, 2));
 
-cellDesign = cell(size(designFF));
-for iCol = 1:size(designFF,2)
-    for iRow = 1:size(designFF,1)
-        cellDesign{iRow,iCol} = expConditions{iCol,2}(designFF(iRow,iCol));
-    end
-end
+% convert to the "real" level values
+cellDesign = arrayfun(@(x, y) expConditions{y,2}(designFF(x,y)), ...
+    rowTemp, colTemp, 'uni', false);
 
 % convert cell to structure
-design = cell2struct( cellDesign , expConditions(:,1), 2);
+design = cell2struct(cellDesign , expConditions(:,1), 2);
 
 end
