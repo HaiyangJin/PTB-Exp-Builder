@@ -15,11 +15,15 @@ function design = ptb_expdesignbuilder(expConditions, randBlock, sortBlock, isRa
 %     randBlock          <cell of strings> the name of the variables. or
 %                        <numeric> the order/number of the variables. The
 %                        design will be sorted and then be randomized as
-%                        chunks based on randBlock.
+%                        chunks based on randBlock. The order for sorting
+%                        each condition is the same as their order in
+%                        randBlock.
 %     sortBlock          <cell of strings> the name of the variables. or
 %                        <numeric> the order/number of the variables. The
 %                        design will only be sorted (no randomization) 
-%                        based on sortBlock.
+%                        based on sortBlock. The order for sorting
+%                        each condition is the same as their order in
+%                        sortBlock.
 %     isRand             <logical> if randomize the design. By default
 %                        isRand is 1 and the design will be randomized.
 %
@@ -37,13 +41,13 @@ function design = ptb_expdesignbuilder(expConditions, randBlock, sortBlock, isRa
 %     'StimCategory', 1:4;...
 %     'blockNumber', 1:2 ...
 %     };
-% randBlock = {'IV3', 'StimCategory'};
+% randBlock = {'StimCategory', 'IV3'};
 % sortBlock = 'blockNumber';
 % ed = ptb_expdesignbuilder(expConditions, randBlock, sortBlock);
 %
 % or
 %
-% randBlock = {'IV2', 'IV3'};
+% randBlock = {'IV3', 'IV2'};
 % sortBlock = {'blockNumber', 'StimCategory'};
 % ed = ptb_expdesignbuilder(expConditions, randBlock, sortBlock);
 %
@@ -134,13 +138,14 @@ if isRand
     % sort by sortBlock (sort by the order in sortBlock).
 %     designFF = sortrows(designFF, [sortBlockNum, randBlockNum]);
     
-    for iRand = 1:numel(randBlockNum)
+    nRandBlock = numel(randBlockNum);
+    for iRand = nRandBlock:-1:1 % reverse loop
         
         % already randomized randBlock condition
-        if iRand == 1
+        if iRand == nRandBlock
             doneRand = [];
         else
-            doneRand = randBlockNum(1:iRand-1);
+            doneRand = randBlockNum(iRand+1 : nRandBlock);
         end
         
         % this randBlock number
