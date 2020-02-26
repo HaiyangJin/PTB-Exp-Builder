@@ -8,16 +8,18 @@ function design = ptb_expdesignbuilder(expConditions, randBlock, sortBlock, isRa
 % randomization). 
 %
 % Inputs:
-%     expConditions      <cell> each row is one variable. The first
-%                        column is the names of the variables and the
-%                        second column is the levels of the variables.
+%     expConditions      <cell> expConditions is Nx2 cell, where N is the 
+%                        number of levels with condition names in the first
+%                        column and possible values for each condition in 
+%                        the second column.
 %     randBlock          <cell of strings> the name of the variables. or
 %                        <numeric> the order/number of the variables. The
 %                        design will be sorted and then be randomized as
-%                        chunks.
+%                        chunks based on randBlock.
 %     sortBlock          <cell of strings> the name of the variables. or
 %                        <numeric> the order/number of the variables. The
-%                        design will only be sorted (no randomization).
+%                        design will only be sorted (no randomization) 
+%                        based on sortBlock.
 %     isRand             <logical> if randomize the design. By default
 %                        isRand is 1 and the design will be randomized.
 %
@@ -39,26 +41,26 @@ function design = ptb_expdesignbuilder(expConditions, randBlock, sortBlock, isRa
 % sortBlock = 'blockNumber';
 % ed = ptb_expdesignbuilder(expConditions, randBlock, sortBlock);
 %
-% This code is built based on Matt Oxner's code.
-%
-% Created by Haiyang Jin (25-Feb-2020)
-
-
-%% Comments from Matt Oxner
+%%%%%%%%%%%%%%%%%%%% Comments from Matt Oxner %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Does a full-factorial design, similar to StatsToolbox function "fullfact",
-% using the experiment conditions given in
-% the cell array expConditions. expConditions is Nx2, where N is the number of levels
-% with condition names in the first column and possible values for
-% each condition in the second column.
+% using the experiment conditions given in the cell array expConditions.
+% expConditions is Nx2, where N is the number of levels with condition
+% names in the first column and possible values for each condition in the
+% second column.
 %
 % Function returns a struct array with number of structs corresponding to
 % number of trials. Each trial is a unique combination of possible
 % condition values.
 %
-% These unique trials appearing the output struct are in a random order.
+% These unique trials appearing the output struct are in a random order by 
+% default.
 % Trials can be balanced by blocks, or another condition, but adding a
-% "sortCondition" string argument, which should correspond to a single
+% "sortBlock" string argument, which should correspond to a single
 % condition name in expConditions.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% This code is built based on Matt Oxner's code.
+% Created by Haiyang Jin (25-Feb-2020)
 
 %% condition names and number
 condNames = expConditions(:,1);
@@ -73,13 +75,13 @@ end
 if nargin < 2 || isempty(randBlock)
     randBlockNum = [];
 elseif isnumeric(randBlock) % if it is numeric
-    
+    % make sure sortBlock do not exceed the condition number
     if any(randBlock > nCon)
         error('sortBlock (%d) exceeds the conditon number.', randBlock(:));
     end
     
 else
-    
+    % convert strings or cell of strings into numeric
     if ischar(randBlock); randBlock = {randBlock}; end
     isRandNot = cellfun(@(x) ~any(strcmpi(condNames, x)), randBlock);
     
@@ -97,12 +99,13 @@ if nargin < 3 || isempty(sortBlock)
     randBlockNum = [];
     
 elseif isnumeric(sortBlock) % if it is numeric
-    
+    % make sure sortBlock do not exceed the condition number
     if any(sortBlock > nCon)
         error('sortBlock (%d) exceeds the conditon number.', sortBlock(:));
     end
     
 else
+    % convert strings or cell of strings into numeric
     if ischar(sortBlock); sortBlock = {sortBlock}; end
     isSortNot = cellfun(@(x) ~any(strcmpi(condNames, x)), sortBlock);
     
@@ -147,7 +150,6 @@ for k = 1:cols
     settings = settings(:,ones(1,ncycles));  % repeat sequence to fill the array
     designFF(:,k) = settings(:);
 end
-
 
 %% Randomize the design if needed
 
@@ -196,7 +198,6 @@ if isRand
 
     end
 end
-
 
 %% Replace double numbers in designFF with "real" level values
 % temporary row and column indices
