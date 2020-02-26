@@ -13,6 +13,10 @@ function stimDir = ptb_loadstimdir(imgDir, window)
 %
 % Created by Haiyang Jin (3-Feb-2020)
 
+if nargin < 2 || isempty(window)
+    window = '';
+end
+
 % return if the dir is empty
 if isempty(imgDir)
     stimDir = '';
