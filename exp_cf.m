@@ -29,16 +29,11 @@ param.subjCode = subjCode;
 
 %% Stimuli
 stimPath = fullfile('CF_LineFaces', filesep); % CFFaces  CF_LineFaces
-imgDir = im_dir(stimPath, {'png'});
+imgDir = im_dir(stimPath, {'png'}, 1);
 param.nFacePerGroup = 4;
 nGroup = numel(unique({imgDir.condition}));  % number of groups (folders)
 
 param.alpha = 1;  % 0: transparent; 1: opaque
-
-% reformat stimuli structure by group names
-tempDir = cellfun(@(x) imgDir(strcmp({imgDir.condition}, x)), ...
-    unique({imgDir.condition}), 'uni', false);
-param.imgDir = [tempDir{:}];
 
 %% Experiment inforamtion
 param.expCode = '999';
