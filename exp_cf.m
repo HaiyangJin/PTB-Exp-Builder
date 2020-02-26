@@ -29,9 +29,9 @@ param.subjCode = subjCode;
 
 %% Stimuli
 stimPath = fullfile('CF_LineFaces', filesep); % CFFaces  CF_LineFaces
-imgDir = im_dir(stimPath, {'png'}, 1);
+param.imgDir = im_dir(stimPath, {'png'}, 1);
 param.nFacePerGroup = 4;
-nGroup = numel(unique({imgDir.condition}));  % number of groups (folders)
+nGroup = numel(unique({param.imgDir.condition}));  % number of groups (folders)
 
 param.alpha = 1;  % 0: transparent; 1: opaque
 
