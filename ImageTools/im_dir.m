@@ -9,10 +9,10 @@ function imgDir = im_dir(imgPath, imgExt)
 %     imgExt       <strings> or <a cell of strings> the file extentions of
 %                   the images.
 % Output:
-%     imgDir       <structure> the dir structure with condition name. The 
+%     imgDir       <structure> the dir structure with condition name. The
 %                   names of subfolders will be the condition names for the
-%                   images in those subfolders. 'main' will be the 
-%                   condition name for images in imgPath. 
+%                   images in those subfolders. 'main' will be the
+%                   condition name for images in imgPath.
 %
 % Created by Haiyang Jin (03-Feb-2020)
 
@@ -27,15 +27,12 @@ elseif ischar(imgExt)
 end
 
 %% dir information in the imgPath folder
-mainDir = dir(imgPath);
-% remove the "hidden" files or folders
-mainDir(cellfun(@(x) strcmp(x(1), '.'), {mainDir.name})) = [];
-mainDir(cellfun(@(x) startsWith(x, 'Icon'), {mainDir.name})) = [];
+mainDir = dir_img(imgPath);
 
 % image files matching imgExt in the imgPath
 isExt = endsWith({mainDir.name}, imgExt);
 
-mainImgDir = dirimg(mainDir(isExt), 'main');
+mainImgDir = dir_imgcond(mainDir(isExt), 'main');
 
 
 %% dir information in the subfolders
@@ -44,10 +41,11 @@ subNames = {mainDir([mainDir.isdir]).name};
 subPath = fullfile(imgPath, subNames);
 
 [tempPath, tempExt] = ndgrid(subPath, imgExt);
-subDir = cellfun(@(x, y) dir(fullfile(x, ['*' y])), tempPath(:), tempExt(:), 'uni', false);
+subDir = cellfun(@(x, y) dir_img(fullfile(x, ['*' y])), tempPath(:), tempExt(:), 'uni', false);
 
+% add the condition names
 tempName = ndgrid(subNames, imgExt);
-subImgDir = cellfun(@(x, y) dirimg(x, y), subDir, tempName(:), 'uni', false);
+subImgDir = cellfun(@(x, y) dir_imgcond(x, y), subDir, tempName(:), 'uni', false);
 
 
 %% coombine all dir together
@@ -63,7 +61,21 @@ end
 end
 
 
-function thisDir = dirimg(thisDir, condName)
+function thisDir = dir_img(thisPath)
+% dir the path and remove the hidden files
+
+theDir = dir(thisPath);
+% remove the "hidden" files or folders
+theDir(cellfun(@(x) strcmp(x(1), '.'), {theDir.name})) = [];
+theDir(cellfun(@(x) startsWith(x, 'Icon'), {theDir.name})) = [];
+
+thisDir = theDir;
+
+end
+
+
+function thisDir = dir_imgcond(thisDir, condName)
+% add condition names to the dir
 
 % return if thisDir is empty
 if isempty(thisDir)
@@ -71,7 +83,7 @@ if isempty(thisDir)
 end
 
 % remove the dir for folders
-thisDir([thisDir.isdir]) = [];  
+thisDir([thisDir.isdir]) = [];
 
 % add condition name to the dir
 tempCondName = repmat({condName}, numel(thisDir), 1);
