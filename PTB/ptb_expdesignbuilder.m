@@ -1,4 +1,4 @@
-function design = ptb_expdesignbuilder(expConditions, randBlock, sortBlock, isRand)
+function [design, nTrial, nBlock] = ptb_expdesignbuilder(expConditions, randBlock, sortBlock, isRand)
 % design = ptb_expdesignbuilder(expConditions, randBlock, sortBlock, isRand)
 %
 % This function creates a full-factorial design based on expConditions. The
@@ -73,8 +73,9 @@ function design = ptb_expdesignbuilder(expConditions, randBlock, sortBlock, isRa
 % Created by Haiyang Jin (25-Feb-2020)
 
 %% check the in arguments
-% condition names
+% condition names and number of levels
 condNames = expConditions(:,1);
+levelsPerCond = cellfun(@length,expConditions(:,2));
 
 % check formatting of expConditions
 if ~iscell(expConditions) || size(expConditions,2)~=2 || ~iscellstr(condNames) %#ok<ISCLSTR>
@@ -84,15 +85,19 @@ end
 % is randBlock given
 if nargin < 2 || isempty(randBlock)
     randBlockNum = [];
+    nRandBlock = 1;
 else
     randBlockNum = processBlock(randBlock, condNames, 'randBlock');
+    nRandBlock = prod(levelsPerCond(randBlockNum));
 end
 
 % is sortBlock given
 if nargin < 3 || isempty(sortBlock)
     sortBlockNum = [];
+    nSortBlock = 1;
 else 
     sortBlockNum = processBlock(sortBlock, condNames, 'sortBlock');
+    nSortBlock = prod(levelsPerCond(sortBlockNum(:)));
 end
 
 % make sure there is no overlapping between randBlock and sortBlock
@@ -110,18 +115,16 @@ end
 
 %% Create the full factorial design (without randomization)
 % below code stolen from "fullfact" function in Statistics Toolbox (Matt).
-levelsPerCondition = cellfun(@length,expConditions(:,2));
-
-ssize = prod(levelsPerCondition);
+ssize = prod(levelsPerCond);
 ncycles = ssize;
-cols = length(levelsPerCondition);
+cols = length(levelsPerCond);
 
-designFF = zeros(ssize,cols,class(levelsPerCondition));
+designFF = zeros(ssize,cols,class(levelsPerCond));
 
 for k = 1:cols
-    settings = (1:levelsPerCondition(k));                % settings for kth factor
+    settings = (1:levelsPerCond(k));                % settings for kth factor
     nreps = ssize./ncycles;                  % repeats of consecutive values
-    ncycles = ncycles./levelsPerCondition(k);            % repeats of sequence
+    ncycles = ncycles./levelsPerCond(k);            % repeats of sequence
     settings = settings(ones(1,nreps),:);    % repeat each value nreps times
     settings = settings(:);                  % fold into a column
     settings = settings(:,ones(1,ncycles));  % repeat sequence to fill the array
@@ -138,14 +141,14 @@ if isRand
     % sort by sortBlock (sort by the order in sortBlock).
 %     designFF = sortrows(designFF, [sortBlockNum, randBlockNum]);
     
-    nRandBlock = numel(randBlockNum);
-    for iRand = nRandBlock:-1:1 % reverse loop
+    nRandColu = numel(randBlockNum);  % number of columns for randBlockNum
+    for iRand = nRandColu:-1:1 % reverse loop
         
         % already randomized randBlock condition
-        if iRand == nRandBlock
+        if iRand == nRandColu
             doneRand = [];
         else
-            doneRand = randBlockNum(iRand+1 : nRandBlock);
+            doneRand = randBlockNum(iRand+1 : nRandColu);
         end
         
         % this randBlock number
@@ -187,6 +190,12 @@ cellDesign = arrayfun(@(x, y) expConditions{y,2}(designFF(x,y)), ...
 
 % convert cell to structure
 design = cell2struct(cellDesign , expConditions(:,1), 2);
+
+%% number of trials and blocks
+% number of trials
+nTrial = size(design, 1);
+% number of blocks
+nBlock = prod([nRandBlock, nSortBlock]);
 
 end
 
