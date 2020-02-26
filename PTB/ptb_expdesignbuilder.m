@@ -37,8 +37,14 @@ function design = ptb_expdesignbuilder(expConditions, randBlock, sortBlock, isRa
 %     'StimCategory', 1:4;...
 %     'blockNumber', 1:2 ...
 %     };
-% randBlock = {'StimCategory', 'IV3'};
+% randBlock = {'IV3', 'StimCategory'};
 % sortBlock = 'blockNumber';
+% ed = ptb_expdesignbuilder(expConditions, randBlock, sortBlock);
+%
+% or
+%
+% randBlock = {'IV2', 'IV3'};
+% sortBlock = {'blockNumber', 'StimCategory'};
 % ed = ptb_expdesignbuilder(expConditions, randBlock, sortBlock);
 %
 %%%%%%%%%%%%%%%%%%%% Comments from Matt Oxner %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -62,11 +68,11 @@ function design = ptb_expdesignbuilder(expConditions, randBlock, sortBlock, isRa
 % This code is built based on Matt Oxner's code.
 % Created by Haiyang Jin (25-Feb-2020)
 
-%% condition names and number
+%% check the in arguments
+% condition names
 condNames = expConditions(:,1);
-nCon = numel(condNames);
 
-%% check formatting of expConditions
+% check formatting of expConditions
 if ~iscell(expConditions) || size(expConditions,2)~=2 || ~iscellstr(condNames) %#ok<ISCLSTR>
     error('expConditions was wrong type, wrong size, or malformed.');
 end
@@ -74,48 +80,15 @@ end
 % is randBlock given
 if nargin < 2 || isempty(randBlock)
     randBlockNum = [];
-elseif isnumeric(randBlock) % if it is numeric
-    % make sure sortBlock do not exceed the condition number
-    if any(randBlock > nCon)
-        error('sortBlock (%d) exceeds the conditon number.', randBlock(:));
-    end
-    
 else
-    % convert strings or cell of strings into numeric
-    if ischar(randBlock); randBlock = {randBlock}; end
-    isRandNot = cellfun(@(x) ~any(strcmpi(condNames, x)), randBlock);
-    
-    % make sure randBlock is in expConditions
-    if any(isRandNot)
-        error(['Couldn''t find a condition in ''expConditions'' to match '...
-            'requested sortCond ''%s''.\n'], randBlock{isRandNot});
-    end
-    
-    randBlockNum = cellfun(@(x) find(strcmpi(condNames, x)), randBlock);
+    randBlockNum = processBlock(randBlock, condNames, 'randBlock');
 end
 
 % is sortBlock given
 if nargin < 3 || isempty(sortBlock)
-    randBlockNum = [];
-    
-elseif isnumeric(sortBlock) % if it is numeric
-    % make sure sortBlock do not exceed the condition number
-    if any(sortBlock > nCon)
-        error('sortBlock (%d) exceeds the conditon number.', sortBlock(:));
-    end
-    
-else
-    % convert strings or cell of strings into numeric
-    if ischar(sortBlock); sortBlock = {sortBlock}; end
-    isSortNot = cellfun(@(x) ~any(strcmpi(condNames, x)), sortBlock);
-    
-    % make sure sortBlock is in expConditions
-    if any(isSortNot)
-        error(['Couldn''t find a condition in ''expConditions'' to match '...
-            'requested sortCond ''%s''.\n'], sortBlock{isSortNot});
-    end
-    
-    sortBlockNum = cellfun(@(x) find(strcmpi(condNames, x)), sortBlock);
+    sortBlockNum = [];
+else 
+    sortBlockNum = processBlock(sortBlock, condNames, 'sortBlock');
 end
 
 % make sure there is no overlapping between randBlock and sortBlock
@@ -132,7 +105,7 @@ if nargin < 4 || isempty(isRand)
 end
 
 %% Create the full factorial design (without randomization)
-% below code stolen from "fullfact" function in Statistics Toolbox.
+% below code stolen from "fullfact" function in Statistics Toolbox (Matt).
 levelsPerCondition = cellfun(@length,expConditions(:,2));
 
 ssize = prod(levelsPerCondition);
@@ -210,4 +183,34 @@ cellDesign = arrayfun(@(x, y) expConditions{y,2}(designFF(x,y)), ...
 % convert cell to structure
 design = cell2struct(cellDesign , expConditions(:,1), 2);
 
+end
+
+function condNum = processBlock(block, conditionNames, varName)
+% Convert randBlock and sortBlock into condition numbers accordinly.
+
+% number of conditions
+nCondition = numel(conditionNames);
+
+if isnumeric(block) % if it is numeric
+    % make sure the block number  do not exceed the condition number
+    if any(block > nCondition)
+        error([varName 'sortBlock (%d) exceeds the conditon number.'], block(:));
+    end
+    
+    condNum = block;
+else
+    % convert strings or cell of strings into numeric
+    if ischar(block); block = {block}; end
+    isNot = cellfun(@(x) ~any(strcmpi(conditionNames, x)), block);
+    
+    % make sure randBlock is in expConditions
+    if any(isNot)
+        error(['Couldn''t find a condition in ''expConditions'' to match '...
+            varName '''%s''.\n'], block{isNot});
+    end
+    
+    condNum = cellfun(@(x) find(strcmpi(conditionNames, x)), block);
+    
+end
+    
 end
