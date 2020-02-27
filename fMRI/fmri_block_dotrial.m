@@ -118,6 +118,9 @@ else
             isSame = any(keyCode(param.respKeys(:, 1)));
             ACC = isSame == correctAns;
             RT = keyTime - stimBeganAt;
+            if param.dispPress
+                disp(KbName(find(keyCode)));
+            end
         end
         
         if quitNow; break; end
@@ -126,20 +129,22 @@ else
     end
     
     % display the fixation
-    Screen('FillRect', w, param.forecolor, OffsetRect(param.fixarray, ...
-        xJitterRand, yJitterRand));
+%     Screen('FillRect', w, param.forecolor, OffsetRect(param.fixarray, ...
+%         xJitterRand, yJitterRand));
     stimEndAt = Screen('Flip', w);
     
     while checkTime < param.trialDuration && ~quitNow
         % check if any key is pressed
         [isKey, keyTime, keyCode] = KbCheck;
-        
         % only the first response within each trial will be saved
-        if isKey && isempty(isSame)
+        if isKey && isnan(isSame)
             quitNow = any(keyCode(param.expKey));
             isSame = any(keyCode(param.respKeys(:, 1)));
             ACC = isSame == stimuli.correctAns;
             RT = keyTime - stimBeganAt;
+            if param.dispPress
+                disp(KbName(find(keyCode)));
+            end
         end
         
         if quitNow; break; end
