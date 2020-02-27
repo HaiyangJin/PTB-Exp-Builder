@@ -1,4 +1,4 @@
-function param = fmri_block_stim(param, stimuli)
+function param = fmri_block_stimdesign(param, stimuli)
 % load stimulus information for composite face task.
 %
 % Input:

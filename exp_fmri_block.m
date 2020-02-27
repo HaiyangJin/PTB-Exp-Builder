@@ -1,8 +1,14 @@
-function exp_loc(subjCode, isEmulated)
+function exp_fmri_block(subjCode, isEmulated, runCode)
+% exp_fmri_block(subjCode, isEmulated, runCode)
+%
 % Run fMRI localizer (block design).
 %
 % Input:
-%    subjCode      subject code
+%    subjCode           <string> subject code
+%    isEmulated         <logical> 1: emulated and will not wait for MRI
+%                       trigger (default). 0: will wait for MRI trigger.
+%    runCode            <integer> the run code/number. It can be generated
+%                       based on the output files in Matlab Data/.
 %
 % Created by Haiyang Jin (25-Feb-2020)
 
@@ -10,8 +16,17 @@ function exp_loc(subjCode, isEmulated)
 addpath('PTB/');
 addpath('fMRI/');
 
-param.SkipSyncTests = 0;
+% skip Sync tests
+param.SkipSyncTests = 0;  % will skip on Macs
+% display the key name for key press
+param.dispPress = 1;
 
+%% Experiment inforamtion
+param.expCode = '999';
+param.expAbbv = 'fMRI_block';
+
+%% Process the in-arguments
+% subject code
 if nargin < 1
     subjCode = '000';
 elseif isnumeric(subjCode)  % the subjCode should be a string
@@ -23,6 +38,7 @@ if nargin < 2 || isempty(isEmulated)
     isEmulated = 1;
 end
 
+% debug mode
 if strcmp(subjCode, '0')
     isDebug = 1;
     isEmulated = 1;
@@ -30,33 +46,41 @@ if strcmp(subjCode, '0')
 else
     isDebug = 0;
 end
-
 param.subjCode = subjCode;
-param.isEmulated = isEmulated;
 param.isDebug = isDebug;
+param.isEmulated = isEmulated;
 
-%% Experiment inforamtion
-param.expCode = '999';
-param.expAbbv = 'fMRI_block';
+% run Code
+if nargin < 3 || isempty(runCode)
+    runCode = fmri_runcode(param);
+end
+param.runCode = runCode;
+
 
 %% Stimuli
+% load the stimulus
 stimPath = fullfile('images_loc', filesep);
 param.imgDir = im_dir(stimPath, '', 1);
 param.nCatStim = numel(unique({param.imgDir.condition}));
 
-% number of repetitions in each block (for 1-back task)
+% the jitter of stimulus
+param.jitter = 4; % the jitter is [-4:4] * 5
+
+% number of same trials in each block (for 1-back task)
 param.nSamePerBlock = 2;
 
 %% Experiment design (ed)
+% number of stimili in each block+
+param.nStimPerBlock = 14;
+% how many times all blocks are repeated
+param.nRepeated = 2;
 
-param.nStimPerBlock = 14;  % number of stimili in each block+
-param.nRepeated = 2;  % how many times all blocks are repeated
-
+% experiment design array
 clear param.conditionsArray;
 param.conditionsArray = {...
     'stimIndex', 1:param.nStimPerBlock; ... number of stimili in each block
     'stimCategory', 1:param.nCatStim; ... % stimlus (category) conditions
-    'repeated', 1:param.nRepeated; % block repeated times 
+    'repeated', 1:param.nRepeated; % block repeated times
     };
 param.randBlock = 'stimCategory';
 param.sortBlock = 'repeated';
@@ -70,13 +94,14 @@ param.respKeyNames = {'1'; '1!'};
 if isEmulated
     continueStr = sprintf('Press "%s" to continue...', param.instructKeyName);
 else
-    param.instructKeyName = 'F1'; % key for triggers
+    param.instructKeyName = '`~'; % key for triggers [to be confirmed]
     continueStr = 'Waiting for the trigger...';
 end
 
-param.instructText = sprintf(['Welcome to this experiment... \n' ...
+% instruction texts
+param.instructText = sprintf(['Welcome to this experiment... \n\n' ...
     'Please press Key "%s" only when the current image is the same as '...
-    'the last image. \n', ...
+    'the previous one. \n', ...
     '(%s)'], ...
     param.respKeyNames{1, 1}, continueStr);
 
@@ -87,7 +112,7 @@ param.lengthFix = 20;
 param.fixDuration = 0.5;
 
 % the block numbers for fixation
-param.fixBlockNum = [1, 1+(1:param.nRepeated) * (param.nCatStim+1)];  
+param.fixBlockNum = [1, 1+(1:param.nRepeated) * (param.nCatStim+1)];
 
 %% Trial parameters
 % stimuli
@@ -106,10 +131,11 @@ param.textFont = 'Helvetica';
 param.textColor = 255;
 
 %% Run the Experiment
-param.do_trial = @fmri_doblocktrial;
-param.do_output = @example_output;
+param.do_trial = @fmri_block_dotrial;
 param.do_stim = @fmri_block_stim;
+param.do_output = @ptb_outtable;
 
-fmri_block(param);
+% run the fmri experiment in block design
+fmri_block_runexp(param);
 
 end
