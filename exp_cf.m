@@ -157,7 +157,7 @@ param.textColor = 255;
 % cf functions
 param.do_stim = @cf_stim;  % process stimuli after initializing windows
 param.do_trial = @cf_trial; % run trials
-param.do_output = @cf_output;  % process output
+param.do_output = @cf_outtable;  % process output
 
 % run the experiment
 ptb_runexp(param);

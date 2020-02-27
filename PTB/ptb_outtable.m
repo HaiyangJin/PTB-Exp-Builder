@@ -1,4 +1,6 @@
-function outTable = example_output(dtTable, expInfoTable)
+function outTable = ptb_outtable(dtTable, expInfoTable)
+% outTable = ptb_outtable(dtTable, expInfoTable)
+%
 % This function processes the output for the example task.
 %
 % Inputs:
