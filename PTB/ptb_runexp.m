@@ -47,13 +47,14 @@ param.fixarray = ptb_fixcross(param.screenX, param.screenY, ...
 %% Do the trial
 expStartTime = GetSecs();
 
+
 dtTable = table;
 
 for ttn = 1 : param.tn  % this trial number 
     
     % run each trial
     [output, quitNow] = param.do_trial(ttn, param, stimuli);
-    dtTable(ttn, :) = struct2table(output); 
+    dtTable(ttn, :) = struct2table(output, 'AsArray', true); 
     
     % break check
     ptb_checkbreak(ttn, param);
@@ -64,6 +65,11 @@ end
 % exp end time
 expEndTime = GetSecs();
 
+% experiment duration
+param.expDuration = expEndTime - expStartTime;
+
+
+%% Process and save the output
 % create the experiment information table
 nRowInfo = size(dtTable,1);
 
@@ -79,7 +85,11 @@ else
     param.dtTable = '';
 end
 
-%% Finishing
+% save the output
+acc = ptb_output(param, stimuli);
+
+
+%% Finishing screen
 if (~quitNow)
     doneText = sprintf('The current session is finished!\n \nPlease contact the experimenter.');
     DrawFormattedText(param.w, doneText, 'center', 'center', param.forecolor);
@@ -89,15 +99,10 @@ if (~quitNow)
     clear doneText;
 end
 
-% experiment duration
-param.expDuration = expEndTime - expStartTime;
-
 % close all screens
 Screen('CloseAll');
 
-%% Saving the output
-acc = ptb_output(param, stimuli);
-
+% display informations
 fprintf('\nThe current session lasts %2.2f minutes.\n', param.expDuration/60); 
 fprintf('Mean Accuracy: %s\n', num2str(acc, '%2.1f%%'));
 
