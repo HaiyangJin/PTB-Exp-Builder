@@ -16,6 +16,7 @@ quitNow = 0;
 
 % experiment design
 ed = param.ed;
+respKeys = param.respKeys;
 
 correctAns = 1;
 
@@ -37,7 +38,7 @@ respBeginsWhen = stimBeganAt + param.stimDuration - param.flipSlack;
 responseBegins = Screen('Flip', param.w, respBeginsWhen);
 
 %%%%%%%%%% Response (keys) %%%%%%%%%%
-RestrictKeysForKbCheck([param.respKeys, param.expKey]);  % , KbName('5')
+RestrictKeysForKbCheck([respKeys(:)', param.expKey]);  % , KbName('5')
 [pressTime, keyCode] = KbWait([],0);
 
 % quit if the experimenter key is pressed
@@ -50,8 +51,8 @@ trialEndedAt = Screen('Flip',param.w);
 totalTrialDuration = trialEndedAt - trialBeginsAt;
 
 %%%%%%%%%% Post-processing %%%%%%%%%%
-if sum(keyCode(param.respKeys))==1 
-    Resp = mod(find(keyCode(param.respKeys))-1,2)+1;
+if sum(sum(keyCode(respKeys)))==1 
+    Resp = find(sum(keyCode(respKeys)));
     ACC = double(Resp == correctAns);
     reactionTime = pressTime - responseBegins;
     
