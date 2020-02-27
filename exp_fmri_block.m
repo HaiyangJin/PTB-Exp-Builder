@@ -64,10 +64,10 @@ param.imgDir = im_dir(stimPath, '', 1);
 param.nCatStim = numel(unique({param.imgDir.condition}));
 
 % the jitter of stimulus
-param.jitter = 4; % the jitter is [-4:4] * 5
+param.jitter = 3; % the jitter is [-4:4] * 3
 
 % number of same trials in each block (for 1-back task)
-param.nSamePerBlock = 2;
+param.nSamePerBlock = 1;
 
 %% Experiment design (ed)
 % number of stimili in each block+
@@ -99,9 +99,9 @@ else
 end
 
 % instruction texts
-param.instructText = sprintf(['Welcome to this experiment... \n\n' ...
+param.instructText = sprintf(['Welcome to this experiment... \n\n\n' ...
     'Please press Key "%s" only when the current image is the same as '...
-    'the previous one. \n', ...
+    'the previous one. \n\n', ...
     '(%s)'], ...
     param.respKeyNames{1, 1}, continueStr);
 
