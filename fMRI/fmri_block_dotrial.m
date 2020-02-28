@@ -167,7 +167,7 @@ output.StimEndAt = stimEndAt;
 output.StimDuration = stimEndAt - stimBeganAt;
 
 % stimulus
-output.StimCateogry = stimCategory;
+output.StimCategory = stimCategory;
 output.StimName = stimName;
 
 % responses
