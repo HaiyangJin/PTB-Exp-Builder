@@ -65,6 +65,11 @@ else
     imgDir = vertcat(subImgDir{:});
 end
 
+% error if there is no image files
+if size(imgDir) == 0
+    error('There are no image files in folder ''%s''.', imgPath);
+end
+
 %% reformat the dir (if reformat)
 if reformat
     % reformat stimuli structure by group (condition) names
