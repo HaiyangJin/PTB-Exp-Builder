@@ -47,8 +47,12 @@ tnStart = 0; % the starting trial number
 dtFixTable = table;  % for saving fxiation output later
 dtStimTable = table;  % for saving stimulus otuput later
 
+% pre-load KbCheck (the first load takes longer time)
+KbCheck;
+
 % display the instruction
 ptb_instruction(param);
+
 % run starts
 param.runStartTime = GetSecs;
 
