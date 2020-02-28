@@ -34,6 +34,11 @@ if param.isDebug
     return;
 end
 
+if nargin < 2 || isempty(stimuli)
+    stimuli = '';
+end
+param.stimuli = stimuli;
+
 if nargin < 3 || isempty(fnExtra)
     fnExtra = datestr(now,'yyyy-mm-dd-HHMM');
 end
@@ -54,7 +59,7 @@ theExcelFile = fullfile(excelPath, [outputFn '.xlsx']);
 theMatlabFile = fullfile(matPath, [outputFn '.mat']);
 
 %% save the files
-save(theMatlabFile, 'param', 'stimuli');
+save(theMatlabFile, '-struct', 'param');
 writetable(param.dtTable, theExcelFile);
 
 end
