@@ -19,6 +19,7 @@ function [acc, nResp] = ptb_output(param, stimuli, fnExtra, outputPath)
 % quit if param.dtTable is empty
 if isempty(param.dtTable)
     acc = 0;
+    nResp = 0;
     return;
 elseif ismember('isCorrect', param.dtTable.Properties.VariableNames)
     acc = 100*mean(param.dtTable.isCorrect, 'omitnan');
