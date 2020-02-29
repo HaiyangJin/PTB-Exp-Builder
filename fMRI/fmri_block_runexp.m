@@ -157,11 +157,13 @@ else
     ExpAbbv = repmat({param.expAbbv}, nRowInfo, 1);
     ExpCode = repmat({param.expCode}, nRowInfo, 1);
     SubjCode = repmat({param.subjCode}, nRowInfo, 1);
-    RunCode = repmat({param.runCode}, nRowInfo, 1);
+    RunCode = repmat({num2str(param.runCode)}, nRowInfo, 1);
     TrialNum = transpose(1:size(dtTable, 1));
-    RunStartTime= repmat(param.runStartTime, nRowInfo, 1);
+    RunStartTime = repmat(param.runStartTime, nRowInfo, 1);
+    RunEndTime = repmat(param.runEndTime, nRowInfo, 1);
     
-    expInfoTable = table(ExpAbbv, ExpCode, SubjCode, RunCode, TrialNum, RunStartTime);
+    expInfoTable = table(ExpAbbv, ExpCode, SubjCode, RunCode, ....
+        RunEndTime, TrialNum, RunStartTime);
     
     % process the output
     param.dtTable = param.do_output(sortrows(dtTable, 'StimOnset'), expInfoTable);
