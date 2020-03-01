@@ -15,6 +15,8 @@ function parTable = fmri_fspar(input, condOrder, extraFn)
 %
 % Output:
 %     parTable          <table> the paradigm file table
+%
+% Created by Haiyang Jin (28-Feb-2020)
 
 % process the 'input' and load dtTable
 if istable(input)
@@ -96,6 +98,17 @@ runCode = unique(dtTable.RunCode);
 parFn = sprintf('Subj%s_Run%s_%s.par', subjCode{1}, runCode{1}, extraFn);
 
 % create the par file
-fs_createfile(fullfile(parFolder, parFn), table2cell(parTable));
+try  
+    % try to create par file with fs_createfile
+    fs_createfile(fullfile(parFolder, parFn), table2cell(parTable));
+    
+catch
+    % if failed, use writetable and rename the file
+    tempText = fullfile(parFolder, [parFn '.txt']);
+    writetable(parTable, tempText, 'Delimiter',' ', 'WriteVariableNames', false)
+    % rename the file
+    movefile(tempText, fullfile(parFolder, parFn));
+    
+end
 
 end
