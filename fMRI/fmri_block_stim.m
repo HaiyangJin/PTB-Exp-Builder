@@ -1,4 +1,4 @@
-function param = fmri_block_stimdesign(param, stimuli)
+function param = fmri_block_stim(param, stimuli)
 % load stimulus information for composite face task.
 %
 % Input:
@@ -34,7 +34,7 @@ nImgPerBlock = param.nStimPerBlock - param.nSamePerBlock;
 
 % random select all images for each category at the same time (for the whole run)
 imageCell = arrayfun(@(x) transpose(ptb_randperm(size(stimuli, 1), ...
-    nImgPerBlock * param.nRepeated)), 1:size(stimuli, 2), 'uni', false);
+    nImgPerBlock * param.nRepetition)), 1:size(stimuli, 2), 'uni', false);
 imageMat = horzcat(imageCell{:});
 
 % divide the images of the same category into different blocks
@@ -45,7 +45,7 @@ blockCell = arrayfun(@(x) imageMat(blockCode==x, :), unique(blockCode), 'uni', f
 stimCell = cell(size(blockCell));
 
 % generate same trials for each repetition separately
-for iRepeat = 1:param.nRepeated
+for iRepeat = 1:param.nRepetition
     
     thisStim = blockCell{iRepeat};
     
@@ -54,10 +54,10 @@ for iRepeat = 1:param.nRepeated
         param.nSamePerBlock)), 1:size(thisStim, 2), 'uni', false);
     
     % combine the same code with the stimulus code (all stimuli)
-    stimCode = vertcat(horzcat(sameCell{:}), transpose(repmat(1:nImgPerBlock, param.nCatStim, 1)));
+    stimCode = vertcat(horzcat(sameCell{:}), transpose(repmat(1:nImgPerBlock, param.nStimCat, 1)));
     
     % code array for images
-    codeCell = arrayfun(@(x) sort(stimCode(:, x)), 1:param.nCatStim, 'uni', false);
+    codeCell = arrayfun(@(x) sort(stimCode(:, x)), 1:param.nStimCat, 'uni', false);
     codeArray = horzcat(codeCell{:});
     
     % stimulus matrix for each trial

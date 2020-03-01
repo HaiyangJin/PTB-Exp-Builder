@@ -57,6 +57,9 @@ ptb_instruction(param);
 param.runStartTime = GetSecs;
 
 %% Run blocks
+[param.outputDummy, quitNow] = fmri_dummyvol(param);
+% quit if experimenter key is pressed
+if quitNow; return; end
 
 for iBlock = 1:nBlock
     
@@ -146,7 +149,7 @@ else
     
     % add the repetition column
     dtFixTable.Repetitions = NaN(size(dtFixTable, 1), 1);
-    dtStimTable.Repetitions = ceil(dtStimTable.SubBlockNum/param.nCatStim);
+    dtStimTable.Repetitions = ceil(dtStimTable.SubBlockNum/param.nStimCat);
     
     % combine fixation and stimulus tables
     dtTable = vertcat(dtFixTable, dtStimTable);

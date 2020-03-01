@@ -56,12 +56,11 @@ if nargin < 3 || isempty(runCode)
 end
 param.runCode = runCode;
 
-
 %% Stimuli
 % load the stimulus
 stimPath = fullfile('images_loc', filesep);
 param.imgDir = im_dir(stimPath, '', 1);
-param.nCatStim = numel(unique({param.imgDir.condition}));
+param.nStimCat = numel(unique({param.imgDir.condition}));
 
 % the jitter of stimulus
 param.jitter = 3; % the jitter is [-4:4] * 3
@@ -73,24 +72,24 @@ param.nSamePerBlock = 1;
 % number of stimili in each block+
 param.nStimPerBlock = 14;
 % how many times all blocks are repeated
-param.nRepeated = 2;
+param.nRepetition = 2;
 
 % experiment design array
 clear param.conditionsArray;
 param.conditionsArray = {...
     'stimIndex', 1:param.nStimPerBlock; ... number of stimili in each block
-    'stimCategory', 1:param.nCatStim; ... % stimlus (category) conditions
-    'repeated', 1:param.nRepeated; % block repeated times
+    'stimCategory', 1:param.nStimCat; ... % stimlus (category) conditions
+    'repeated', 1:param.nRepetition; % block repeated times
     };
 param.randBlock = 'stimCategory';
 param.sortBlock = 'repeated';
 
-% response keys
+%% response keys
 param.expKeyName = {'escape', '=+'};
 param.instructKeyName = 'q';
 param.respKeyNames = {'1'; '1!'};
 
-% instructions
+%% instructions
 if isEmulated
     continueStr = sprintf('Press "%s" to continue...', param.instructKeyName);
 else
@@ -112,7 +111,7 @@ param.lengthFix = 20;
 param.fixDuration = 0.5;
 
 % the block numbers for fixation
-param.fixBlockNum = [1, 1+(1:param.nRepeated) * (param.nCatStim+1)];
+param.fixBlockNum = fmri_fixdesign(param);
 
 %% Trial parameters
 % stimuli
