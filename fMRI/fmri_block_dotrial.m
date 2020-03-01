@@ -28,10 +28,11 @@ if nargin < 1 || isempty(ttn)
     isFixBlock = 1;
     
     % the baseline time for this fixation block
-    baseTime = (param.BlockNum - 1) * param.blockDuration;
+    baseTime = (param.BlockNum - 1) * param.blockDuration + param.dummyDuration;
 else
     % the baseline time for this trial [in stimulus block]
-    baseTime = param.nFixBlock * param.blockDuration + (ttn-1) * param.trialDuration;
+    baseTime = param.nFixBlock * param.blockDuration + ...
+        (ttn-1) * param.trialDuration + param.dummyDuration;
 end
 
 % by default use the param.runStartTime
