@@ -93,7 +93,7 @@ end
 subjCode = unique(dtTable.SubjCode);
 runCode = unique(dtTable.RunCode);
 % the filename of the par file
-parFn = sprintf('Subj%s_Run%s_par_%s', subjCode{1}, runCode{1}, extraFn);
+parFn = sprintf('Subj%s_Run%s_%s.par', subjCode{1}, runCode{1}, extraFn);
 
 % create the par file
 fs_createfile(fullfile(parFolder, parFn), table2cell(parTable));
