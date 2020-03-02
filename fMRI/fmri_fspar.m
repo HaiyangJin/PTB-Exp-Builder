@@ -85,6 +85,17 @@ Weight = ones(numel(CondNames), 1);
 % combine data together
 parTable = table(StimOnsets, Identifier, Duration, Weight, CondNames);
 
+%% add dummy volumes if needed
+
+% the onset of the first block
+iniOnset = parTable{1, 'StimOnsets'};
+
+% if the first simOnsets is not 0
+if round(iniOnset) ~= 0
+    parTable{1, 'Duration'} = parTable{1, 'Duration'} + iniOnset;
+    parTable{1, 'StimOnsets'} = 0;
+end
+
 %% Save parTable in the parfile/folder
 % the folder to save the par file
 parFolder = fullfile(pwd, 'parfile');
