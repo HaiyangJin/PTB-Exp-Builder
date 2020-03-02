@@ -70,9 +70,9 @@ param.nSamePerBlock = 1;
 
 %% Experiment design (ed)
 % number of stimili in each block+
-param.nStimPerBlock = 14;
+param.nStimPerBlock = 12;
 % how many times all blocks are repeated
-param.nRepetition = 2;
+param.nRepetition = 4;
 
 % experiment design array
 clear param.conditionsArray;
@@ -118,7 +118,7 @@ param.fixBlockNum = fmri_fixdesign(param);
 
 %% Trial parameters
 % stimuli
-param.stimDuration = 0.5;
+param.stimDuration = 0.8;
 param.trialDuration = 1;  % The total duration of one trial.
 
 %% Setting for the screen
