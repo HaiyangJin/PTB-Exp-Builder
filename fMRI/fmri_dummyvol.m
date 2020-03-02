@@ -15,11 +15,13 @@ function [output, quitNow] = fmri_dummyvol(param)
 
 % return if the dummy duration is 0
 if param.dummyDuration == 0
+    output = table;
+    quitNow = 0;
     return;
 end
 
 %%% Fixation %%%
-Screen('FillRect', param.w, [128 128 128], param.fixarray); % param.forecolor
+Screen('FillRect', param.w, param.forecolor, param.fixarray); % 
 stimBeganAt = Screen('Flip', param.w);
 
 checkTime = 0;
