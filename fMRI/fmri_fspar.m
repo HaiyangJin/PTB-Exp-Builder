@@ -18,6 +18,16 @@ function parTable = fmri_fspar(input, condOrder, extraFn)
 %
 % Created by Haiyang Jin (28-Feb-2020)
 
+if nargin < 1 || isempty(input)
+    % open GUI to select file
+    [thisFile, thisPath] = uigetfile({...
+        '*.xls;*.xlsx', 'Excel files (*.xls;*.xlsx)'; ...
+        '*.mat', 'Matlab files (*.mat)'},...
+        'Please select the output file...');
+    
+    input = fullfile(thisPath, thisFile);
+end
+
 % process the 'input' and load dtTable
 if istable(input)
     dtTable = input;
