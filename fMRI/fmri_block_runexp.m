@@ -53,6 +53,11 @@ KbCheck;
 % display the instruction
 ptb_instruction(param);
 
+% wait for trigger if is not emulated
+if ~param.isEmulated
+    param.trigger;
+end
+
 % run starts
 param.runStartTime = GetSecs;
 

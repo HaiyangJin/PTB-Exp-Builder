@@ -6,7 +6,7 @@ function fmri_nyuad
 %
 % The following code is obtained from the Scene study (SceneLocalizer.m).
 
-%NYUAD_MRI_trigger_Datapixx;
+% NYUAD_MRI_trigger_Datapixx;
 Datapixx('Open');
 Datapixx('StopAllSchedules');
 Datapixx('RegWrRd');

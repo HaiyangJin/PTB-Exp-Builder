@@ -93,13 +93,13 @@ param.respKeyNames = {'1'; '1!'};
 if isEmulated
     continueStr = sprintf('Press "%s" to continue...', param.instructKeyName);
 else
-    param.instructKeyName = '`~'; % key for triggers [to be confirmed]
+    param.instructKeyName = ''; % key for triggers [to be confirmed]
     continueStr = 'Waiting for the trigger...';
 end
 
 % instruction texts
 param.instructText = sprintf(['Welcome to this experiment... \n\n\n' ...
-    'Please press Key "%s" only when the current image is the same as '...
+    'Please press Key "%s" when the image is the same as '...
     'the previous one. \n\n', ...
     '(%s)'], ...
     param.respKeyNames{1, 1}, continueStr);
@@ -133,6 +133,7 @@ param.textFont = 'Helvetica';
 param.textColor = 255;
 
 %% Run the Experiment
+param.trigger = @fmri_nyuad;
 param.do_trial = @fmri_block_dotrial;
 param.do_stim = @fmri_block_stim;
 param.do_output = @ptb_outtable;
