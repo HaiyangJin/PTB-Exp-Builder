@@ -56,6 +56,10 @@ ptb_instruction(param);
 % run starts
 param.runStartTime = GetSecs;
 
+% display fixation screen once the run starts (may be helpful)
+Screen('FillRect', param.w, param.forecolor, param.fixarray); % param.forecolor
+Screen('Flip', param.w);
+
 %% Run blocks
 [param.outputDummy, quitNow] = fmri_dummyvol(param);
 % quit if experimenter key is pressed
