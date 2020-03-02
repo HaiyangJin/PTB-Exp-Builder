@@ -63,73 +63,75 @@ Screen('Flip', param.w);
 %% Run blocks
 [param.outputDummy, quitNow] = fmri_dummyvol(param);
 % quit if experimenter key is pressed
-if quitNow; return; end
-
-for iBlock = 1:nBlock
+if ~quitNow
     
-    % if this block is fixation block
-    isFixBlock = ismember(iBlock, param.fixBlockNum);
-    param.BlockNum = iBlock;
-    
-    if isFixBlock
-        %%%%% do fixation blocks %%%%%
-        % the number (index) of fixation blocks
-        param.nFixBlock = param.nFixBlock + 1;
+    for iBlock = 1:nBlock
         
-        % do this fixation block
-        [output, quitNow] = param.do_trial([], param, [], ...
-            param.runStartTime, isFixBlock);
+        % if this block is fixation block
+        isFixBlock = ismember(iBlock, param.fixBlockNum);
+        param.BlockNum = iBlock;
         
-        % save the output
-        dtFixTable(param.nFixBlock, :) = struct2table(output, 'AsArray', true);
-        
-        % quit if experimenter key is pressed
-        if quitNow; break; end
-        
-    else
-        %%%%% do stimuli blocks %%%%%
-        % the number (index) of fixation blocks
-        param.nStimBlock = param.nStimBlock + 1;
-        
-        % stim for this repetition
-        thisRepeStim = param.stimCell{param.ed(tnStart + 1).repeated, 1};
-        % stim for this block
-        thisBlockStim = thisRepeStim(:, param.ed(tnStart + 1).stimCategory);
-        
-        for ttn = 1 : param.nStimPerBlock
-            % ttn is the trial number within this block
+        if isFixBlock
+            %%%%% do fixation blocks %%%%%
+            % the number (index) of fixation blocks
+            param.nFixBlock = param.nFixBlock + 1;
             
-            % tn is the tiral number within all stimulus blocks
-            tn = tnStart + ttn;
-            % stimuli to be used in this trial
-            thisStim = stimuli(thisBlockStim(ttn), param.ed(tn).stimCategory);
-            
-            % the correct answer
-            if ttn == 1
-                thisStim.correctAns = NaN;
-            else
-                thisStim.correctAns = thisBlockStim(ttn) == thisBlockStim(ttn-1);
-            end
-            
-            % do this trial
-            [output, quitNow] = param.do_trial(tn, param, thisStim, ...
+            % do this fixation block
+            [output, quitNow] = param.do_trial([], param, [], ...
                 param.runStartTime, isFixBlock);
             
             % save the output
-            dtStimTable(tn, :) = struct2table(output, 'AsArray', true);
+            dtFixTable(param.nFixBlock, :) = struct2table(output, 'AsArray', true);
             
             % quit if experimenter key is pressed
             if quitNow; break; end
             
+        else
+            %%%%% do stimuli blocks %%%%%
+            % the number (index) of fixation blocks
+            param.nStimBlock = param.nStimBlock + 1;
+            
+            % stim for this repetition
+            thisRepeStim = param.stimCell{param.ed(tnStart + 1).repeated, 1};
+            % stim for this block
+            thisBlockStim = thisRepeStim(:, param.ed(tnStart + 1).stimCategory);
+            
+            for ttn = 1 : param.nStimPerBlock
+                % ttn is the trial number within this block
+                
+                % tn is the tiral number within all stimulus blocks
+                tn = tnStart + ttn;
+                % stimuli to be used in this trial
+                thisStim = stimuli(thisBlockStim(ttn), param.ed(tn).stimCategory);
+                
+                % the correct answer
+                if ttn == 1
+                    thisStim.correctAns = NaN;
+                else
+                    thisStim.correctAns = thisBlockStim(ttn) == thisBlockStim(ttn-1);
+                end
+                
+                % do this trial
+                [output, quitNow] = param.do_trial(tn, param, thisStim, ...
+                    param.runStartTime, isFixBlock);
+                
+                % save the output
+                dtStimTable(tn, :) = struct2table(output, 'AsArray', true);
+                
+                % quit if experimenter key is pressed
+                if quitNow; break; end
+                
+            end
+            
+            % update the start trial number (within all stimulus blocks)
+            tnStart = tn;
+            
         end
         
-        % update the start trial number (within all stimulus blocks)
-        tnStart = tn;
+        % quit if experimenter key is pressed
+        if quitNow; break; end
         
     end
-    
-    % quit if experimenter key is pressed
-    if quitNow; break; end
     
 end
 
@@ -140,7 +142,7 @@ param.runDuration = param.runEndTime - param.runStartTime;
 
 %% Finishing screen
 if ~quitNow
-    doneText = sprintf('The current run is finished!');
+    doneText = sprintf('This part is finished');
     DrawFormattedText(param.w, doneText, 'center', 'center', param.forecolor);
     Screen('Flip', param.w);
 end
@@ -168,9 +170,10 @@ else
     TrialNum = transpose(1:size(dtTable, 1));
     RunStartTime = repmat(param.runStartTime, nRowInfo, 1);
     RunEndTime = repmat(param.runEndTime, nRowInfo, 1);
+    DummyDuration = repmat(param.dummyDuration, nRowInfo, 1);
     
     expInfoTable = table(ExpAbbv, ExpCode, SubjCode, RunCode, ....
-        RunEndTime, TrialNum, RunStartTime);
+        RunEndTime, TrialNum, RunStartTime, DummyDuration);
     
     % process the output
     param.dtTable = param.do_output(sortrows(dtTable, 'StimOnset'), expInfoTable);
