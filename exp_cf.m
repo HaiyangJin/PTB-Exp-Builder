@@ -9,6 +9,7 @@ function exp_cf(subjCode)
 % add the functions folder to the path
 clc;
 addpath('PTB/');
+% addpath(genpath('functions/'));
 
 param.SkipSyncTests = 0;
 

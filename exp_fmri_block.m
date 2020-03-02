@@ -15,6 +15,7 @@ function exp_fmri_block(subjCode, isEmulated, runCode)
 % add the functions folder to the path
 addpath('PTB/');
 addpath('fMRI/');
+% addpath(genpath('functions/'));
 
 % skip Sync tests
 param.SkipSyncTests = 0;  % will skip on Macs
