@@ -1,5 +1,5 @@
-function parTable = fmri_fspar(input, condOrder, extraFn)
-% parTable = fmri_fspar(input, condOrder, extraFn)
+function parTable = fmri_fspar(input, condOrder, separate, extraFn)
+% parTable = fmri_fspar(input, condOrder, separate, extraFn)
 %
 % This function convert the 'input' [the dtTable] into a par file format.
 %
@@ -10,6 +10,10 @@ function parTable = fmri_fspar(input, condOrder, extraFn)
 %     condOrder         <cell of string> the order of the condition
 %                       categories. [If 'fixation' is included, it has to 
 %                       be the first string.] 
+%     separate          <separate> 1: both stimuli and blank in the same 
+%                       trial are treated as stimuli; 0: stimuli and blank
+%                       in the same trial are estimated separately. [blank
+%                       will be treated as fixations]
 %     extraFn           <string> extra strings to be added at the end of
 %                       the par filename. 
 %
@@ -64,8 +68,13 @@ elseif ~strcmp(condOrder{1}, 'fixation')
     condOrder = horzcat('fixation', condOrder);
 end
 
+% both stimuli and blank in the same trial are treated as stimuli by default.
+if nargin < 3 || isempty(separate)
+    separate = 0;
+end
+
 % the default strings to be added at the end of the par file name
-if nargin < 3 || isempty(extraFn)
+if nargin < 4 || isempty(extraFn)
     extraFn = unique(dtTable.ExpAbbv);
     extraFn = extraFn{1};
 end
@@ -74,7 +83,11 @@ end
 nRowDtTable = numel(blockNames);
 
 % whether is the first trial in each block
-blockRows = [true arrayfun(@(x) ~strcmp(blockNames{x}, blockNames{x-1}), 2:nRowDtTable)];
+if separate
+    blockRows = true(1, nRowDtTable);
+else
+    blockRows = [true arrayfun(@(x) ~strcmp(blockNames{x}, blockNames{x-1}), 2:nRowDtTable)];
+end
 
 %% Different columns for the par file
 % number of rows in par(adigm) file
@@ -87,8 +100,12 @@ CondNames = blockNames(blockRows);
 % stimulus identifier
 Identifier = cellfun(@(x) find(strcmp(x, condOrder))-1, CondNames);
 % stimulus durations
-Duration = transpose([arrayfun(@(x) StimOnsets(x) - StimOnsets(x-1), 2:nRowPar), ...
-    dtTable{nRowDtTable, 'RunEndTime'} - dtTable{nRowDtTable, 'RunStartTime'} -  StimOnsets(nRowPar)]);
+if separate
+    Duration = dtTable.StimDuration;
+else
+    Duration = transpose([arrayfun(@(x) StimOnsets(x) - StimOnsets(x-1), 2:nRowPar), ...
+        dtTable{nRowDtTable, 'RunEndTime'} - dtTable{nRowDtTable, 'RunStartTime'} -  StimOnsets(nRowPar)]);
+end
 % weights
 Weight = ones(numel(CondNames), 1);
 
@@ -96,7 +113,6 @@ Weight = ones(numel(CondNames), 1);
 parTable = table(StimOnsets, Identifier, Duration, Weight, CondNames);
 
 %% add dummy volumes if needed
-
 % the onset of the first block
 iniOnset = parTable{1, 'StimOnsets'};
 
@@ -105,6 +121,25 @@ if round(iniOnset) ~= 0
     parTable{1, 'Duration'} = parTable{1, 'Duration'} + iniOnset;
     parTable{1, 'StimOnsets'} = 0;
 end
+
+% fill the gaps between trials if needed
+needFix = arrayfun(@(x) StimOnsets(x) + Duration(x) ~= StimOnsets(x+1), 1:nRowPar-1);
+
+if any(needFix)
+    tempOnsets = StimOnsets + Duration;
+    tempDuration = arrayfun(@(x) StimOnsets(x+1) - Duration(x), 1:nRowPar-1);
+
+    StimOnsets = tempOnsets(needFix);
+    CondNames = repmat({'fixation'}, sum(needFix), 1);
+    Identifier = zeros(sum(needFix), 1);
+    Duration = transpose(tempDuration(needFix));
+    Weight = ones(sum(needFix), 1);
+    
+    fixTable = table(StimOnsets, Identifier, Duration, Weight, CondNames);
+    
+    parTable = sortrows(vertcat(parTable, fixTable), 'StimOnsets');
+end
+
 
 %% Save parTable in the parfile/folder
 % the folder to save the par file
