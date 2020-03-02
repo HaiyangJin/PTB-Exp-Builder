@@ -105,7 +105,7 @@ param.instructText = sprintf(['Welcome to this experiment... \n\n\n' ...
     param.respKeyNames{1, 1}, continueStr);
 
 %% Dummy volumes
-param.dummyDuration = 10; % seconds
+param.dummyDuration = 0; % seconds
 
 %% Fixation parameters
 % fixations
