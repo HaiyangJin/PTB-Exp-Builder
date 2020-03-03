@@ -88,22 +88,23 @@ param.sortBlock = 'repeated';
 %% response keys
 param.expKeyName = {'escape', '=+'};
 param.instructKeyName = 'q';
-param.respKeyNames = {'1'; '1!'};
+param.respKeyNames = {'2'; '2@'};
 
 %% instructions
 if isEmulated
+    keyStr = sprintf('Key "%s"', param.respKeyNames{1, 1});
     continueStr = sprintf('Press "%s" to continue...', param.instructKeyName);
 else
-    param.instructKeyName = ''; % key for triggers [to be confirmed]
+    keyStr = sprintf('the button with your %s', fmri_key2finger(param.respKeyNames{1, 1}));
     continueStr = 'Waiting for the trigger...';
 end
 
 % instruction texts
 param.instructText = sprintf(['Welcome to this experiment... \n\n\n' ...
-    'Please press Key "%s" when the image is the same as '...
+    'Please press %s when the image is the same as '...
     'the previous one. \n\n', ...
     '(%s)'], ...
-    param.respKeyNames{1, 1}, continueStr);
+    keyStr, continueStr);
 
 %% Dummy volumes
 param.dummyDuration = 0; % seconds
