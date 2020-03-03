@@ -5,6 +5,7 @@ function fmri_nyuad
 % when it is triggered.
 %
 % The following code is obtained from the Scene study (SceneLocalizer.m).
+disp('Datapixx is ready...');
 
 % NYUAD_MRI_trigger_Datapixx;
 Datapixx('Open');
