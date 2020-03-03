@@ -97,6 +97,7 @@ if isEmulated
 else
     keyStr = sprintf('the button with your %s', fmri_key2finger(param.respKeyNames{1, 1}));
     continueStr = 'Waiting for the trigger...';
+    param.instructKeyName = '';  % do not wait for response
 end
 
 % instruction texts

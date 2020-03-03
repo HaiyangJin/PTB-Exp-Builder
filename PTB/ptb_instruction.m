@@ -16,6 +16,10 @@ function ptb_instruction(param)
 %     .w                  window code in PTB.
 %     .forecolor          color of instruction texts
 %
+% If the instructKey is [], it will only display the instruction text
+% and will not wait for responses. This is useful in fMRI experiments
+% (where the screen will wait for triggers).
+%
 % created by Haiyang Jin (10-Feb-2020)
 
 % convert the instructText to cell if it is char
@@ -38,7 +42,7 @@ if size(instructText, 2) > 1
 end
 
 % check the number of instruct keys
-if numel(instructKey) == 1 
+if numel(instructKey) == 1
     instructKey = repmat(instructKey, numel(instructText), 1);
 elseif numel(instructKey) ~= numel(instructText) % make sure the number of keys and texts are the same
     error('The number of instructions are not equal to the number of keys.');
@@ -54,7 +58,11 @@ function disp_instruction(instructText, instructKey, param)
 
 DrawFormattedText(param.w, instructText, 'center', 'center', param.forecolor);
 Screen('Flip', param.w);
-RestrictKeysForKbCheck(instructKey);
-KbWait([],2);
+
+% do not wait for responses if the instructKey is 'none'
+if ~isempty(instructKey)
+    RestrictKeysForKbCheck(instructKey);
+    KbWait([],2);
+end
 
 end
