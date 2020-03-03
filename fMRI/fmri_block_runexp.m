@@ -195,7 +195,7 @@ param.expDuration = param.expEndTime - param.expStartTime;
 Screen('CloseAll');
 
 % display run durations
-fprintf('\nThe current run lasts %2.2f minutes (%.3f seconds).\n', ...
+fprintf('\nThis run lasted %2.2f minutes (%.3f seconds).\n', ...
     param.runDuration/60, param.runDuration);
 
 % display behvioral responses
