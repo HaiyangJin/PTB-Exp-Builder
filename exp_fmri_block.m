@@ -115,7 +115,6 @@ param.dummyDuration = 0; % seconds
 % fixations
 param.widthFix = 4;
 param.lengthFix = 20;
-param.fixDuration = 0.5;
 
 % the block numbers for fixation
 param.fixBlockNum = fmri_fixdesign(param);
