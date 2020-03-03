@@ -55,7 +55,7 @@ ptb_instruction(param);
 
 % wait for trigger if is not emulated
 if ~param.isEmulated
-    param.trigger;
+    fmri_nyuad;
 end
 
 % run starts

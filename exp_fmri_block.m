@@ -15,6 +15,7 @@ function exp_fmri_block(subjCode, isEmulated, runCode)
 % add the functions folder to the path
 addpath('PTB/');
 addpath('fMRI/');
+addpath('ImageTools/');
 % addpath(genpath('functions/'));
 
 % skip Sync tests
@@ -136,7 +137,6 @@ param.textFont = 'Helvetica';
 param.textColor = 255;
 
 %% Run the Experiment
-param.trigger = @fmri_nyuad;
 param.do_trial = @fmri_block_dotrial;
 param.do_stim = @fmri_block_stim;
 param.do_output = @ptb_outtable;
