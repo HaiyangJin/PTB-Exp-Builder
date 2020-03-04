@@ -40,7 +40,6 @@ param.instructKey = KbName(param.instructKeyName);
 
 % block information
 nBlock = param.bn + numel(param.fixBlockNum);
-param.blockDuration = param.trialDuration * param.nStimPerBlock;
 param.nStimBlock = 0;
 param.nFixBlock = 0;
 tnStart = 0; % the starting trial number

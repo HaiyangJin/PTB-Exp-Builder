@@ -110,18 +110,20 @@ param.instructText = sprintf(['Welcome to this experiment... \n\n\n' ...
 %% Dummy volumes
 param.dummyDuration = 0; % seconds
 
-%% Fixation parameters
-% fixations
-param.widthFix = 4;
-param.lengthFix = 20;
-
-% the block numbers for fixation
-param.fixBlockNum = fmri_fixdesign(param);
-
 %% Trial parameters
 % stimuli
 param.stimDuration = 0.8;
 param.trialDuration = 1;  % The total duration of one trial.
+param.stimBloDuration = param.trialDuration * param.nStimPerBlock;
+
+%% Fixation parameters
+% fixations
+param.widthFix = 4;
+param.lengthFix = 20;
+param.fixBloDuration = param.stimBloDuration;
+
+% the block numbers for fixation
+param.fixBlockNum = fmri_fixdesign(param);
 
 %% Setting for the screen
 param.frameExpected = 60;

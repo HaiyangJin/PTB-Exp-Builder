@@ -23,16 +23,20 @@ function [output, quitNow] = fmri_block_dotrial(ttn, param, stimuli, ...
 % Created by Haiyang Jin (27-Feb-2020)
 
 %% Preparation
+
 if nargin < 1 || isempty(ttn)
     ttn = 0;
     isFixBlock = 1;
     
     % the baseline time for this fixation block
-    baseTime = (param.BlockNum - 1) * param.blockDuration + param.dummyDuration;
+    baseTime = (param.nFixBlock - 1) * param.fixBloDuration +...
+        param.nStimBlock * param.stimBloDuration +...
+        param.dummyDuration;
 else
     % the baseline time for this trial [in stimulus block]
-    baseTime = param.nFixBlock * param.blockDuration + ...
-        (ttn-1) * param.trialDuration + param.dummyDuration;
+    baseTime = param.nFixBlock * param.fixBloDuration + ...
+        (ttn-1) * param.trialDuration + ...
+        param.dummyDuration;
 end
 
 % by default use the param.runStartTime
@@ -71,7 +75,7 @@ if isFixBlock
     % only experimenter key is allowed
     RestrictKeysForKbCheck(param.expKey);
     
-    while checkTime < param.blockDuration
+    while checkTime < param.fixBloDuration
         % check if experimenter key is pressed
         quitNow = KbCheck;
         if quitNow; break; end
