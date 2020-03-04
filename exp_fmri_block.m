@@ -13,9 +13,8 @@ function exp_fmri_block(subjCode, isEmulated, runCode)
 % Created by Haiyang Jin (25-Feb-2020)
 
 % add the functions folder to the path
-addpath('PTB/');
-addpath('fMRI/');
-addpath('ImageTools/');
+funcFolers = {'PTB/', 'fMRI/', 'ImageTools/'};
+cellfun(@addpath, funcFolers);
 % addpath(genpath('functions/'));
 
 % skip Sync tests
@@ -142,5 +141,9 @@ param.do_output = @ptb_outtable;
 
 % run the fmri experiment in block design
 fmri_block_runexp(param);
+
+%% remove the path
+cellfun(@rmpath, funcFolers);
+% rmpath(genpath('functions/'));
 
 end
