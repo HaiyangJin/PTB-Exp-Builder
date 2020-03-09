@@ -17,8 +17,6 @@ warning('off','MATLAB:fprintf:InputForPercentSIsNotOfClassChar');
 if param.isDebug
     param.winrect = [100 100 1300 900]; % default for debug mode
     param.SkipSyncTests = 1;  % skip screen sync test
-elseif ismac
-    param.SkipSyncTests = 1;  % skip screen sync test
 end
 
 Screen('Preference', 'SkipSyncTests', param.SkipSyncTests);
