@@ -66,7 +66,20 @@ while checkTime < demoDuration
     
     theNumber = theNumber + 1;
     Screen('DrawText', param.w, num2str(theNumber), param.screenCenX, param.screenCenY);
-    Screen('Flip', param.w);
+    [VBL, ~, finished] = Screen('Flip', param.w);
+%     afterFlipTime = GetSecs;
+    
+%     disp(VBL-param.demoStartTime);
+%     disp(afterFlipTime-param.demoStartTime);
+%     
+%     
+%     disp('delay1');
+%     disp(finished - VBL);
+%     
+%     disp('VBL');
+%     disp(afterFlipTime - VBL);
+%     disp('finishes 2')
+%     disp(afterFlipTime - finished);
     
     % wati for some time
     WaitSecs(flipInterval); 
@@ -79,6 +92,9 @@ param.demoEndTime = GetSecs;
 
 %% Close the screen
 Screen('CloseAll');
+
+% remove the path
+cellfun(@(x) rmpath(genpath(fullfile('..', x))), {'PTB'});
 
 ListenChar(0);
 
