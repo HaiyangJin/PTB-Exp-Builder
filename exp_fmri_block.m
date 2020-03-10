@@ -18,7 +18,7 @@ cellfun(@addpath, funcFolers);
 % addpath(genpath('functions/'));
 
 % skip Sync tests
-param.SkipSyncTests = 0;  % will skip on Macs
+param.SkipSyncTests = 0;  % will skip in debug mode
 % display the key name for key press
 param.dispPress = 1;
 

@@ -11,7 +11,7 @@ function exp_example(subjCode)
 addpath('PTB/');
 % addpath(genpath('functions/'));
 
-param.SkipSyncTests = 0;
+param.SkipSyncTests = 0;  % will skip in debug mode
 
 if nargin < 1
     subjCode = '000';
