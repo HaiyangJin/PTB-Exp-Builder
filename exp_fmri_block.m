@@ -127,9 +127,10 @@ param.fixBlockNum = fmri_fixdesign(param);
 
 %% Setting for the screen
 param.frameExpected = 60;
-param.forecolor = 'black';  %  (white, black, grey or numbers)
-param.backcolor = 'white';  %  (white, black, grey or numbers)
-param.winrect = []; % [] Window Rect; % default [100 100 1300 900];  %[100 100 600 600];
+param.forecolor = 'black';  % (white, black, grey or numbers)
+param.backcolor = 'white';  % (white, black, grey or numbers)
+param.winrect = [];         % [] Window Rect; % default [100 100 1300 900];  %[100 100 600 600];
+param.whichscreen = [];     % which screen to display stimuli
 
 %% Parameters of fonts used in this exp
 param.textSize = 20;

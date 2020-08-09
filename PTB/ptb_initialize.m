@@ -29,7 +29,10 @@ ptb_setuprand;
 % Initialize and setup the screen
 Screen('Preference','TextEncodingLocale','UTF-8');
 screens = Screen('Screens');
-whichScreen = max(screens);
+if ~isfield(param, 'whichscreen') || isempty(param.whichscreen)
+    param.whichscreen = max(screens);
+end
+whichScreen = param.whichscreen;
 
 % Define black and white (white will be 1 and black 0). This is because
 % in general luminace values are defined between 0 and 1 with 255 steps in

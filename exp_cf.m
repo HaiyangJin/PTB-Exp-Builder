@@ -146,8 +146,9 @@ param.isFeedback = 0;
 %% Setting for the screen
 param.frameExpected = 60;
 param.forecolor = 'white';  %  (white, black, grey or numbers)
-param.backcolor = 'grey';  %  (white, black, grey or numbers)
-param.winrect = []; % [] Window Rect; % default [100 100 1300 900];  %[100 100 600 600];
+param.backcolor = 'grey';   %  (white, black, grey or numbers)
+param.winrect = [];         % [] Window Rect; % default [100 100 1300 900];  %[100 100 600 600];
+param.whichscreen = [];     % which screen will be used
 
 %% Parameters of fonts used in this exp
 param.textSize = 20;
