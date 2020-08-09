@@ -13,7 +13,7 @@ addpath('PTB/');
 
 param.SkipSyncTests = 0;  % will skip in debug mode
 
-if nargin < 1
+if ~exist('subjCode', 'var')
     subjCode = '000';
 elseif isnumeric(subjCode)  % the subjCode should be a string
     subjCode = num2str(subjCode);

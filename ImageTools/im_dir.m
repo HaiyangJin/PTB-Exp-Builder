@@ -1,5 +1,5 @@
 function imgDir = im_dir(imgPath, imgExt, reformat)
-% imgDir = im_dir(imgPath, imgExt)
+% imgDir = im_dir(imgPath, imgExt, reformat)
 %
 % This function get the directory information of all the images matching the
 % image extension in the imgPath and its subfolders.
@@ -8,7 +8,7 @@ function imgDir = im_dir(imgPath, imgExt, reformat)
 %     imgPath      <strings> the path to the sitmuli folder
 %     imgExt       <strings> or <a cell of strings> the file extentions of
 %                   the images.
-%     reformat     <logical> if true, imgDir will be reformat to multiple
+%     reformat     <logical> if true, imgDir will be re-formated to multiple
 %                   columns and each column is one condition (folder). By
 %                   default reformat is false.
 % Output:
@@ -19,17 +19,17 @@ function imgDir = im_dir(imgPath, imgExt, reformat)
 %
 % Created by Haiyang Jin (03-Feb-2020)
 
-if nargin < 1 || isempty(imgPath)
+if ~exist('imgPath', 'var') || isempty(imgPath)
     imgPath = fullfile('stimuli', filesep);
 end
 
-if nargin < 2 || isempty(imgExt)
+if ~exist('imgExt', 'var') || isempty(imgExt)
     imgExt = {''};
 elseif ischar(imgExt)
     imgExt = {imgExt};
 end
 
-if nargin < 3 || isempty(reformat)
+if ~exist('reformat', 'var') || isempty(reformat)
     reformat = 0; % by deafult do not reformat imgDir
 end
 

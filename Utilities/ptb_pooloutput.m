@@ -12,7 +12,7 @@ function dtTable = ptb_pooloutput(matFiles, poolFn, dtFieldname)
 %     poolFn            <string> strings to be added at the beginning
 %                       of the output filename. 
 %     dtFieldname       <string> the fieldname [in params] containing the
-%                       data table.
+%                       data table. Default is 'dtTable'.
 %
 % Output:
 %     dtTable           <table> the pooled table. 
@@ -21,7 +21,7 @@ function dtTable = ptb_pooloutput(matFiles, poolFn, dtFieldname)
 % Created by Haiyang Jin (23-Feb-2020)
 
 % open a GUI to select files
-if nargin < 1 || isempty(matFiles)
+if ~exist('matFiles', 'var') || isempty(matFiles)
     [matFns, thepath] = uigetfile({'*.mat', 'Matlab files (*.mat)'; ...
         '*.xls;*.xlsx', 'Excel files (*.xls;*.xlsx)';...
         '*.csv', 'Csv files (*.csv)';...
@@ -34,11 +34,11 @@ elseif ischar(matFiles)
     matFiles = {matFiles};
 end
 
-if nargin < 2 || isempty(poolFn)
+if ~exist('poolFn', 'var') || isempty(poolFn)
     poolFn = 'Pooled';
 end
 
-if nargin < 3 || isempty(dtFieldname)
+if ~exist('dtFieldname', 'var') || isempty(dtFieldname)
     dtFieldname = 'dtTable';
 end
 
@@ -60,9 +60,7 @@ switch ext
     case '.mat'
         % if the data were stored in
         matArray = cellfun(@load, matFiles, 'uni', true);
-        param = arrayfun(@(x) x.param, matArray, 'uni', true);
-        
-        dtTable = vertcat(param.(dtFieldname));
+        dtTable = vertcat(matArray.(dtFieldname));
         
         % set the name for the output file
         nSubj = numel(unique(dtTable.SubjCode));

@@ -28,14 +28,14 @@ param.expAbbv = 'fMRI_block';
 
 %% Process the in-arguments
 % subject code
-if nargin < 1
+if ~exist('subjCode', 'var')
     subjCode = '000';
 elseif isnumeric(subjCode)  % the subjCode should be a string
     subjCode = num2str(subjCode);
 end
 
 % by default, emulated mode is on... (will not wait for fMRI trigger)
-if nargin < 2 || isempty(isEmulated)
+if ~exist('isEmulated', 'var') || isempty(isEmulated)
     isEmulated = 1;
 end
 
@@ -52,7 +52,7 @@ param.isDebug = isDebug;
 param.isEmulated = isEmulated;
 
 % run Code
-if nargin < 3 || isempty(runCode)
+if ~exist('runCode', 'var') || isempty(runCode)
     runCode = fmri_runcode(param);
 end
 param.runCode = runCode;
