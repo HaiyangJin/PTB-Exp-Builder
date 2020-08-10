@@ -1,4 +1,4 @@
-function [output, quitNow] = example_trial(ttn, param, stimuli)
+function [output, quitNow] = example1_trial(ttn, param)
 % Example do trial.
 %
 % Inputs:
@@ -15,6 +15,7 @@ function [output, quitNow] = example_trial(ttn, param, stimuli)
 quitNow = 0;
 
 % experiment design
+stimuli = param.stimuli;
 ed = param.ed;
 respKeys = param.respKeys;
 

@@ -1,4 +1,4 @@
-function exp_example(subjCode)
+function exp_example1(subjCode)
 % Example experiment main body.
 %
 % Input:
@@ -21,7 +21,8 @@ end
 
 if strcmp(subjCode, '0')
     param.isDebug = 1;
-    warning(['Debug mode is on... \n', 'The subjCode is %s'], subjCode);
+    warning(['Debug mode is on... \nThe subjCode is %s.\n' ...
+        'Data will not be saved.'], subjCode);
 else
     param.isDebug = 0;
 end
@@ -91,7 +92,7 @@ param.textFont = 'Helvetica';
 param.textColor = 255;
 
 %% Run the Experiment
-param.do_trial = @example_trial;
+param.do_trial = @example1_trial;
 param.do_output = @ptb_outtable;
 
 ptb_runexp(param);
