@@ -1,9 +1,8 @@
-function param = cf_stim(param, stimuli)
+function param = cf_stim(param)
 % load stimulus information for composite face task.
 %
 % Input:
-%     param           <structure> parameters of the exp
-%     stimuli         <structure> stimulus structure
+%     param           <structure> parameters of the exp.
 %
 % Output:
 %     param           <structure> parameters of the exp
@@ -13,8 +12,9 @@ screenRect = param.screenRect;
 screenX = screenRect(3);
 screenY = screenRect(4);
 
+%% Composite stimuli
 % stimulus dimentions
-[faceY, faceX, ~] = size(stimuli(1,1).matrix);
+[faceY, faceX, ~] = size(param.stimuli(1,1).matrix);
 faceCenter = CenterRect([0 0 faceX faceY], screenRect);
 param.faceY = faceY;
 param.faceX = faceX;
@@ -52,5 +52,11 @@ param.cuePosiL = [screenX/2-cueLengthHalf screenY/2-cueSideLength/2 ...
     screenX/2-cueLengthHalf+cuePixel screenY/2+cueSideLength/2];
 param.cuePosiR = [screenX/2+cueLengthHalf-cuePixel screenY/2-cueSideLength/2 ...
     screenX/2+cueLengthHalf screenY/2+cueSideLength/2];
+
+%% Scrambled face masks
+% randomly assign maskID for each trial
+maskID = num2cell(mod(randperm(param.tn)-1, length(param.masks))+1);
+[param.ed.maskID] = maskID{:};
+param.maskDestRect = faceCenter;
 
 end

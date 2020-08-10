@@ -1,14 +1,13 @@
-function [acc, nResp] = ptb_output(param, stimuli, fnExtra, outputPath)
-% [acc, nResp] = ptb_output(param, stimuli, fnExtra, outputPath)
+function [acc, nResp] = ptb_output(param, fnExtra, outPath)
+% [acc, nResp] = ptb_output(param, fnExtra, outPath)
 %
 % Save the experiment parameters, stimuli structure, and save the output as
 % *.xlsx and *.csv.
 % 
 % Inputs:
-%     param         <structure> experiment parameters
-%     stimuli       <structure> stimuli structure used in this experiment
-%     fnExtra       <string> unique strings at the end of the file name
-%     outputPath    <string> where these files will be saved
+%     param         <structure> experiment parameters.
+%     fnExtra       <string> unique strings at the end of the file name.
+%     outPath       <string> where these files will be saved.
 % 
 % Output:
 %     acc           <numeric> the average accuracy across all trials.
@@ -34,22 +33,17 @@ if param.isDebug
     return;
 end
 
-if nargin < 2 || isempty(stimuli)
-    stimuli = '';
-end
-param.stimuli = stimuli;
-
-if nargin < 3 || isempty(fnExtra)
+if ~exist('fnExtra', 'var') || isempty(fnExtra)
     fnExtra = datestr(now,'yyyy-mm-dd-HHMM');
 end
 
-if nargin < 4 || isempty(outputPath)
-    outputPath = pwd;
+if ~exist('outPath', 'var') || isempty(outPath)
+    outPath = pwd;
 end
 
 %% file names
-excelPath = fullfile(outputPath, 'Excel Data');
-matPath = fullfile(outputPath, 'Matlab Data');
+excelPath = fullfile(outPath, 'Excel Data');
+matPath = fullfile(outPath, 'Matlab Data');
 if ~exist(excelPath, 'dir'); mkdir(excelPath); end
 if ~exist(matPath, 'dir'); mkdir(matPath); end
 % backupDir = ['']; % this should be the full path to the dropbox on the main experiment computer

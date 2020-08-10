@@ -7,7 +7,7 @@ function ptb_runexp(param)
 % Created by Haiyang Jin (2018)
 
 %% Preparation
-param.expStartTime = now();
+param.expStartTime = GetSecs;
 
 % stop receiving typed characters
 ListenChar(2);
@@ -16,22 +16,31 @@ ListenChar(2);
 param = ptb_initialize(param);
 
 % Load stimuli
-stimuli = ptb_loadstimdir(param.imgDir, param.w);
-% get the information about stimuli
+param.stimuli = ptb_loadstimdir(param.imgDir, param.w);
+if isfield(param, 'maskDir')
+    param.masks = ptb_loadstimdir(param.maskDir, param.w);
+end
+% get the information about stimuli and mask
 if isfield(param, 'do_stim') && ~isempty(param.do_stim)
-    param = param.do_stim(param, stimuli);
+    param = param.do_stim(param);
 end
 
 % Build the experiment design
-param.ed = ptb_expdesignbuilder(param.conditionsArray, ...
-    param.randBlock, param.sortBlock);
-param.tn = size(param.ed, 1);  % trial number
+if ~isfield(param, 'ed')
+    param.ed = ptb_expdesignbuilder(param.conditionsArray, ...
+        param.randBlock, param.sortBlock);
+    param.tn = size(param.ed, 1);  % trial number
+end
 
 % Keys
 KbName('UnifyKeyNames');
 param.respKeys = arrayfun(@KbName, param.respKeyNames);
 param.expKey = KbName(param.expKeyName);
 param.instructKey = KbName(param.instructKeyName);
+% KbQueue
+keyList = zeros(size(KbName('KeyNames')));
+keyList(1, [param.respKeys(:)', param.expKey]) = 1;
+param.queueKeyList = keyList;
 
 % Instruction
 ptb_instruction(param);
@@ -47,13 +56,12 @@ param.fixarray = ptb_fixcross(param.screenX, param.screenY, ...
 %% Do the trial
 expStartTime = GetSecs();
 
-
 dtTable = table;
 
 for ttn = 1 : param.tn  % this trial number 
     
     % run each trial
-    [output, quitNow] = param.do_trial(ttn, param, stimuli);
+    [output, quitNow] = param.do_trial(ttn, param);
     dtTable(ttn, :) = struct2table(output, 'AsArray', true); 
     
     % break check
@@ -86,7 +94,7 @@ else
 end
 
 % save the output
-acc = ptb_output(param, stimuli);
+acc = ptb_output(param);
 
 
 %% Finishing screen

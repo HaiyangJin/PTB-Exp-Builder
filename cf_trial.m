@@ -1,10 +1,9 @@
-function [output, quitNow] = cf_trial(ttn, param, stimuli)
+function [output, quitNow] = cf_trial(ttn, param)
 % do the trial for composite face task.
 %
 % Inputs:
 %     ttn         <double> this trial number
 %     param       <structure> parameters about this experiment
-%     stimuli     <structure> stimuli structure
 %
 % Outputs:
 %     output      <structure> the output of this trial
@@ -13,13 +12,17 @@ function [output, quitNow] = cf_trial(ttn, param, stimuli)
 % Created by Haiyang Jin (10-Feb-2020)
 
 % gather information from param
-% masks = param.masks;  % the masks structure
+stimuli = param.stimuli;
+masks = param.masks;  % the masks structure
 ed = param.ed(ttn);  % experiment design
 w = param.w; % window
 flipSlack = param.flipSlack;
 forecolor = param.forecolor;
 respKeys = param.respKeys;
 alpha = param.alpha;
+
+% preparation for KbQuene
+KbQueueCreate([], param.queueKeyList);
 
 quitNow = 0;
 
@@ -90,8 +93,8 @@ studyBeganAt = Screen('Flip', w, studyBeginWhen);
 maskBeginWhen = studyBeganAt + param.studyDuration - flipSlack;
 
 %%% mask %%%
-% maskTexture = masks(ed.maskID).texture;
-% Screen('DrawTexture',window,maskTexture,[],maskDestRect);
+maskTexture = masks(ed.maskID).texture;
+Screen('DrawTexture', w, maskTexture,[], param.maskDestRect);
 
 if param.showCue
     Screen('FillRect', w, forecolor, OffsetRect(param.cuePosi, xOffsetRand, yTestCue));
@@ -119,40 +122,58 @@ if param.showCue
     Screen('FillRect', w, forecolor, OffsetRect(param.cuePosiR, xOffsetRand, yTestCueLR));
 end
 
-responseBegins = Screen('Flip', w, testBeginWhen);
+testBeganAt = Screen('Flip', w, testBeginWhen);
+respScreenBeginWhen = testBeganAt + param.testDuration - flipSlack;
+respMaxDuration = testBeganAt + param.respMaxDuration - flipSlack;
 
-%%% Keys %%%
-RestrictKeysForKbCheck([respKeys(:)', param.expKey]);  
-[pressTime, keyCode] = KbWait([],0);
-
-% quit if F12
-if any(keyCode(param.expKey))
-    quitNow = 1;
+%%%%%% start to collect responses %%%%%
+KbQueueStart();
+pressed = 0;
+while GetSecs < respScreenBeginWhen && ~pressed
+    [pressed, firstPress] = KbQueueCheck();
 end
+
+%%% Response screen %%%
+if ~pressed
+    [pressed, firstPress] = KbQueueCheck();
+    DrawFormattedText(w, sprintf('Respond?'), 'center', param.screenY-150, forecolor);
+    Screen('Flip', w);
+end
+
+while ~pressed && GetSecs < respMaxDuration
+    [pressed, firstPress] = KbQueueCheck();
+end
+
+KbQueueRelease();
+%%%%% Stop to collect responses %%%%%%
 
 % trial is finished.
 trialEndedAt = Screen('Flip',w);
 totalTrialDuration = trialEndedAt - trialBeginsAt;
 
 %% postprocessing
-if sum(sum(keyCode(respKeys)))==1
+if sum(firstPress(respKeys)>0, 'all')==1 
     % process responses
-    Resp = find(sum(keyCode(respKeys)));  % 1-same, 2-different
+    reactionTime = sum(firstPress(respKeys), 'all') - testBeganAt;
+    Resp = find(sum(firstPress(respKeys)>0)); % 1-same, 2-different
     ACC = double( Resp == 2-ed.isCuedSame );
-    reactionTime = pressTime - responseBegins;
 else
-    % wrong key, double key or timeout
+    % wrong key, double keys or timeout
     Resp = NaN;
-    if quitNow
-        ACC = 0; 
+    ACC = NaN; 
+    reactionTime = NaN;
+    
+    if any(firstPress(param.expKey))  % quit as expKey is pressed
+        quitNow = 1;
         noRespText = sprintf(['The experiment will quit now. \n\n'...
             'Please press any key to continue...']);
+    elseif ~pressed
+        noRespText = sprintf(['Please respond as quickly and accurately as possible. \n\n'...
+            'Please press any key to continue...']);
     else
-        ACC = NaN; 
         noRespText = sprintf(['Something wrong happended... \n\n'...
             'Please press any key to continue...']);
     end
-    reactionTime = NaN;
     beep;
     DrawFormattedText(w, noRespText,'center','center',forecolor);
     Screen('Flip',w);
@@ -179,7 +200,7 @@ output.StudyBottom = {faceStudyBott.fn};
 output.TestTop = {faceTestTop.fn};
 output.TestBottom = {faceTestBott.fn};
 output.Resp = Resp;
-output.keyPressed = {KbName(keyCode)};  % the name of pressed key
+output.keyPressed = {KbName(firstPress)};  % the name of pressed key
 output.isCorrect = ACC;
 output.reactionTime = reactionTime;
 output.studyDuration = param.studyDuration;
