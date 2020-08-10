@@ -1,5 +1,5 @@
-function outTable = cf_outTable(dtTable, expInfoTable)
-% outTable = cf_outTable(dtTable, expInfoTable)
+function outTable = cf_outtable(dtTable, expInfoTable)
+% outTable = cf_outtable(dtTable, expInfoTable)
 % 
 % This function processes the output for composite face task.
 %
