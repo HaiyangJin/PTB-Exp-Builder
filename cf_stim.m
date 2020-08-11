@@ -11,6 +11,7 @@ function param = cf_stim(param)
 screenRect = param.screenRect;
 screenX = screenRect(3);
 screenY = screenRect(4);
+topProp = param.topProp;
 
 %% Composite stimuli
 % stimulus dimentions
@@ -20,26 +21,26 @@ param.faceY = faceY;
 param.faceX = faceX;
 
 % stimulus rect information
-param.faceTopRect = [0 0 faceX faceY/2];
-param.faceBottomRect = [0 faceY/2 faceX faceY];
+param.faceTopRect = [0 0 faceX faceY*topProp];
+param.faceBottomRect = [0 faceY*topProp faceX faceY];
 
 % stimulus positions 
 param.faceTopPosition = [faceCenter(1)...
     faceCenter(2)-1 ...
     faceCenter(3) ...
-    faceCenter(4)-(faceCenter(4)-faceCenter(2))/2-1];
+    faceCenter(4)-faceY*(1-topProp)-1];
 
 param.faceBottomPosition =[faceCenter(1) ...
-    faceCenter(2)+(faceCenter(4)-faceCenter(2))/2+2 ...
+    faceCenter(2)+faceY*topProp+2 ...
     faceCenter(3) ...
     faceCenter(4)+2];
 
 % white line information
 misalignSize = param.faceX * param.misalignPerc;
 param.lineRect = [screenX/2-(3*misalignSize + (faceCenter(3)-faceCenter(1)))/2 ...
-    screenY/2-1 ...
+    screenY/2-faceY*(1-topProp-0.5)-1 ...
     screenX/2+(3*misalignSize+(faceCenter(3)-faceCenter(1)))/2 ...
-    screenY/2+2];
+    screenY/2-faceY*(1-topProp-0.5)+2];
 
 % cue position (in the middle of the screen)
 cuePixel = param.cuePixel;

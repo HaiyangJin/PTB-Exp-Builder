@@ -141,6 +141,8 @@ param.faceSelector = ...
 %   thisFaceSet = mod((ed(ttn).faceIndex + faceSelector(trialType,:)-1),4)+1;
 
 %% Trial parameters
+% Proportion of top parts
+param.topProp = 0.5;
 
 % misaligned percentage
 param.misalignPerc = 0.5;
