@@ -97,13 +97,23 @@ for iImg = 1:nImg
     
     % add subfolders to the path
     if isSub && ~strcmp(thisImg.condition, 'main')
-        thePath = fullfile(outputPath, thisImg.condition);
+        thePath = fullfile(outPath, thisImg.condition);
     else
-        thePath = outputPath;
+        thePath = outPath;
+    end
+    
+    % obtain the fieldname for alpha layer
+    if strcmp(theExt, '.png')
+        alphaFieldname = [erase(matrixFieldname, 'matrix') 'alpha'];
     end
     
     % write the image
-    imwrite(thisImg.(matrixFieldname), fullfile(thePath, [theFn theExt]));
+    if isfield(thisImg, alphaFieldname)
+        theAlpha = thisImg.(alphaFieldname);
+        imwrite(thisImg.(matrixFieldname), fullfile(thePath, [theFn theExt]), 'alpha', theAlpha);
+    else
+        imwrite(thisImg.(matrixFieldname), fullfile(thePath, [theFn theExt]));
+    end
     
 end
 
