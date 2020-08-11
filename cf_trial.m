@@ -1,4 +1,6 @@
 function [output, quitNow] = cf_trial(ttn, param)
+% [output, quitNow] = cf_trial(ttn, param)
+%
 % do the trial for composite face task.
 %
 % Inputs:
@@ -63,8 +65,7 @@ yTestCueLR = yTestCue + (2*ed.isTopCued-1) * param.cueSideLength/2;
 % trial began time
 trialBeginsAt = GetSecs;
 
-%% show the stimuli
-
+%% Show the stimuli
 %%% Fixation %%%
 Screen('FillRect', w, forecolor, param.fixarray);
 
@@ -94,7 +95,7 @@ maskBeginWhen = studyBeganAt + param.studyDuration - flipSlack;
 
 %%% mask %%%
 maskTexture = masks(ed.maskID).texture;
-Screen('DrawTexture', w, maskTexture,[], param.maskDestRect);
+Screen('DrawTexture', w, maskTexture,[], OffsetRect(param.maskDestRect, xOffsetRand, yOffsetRand));
 
 if param.showCue
     Screen('FillRect', w, forecolor, OffsetRect(param.cuePosi, xOffsetRand, yTestCue));

@@ -1,18 +1,21 @@
-function exp_cf(subjCode)
-% The composite face task.
+function exp_cf(subjCode, cfVersion, skipSyncTest, paramUpdate)
+% exp_cf(subjCode, cfVersion, skipSyncTest)
+% 
+% This function runs the different versions of composite face tasks.
 %
-% Input:
-%    subjCode      subject code
+% Inputs:
+%    subjCode      <integer> subject code.
+%    cfVersion     <string> the version of the composite face task.
+%                   'scf' -- standard composite face task (partial design);
+%                   'cf' -- complete design (without cues);
+%                   'ccf' -- complete design (with cues);
+%                   Default is 'cf'.
+%    skipSyncTest  <logical> 0 [default]: do not skip the sync test in 
+%                   PsychToolbox. 1: skip the test.
 %
 % Created by Haiyang Jin (5-Feb-2019).
 
-% add the functions folder to the path
-clc;
-addpath('PTB/');
-% addpath(genpath('functions/'));
-
-param.SkipSyncTests = 0;  % will skip in debug mode
-
+% Deal with inputs
 if ~exist('subjCode', 'var')
     subjCode = '000';
 elseif isnumeric(subjCode)  % the subjCode should be a string
@@ -26,14 +29,13 @@ if strcmp(subjCode, '0')
 else
     param.isDebug = 0;
 end
-
 param.subjCode = subjCode;
 
 % version of composite task
-% standard composite face task (partial design) -- 'scf'
-% complete design (without cues) -- 'cf'
-% complete design (with cues) -- 'ccf'
-param.cfversion = 'cf'; 
+if ~exist('cfVersion', 'var') || isempty(cfVersion)
+    cfVersion = 'cf';
+end
+param.cfversion = cfVersion; 
 fprintf('\nComposite task version: %s.\n', param.cfversion);
 
 switch param.cfversion
@@ -41,13 +43,31 @@ switch param.cfversion
         isTopCued = 1;
         % same congruent and different incongurent will be removed later
         % for 'scf'.
+        showCue = 0;
     case 'ccf'
         isTopCued = 0:1;
+        showCue = 1;
 end
+
+% skip the sync test
+if ~exist('skipSyncTest', 'var') || isempty(skipSyncTest)
+    skipSyncTest = 0;
+end
+param.SkipSyncTests = skipSyncTest;  % will skip in debug mode
+
+% param update
+if ~exist('paramUpdate', 'var') || isempty(paramUpdate)
+    paramUpdate = struct([]);
+end
+
+% add the functions folder to the path
+clc;
+addpath('PTB/');
+% addpath(genpath('functions/'));
 
 %% Stimuli
 % faces
-stimPath = fullfile('Stimuli', filesep); % CFFaces  CF_LineFaces
+stimPath = fullfile('CF_LineFaces', filesep); % CF_LineFaces
 param.imgDir = im_dir(stimPath, {'png'}, 1);
 param.nFacePerGroup = 4;
 nGroup = numel(unique({param.imgDir.condition}));  % number of groups (folders)
@@ -55,7 +75,7 @@ nGroup = numel(unique({param.imgDir.condition}));  % number of groups (folders)
 param.alpha = 1;  % 0: transparent; 1: opaque
 
 % scrambled masks
-maskPath = fullfile('Masks', filesep); % CFFaces  CF_LineFaces
+maskPath = fullfile('CF_LineMasks', filesep); % CF_LineMasks
 param.maskDir = im_dir(maskPath, {'png'});
 
 %% Experiment inforamtion
@@ -151,9 +171,9 @@ param.topProp = 0.5;
 param.misalignPerc = 0.5;
 
 % cues
-param.showCue = 0; % 0: not show cue, 1: show cues
+param.showCue = showCue; % 0: not show cue, 1: show cues
 param.cuePixel = 6; 
-param.cueLength = 1.5; % times of the wide of stimuli (face)
+param.cueLength = 1.5; % times of the stimuli (face) width 
 param.cueSideLength = 22;  % the "hook" part (even number)
 param.cuePosition = 22;  % distance from the position to the middle of the screen
 
@@ -188,13 +208,16 @@ param.textSize = 20;
 param.textFont = 'Helvetica';
 param.textColor = 255;
 
-%% Run the Experiment
+%% Define the specific functions
 % cf functions
 param.do_stim = @cf_stim;  % process stimuli after initializing windows
 param.do_trial = @cf_trial; % run trials
 param.do_output = @cf_outtable;  % process output
 
-% run the experiment
+%% Update fieldnames of param with pre-defined values
+param = ptb_updatestruct(param, paramUpdate);
+
+%% Run the experiment
 ptb_runexp(param);
 
 end
