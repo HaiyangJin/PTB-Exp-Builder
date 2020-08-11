@@ -45,10 +45,10 @@ yOffsetRand = offsets(randperm(numel(offsets),1))*5; %
 alignTestOffset = param.faceX * param.misalignPerc * (1-ed.isTestAligned);
 
 % study faces
-xStudyTopOffset = 0;
+xStudyTopOffset = alignTestOffset * (1-ed.isTopCued) * param.isStudyOffset;
+xStudyBottomOffset = alignTestOffset * ed.isTopCued * param.isStudyOffset;
 yStudyTopOffset = 0;
 yStudyBottomOffset = 0;
-xStudyBottomOffset = 0;
 
 % test faces
 xTestTopOffset = xOffsetRand + alignTestOffset * (1-ed.isTopCued);

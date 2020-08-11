@@ -84,6 +84,9 @@ param.ed = ptb_expdesignbuilder(param.conditionsArray, ...
 if strcmp(param.cfversion, 'scf')
     isremove = [param.ed.isCongruent] == [param.ed.isCuedSame];
     param.ed(isremove) = [];
+    param.isStudyOffset = 1;  % study composites can be misaligned
+else
+    param.isStudyOffset = 0;
 end
 param.tn = size(param.ed, 1);  % trial number
 
