@@ -16,7 +16,7 @@ function stimDir = im_pscrambledir(stimDir, matrixFieldname)
 % Created by Haiyang Jin (20-Feb-2020)
 
 % obtain the cell of stimulus matrix
-if nargin < 2 || isempty(matrixFieldname)
+if ~exist('matrixFieldname', 'var') || isempty(matrixFieldname)
     matrixCell = {stimDir.matrix};
 else
     matrixCell = {stimDir.(matrixFieldname)};

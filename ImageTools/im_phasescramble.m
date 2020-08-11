@@ -1,12 +1,13 @@
 function imScrambled = im_phasescramble(imMatrix)
 % imScrambled = im_phasescramble(imMatrix)
+% 
 % This function generates the phase scrambled image matrix.
 %
 % Inputs:
-%     imMatrix      <array of numeric> image matrix.
+%     imMatrix      <numeric array> image matrix.
 %
 % Output:
-%     imScrambled   <array of numeric> phase-scrambled image matrix.
+%     imScrambled   <numeric array> phase-scrambled image matrix.
 %
 % Created by Haiyang Jin (18-Feb-2020)
 

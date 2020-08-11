@@ -1,5 +1,9 @@
 function ptb_instruction(param)
-% This function display the instructions.
+% ptb_instruction(param)
+%
+% This function display the instructions. To present insturctions for
+% multiple flips, save the instruction texts for each flip separately in
+% cell. 
 %
 % Inputs:
 %     param               parameter used in ptb
