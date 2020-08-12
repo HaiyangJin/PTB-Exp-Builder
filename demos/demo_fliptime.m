@@ -1,7 +1,8 @@
-function demo_fliptime(flipInterval, demoDuration, isDebug)
+function param = demo_fliptime(flipInterval, demoDuration, isDebug)
 % demo_fliptime(flipInterval, demoDuration, isDebug)
 %
-% This demo shows (at least partly) how flip works in Psychotoolbox.
+% This demo shows (at least partly) how flip works when certain stimuli 
+% duration is pre-defined in Psychotoolbox.
 % [Please run this demo in the 'demos/' folder.
 %
 % Inputs:
@@ -14,19 +15,18 @@ function demo_fliptime(flipInterval, demoDuration, isDebug)
 %
 % Created by Haiyang Jin (5-March-2020)
 
-if nargin < 1 || isempty(flipInterval)
+if ~exist('flipInterval', 'var') || isempty(flipInterval)
     flipInterval = 0.001; % 1ms
 end
 
-if nargin < 2 || isempty(demoDuration)
+if ~exist('demoDuration', 'var') || isempty(demoDuration)
     demoDuration = 5; % seconds
 end
 
-if nargin < 3 || isempty(isDebug)
+if ~exist('isDebug', 'var') || isempty(isDebug)
     isDebug = 1;
 end
 param.isDebug = isDebug;
-
 
 % add the necessary path
 cellfun(@(x) addpath(genpath(fullfile('..', x))), {'PTB'});
