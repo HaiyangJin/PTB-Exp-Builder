@@ -43,7 +43,8 @@ end
 if strcmp(subjCode, '0')
     isDebug = 1;
     isEmulated = 1;
-    warning(['Debug mode is on... \n', 'The subjCode is %s'], subjCode);
+    warning(['Debug mode is on... \nThe subjCode is %s.\n', ...
+        'Data will not be saved.'], subjCode);
 else
     isDebug = 0;
 end
