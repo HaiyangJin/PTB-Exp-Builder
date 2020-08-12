@@ -8,7 +8,8 @@ function exp_example1(subjCode)
 
 % add the functions folder to the path
 % clc;
-addpath('PTB/');
+paths = {'PTB', 'ImageTools'};
+cellfun(@addpath, paths);
 % addpath(genpath('functions/'));
 
 param.SkipSyncTests = 0;  % will skip in debug mode
@@ -67,17 +68,15 @@ param.imgDir = im_dir(stimPath, {'png'});
 % fixations
 param.widthFix = 4;
 param.lengthFix = 20;
+
+% durations
 param.fixDuration = 0.5;
-
-% stimuli
 param.stimDuration = 0.5;
-
-% responses
 param.respDuration = 1;
-
-% blank
 param.blankDuration = 0.5;
 
+% feedback
+param.isFeedback = 1;
 
 %% Setting for the screen
 param.frameExpected = 60;

@@ -42,11 +42,6 @@ responseBegins = Screen('Flip', param.w, respBeginsWhen);
 RestrictKeysForKbCheck([respKeys(:)', param.expKey]);  % , KbName('5')
 [pressTime, keyCode] = KbWait([],0);
 
-% quit if the experimenter key is pressed
-if any(keyCode(param.expKey))
-    quitNow = 1;
-end
-
 % trial is finished.
 trialEndedAt = Screen('Flip',param.w);
 totalTrialDuration = trialEndedAt - trialBeginsAt;
@@ -58,23 +53,31 @@ if sum(sum(keyCode(respKeys)))==1
     reactionTime = pressTime - responseBegins;
     
 else
+    Resp = NaN;
+    ACC = NaN; 
+    reactionTime = NaN;
     
-    if quitNow
-        ACC = 0; 
-        noResponseText = 'Press any key to quit the program.';
+    if any(keyCode(param.expKey))
+        % quit if the experimenter key is pressed
+        quitNow = 1;
+        noRespText = sprintf(['The experiment will quit now. \n\n'...
+            'Please press any key to continue...']);
     else
-        ACC = NaN;
-        noResponseText = 'Something wrong happens. Press any key.';
+        noRespText = sprintf(['Something wrong happended... \n\n'...
+            'Please press any key to continue...']);
     end
     
     % wrong key, double key or timeout
-    Resp = NaN;
-    reactionTime = NaN;
     beep;
-    DrawFormattedText(param.w, noResponseText, 'center', 'center', param.forecolor);
+    DrawFormattedText(param.w, noRespText, 'center', 'center', param.forecolor);
     Screen('Flip',param.w);
     RestrictKeysForKbCheck([]);
     KbWait([], 2);
+end
+
+% display feedback if necessary
+if param.isFeedback
+    ptb_feedback(ACC, param.w);
 end
 
 %% Save the variable and response
