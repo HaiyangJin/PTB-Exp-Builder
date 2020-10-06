@@ -18,6 +18,9 @@ function stimDir = im_bscrambledir(stimDir, widthPatch, heightPatch, ...
 %     fieldname .bsmatrix will be added.
 %
 % Created by Haiyang Jin (11-Aug-2020)
+%
+% See also:
+% im_pscrambledir
 
 if ~exist('widthPatch', 'var') || isempty(widthPatch)
     widthPatch = [];

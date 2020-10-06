@@ -18,6 +18,9 @@ function imgDir = im_dir(imgPath, imgExt, reformat)
 %                   condition name for images in imgPath.
 %
 % Created by Haiyang Jin (03-Feb-2020)
+%
+% See also:
+% im_readdir, im_writedir
 
 if ~exist('imgPath', 'var') || isempty(imgPath)
     imgPath = fullfile('stimuli', filesep);

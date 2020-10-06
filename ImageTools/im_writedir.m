@@ -18,6 +18,9 @@ function im_writedir(stimDir, outPath, matrixFieldname, imgExt, imgString)
 %     creat images in the outputPath
 %
 % Created by Haiyang Jin (20-Feb-2020)
+% 
+% See also:
+% im_dir, im_readdir
 
 % creat the default output folder
 if ~exist('outPath', 'var') || isempty(outPath)
@@ -55,6 +58,8 @@ if ~exist('imgString', 'var') || isempty(imgString)
             imgString = '_ps';
         case 'bsmatrix'
             imgString = '_bs';
+        otherwise
+            imgString = '';
     end
     
 end

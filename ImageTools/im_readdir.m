@@ -14,6 +14,9 @@ function stimDir = im_readdir(imgDir, window, allLayer)
 %     stimDir       <structure> the stimulus structure
 %
 % Created by Haiyang Jin (19-Feb-2020)
+%
+% See also:
+% im_dir, im_writedir
 
 if ~exist('window', 'var') || isempty(window)
     window = '';

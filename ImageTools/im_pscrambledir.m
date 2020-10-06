@@ -14,6 +14,9 @@ function stimDir = im_pscrambledir(stimDir, matrixFieldname)
 %     fieldname called .psmatrix is added.
 %
 % Created by Haiyang Jin (20-Feb-2020)
+%
+% See also:
+% im_bscrambledir
 
 % obtain the cell of stimulus matrix
 if ~exist('matrixFieldname', 'var') || isempty(matrixFieldname)
