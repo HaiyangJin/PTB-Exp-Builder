@@ -108,17 +108,36 @@ for iImg = 1:nImg
     end
     
     % obtain the fieldname for alpha layer
-    if strcmp(theExt, '.png')
+    if ismember(theExt, {'.png', '.pdf'})
         alphaFieldname = [erase(matrixFieldname, 'matrix') 'alpha'];
+    else
+        alphaFieldname = 'nonalpha';
     end
     
     % write the image
     if isfield(thisImg, alphaFieldname)
         theAlpha = thisImg.(alphaFieldname);
-        imwrite(thisImg.(matrixFieldname), fullfile(thePath, [theFn theExt]), 'alpha', theAlpha);
+        alphaCell = {'alpha', theAlpha};
     else
-        imwrite(thisImg.(matrixFieldname), fullfile(thePath, [theFn theExt]));
+        alphaCell={};
     end
+    
+    thisOut = fullfile(thePath, [theFn theExt]);
+    switch theExt
+        case '.pdf'
+            fig = figure('Visible', 'off');
+            h = imshow(thisImg.(matrixFieldname));
+            if ~isempty(alphaCell); set(h, 'AlphaData', theAlpha); end
+            try
+                % https://github.com/altmany/export_fig
+                export_fig(thisOut, '-pdf','-transparent');
+            catch
+                print(fig, thisOut,'-dpng');
+            end
+        otherwise
+            imwrite(thisImg.(matrixFieldname), thisOut, alphaCell{:});
+    end
+    
     
 end
 
