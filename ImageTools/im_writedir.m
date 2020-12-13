@@ -116,17 +116,25 @@ for iImg = 1:nImg
     
     % write the image
     if isfield(thisImg, alphaFieldname)
-        theAlpha = thisImg.(alphaFieldname);
+        theAlpha = double(thisImg.(alphaFieldname));
+        if any(theAlpha > 2); theAlpha = theAlpha/255; end
         alphaCell = {'alpha', theAlpha};
     else
         alphaCell={};
     end
     
+    % convert 0-255 to 0-1 if needed
+    outMatrix = double(thisImg.(matrixFieldname));
+    if any(outMatrix > 2)
+        outMatrix = outMatrix/255;
+    end
+   
+    
     thisOut = fullfile(thePath, [theFn theExt]);
     switch theExt
         case '.pdf'
             fig = figure('Visible', 'off');
-            h = imshow(thisImg.(matrixFieldname));
+            h = imshow(outMatrix);
             if ~isempty(alphaCell); set(h, 'AlphaData', theAlpha); end
             try
                 % https://github.com/altmany/export_fig
@@ -135,7 +143,7 @@ for iImg = 1:nImg
                 print(fig, thisOut,'-dpng');
             end
         otherwise
-            imwrite(thisImg.(matrixFieldname), thisOut, alphaCell{:});
+            imwrite(outMatrix, thisOut, alphaCell{:});
     end
     
     
