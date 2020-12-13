@@ -1,4 +1,4 @@
-function compStimDir = im_mkcomposite(stimDir, misalignPx, gapPx, gapExtra, gapColor)
+function compStimDir = im_mkcomposite(stimDir, groupFn, misalignPx, gapPx, gapExtra, gapColor)
 % compStimDir = im_mkcomposite(stimDir, gapPixels, gapColor)
 %
 % Create composite stimuli by combining the top and bottom halves of
@@ -7,12 +7,16 @@ function compStimDir = im_mkcomposite(stimDir, misalignPx, gapPx, gapExtra, gapC
 % Inputs:
 %    stimDir      <structure> stimulus structure created by im_dir and
 %                  im_readdir.
+%    groupFn      <string> group fieldname to divide the faces into groups.
+%                  Default is '' (i.e., only one group for all faces).
 %    misalignedPx <integer> the size (in pixels) of misaligned. Positive
 %                  number refers to misalignment to right; negative is to
 %                  the left. Default is the half of the stim width to the
 %                  right (and the aligned images).
 %    gapPx        <integer> pixels used for the gap between top and bottom
 %                  halves. Default is 3.
+%    gapExtra     <numeric> the width of the gap line. Default is one
+%                  quarter of the face width (for each side).
 %    gapColor     <integer vector> 1X3 vector. Default is [255, 255, 255],
 %                  i.e., white.
 %
@@ -27,6 +31,10 @@ function compStimDir = im_mkcomposite(stimDir, misalignPx, gapPx, gapExtra, gapC
 % stimDir = im_readdir(imDir);
 % compStimDir = im_mkcomposite(stimDir);
 % im_writedir(compStimDir);
+
+if ~exist('groupFn', 'var') || isempty(groupFn)
+    groupFn = '';
+end
 
 if ~exist('misalignPx', 'var') || isempty(misalignPx)
     misalignPx = size(stimDir(1).matrix, 2)/2;
@@ -44,7 +52,12 @@ if ~exist('gapColor', 'var') || isempty(gapColor)
 end
 
 % group information
-groups = {stimDir.condition};
+if isempty(groupFn)
+    groupFn = 'tempgroup';
+    onegroup = repmat({'onegroup'}, length(stimDir), 1);
+    [stimDir.(groupFn)] = onegroup{:};
+end
+groups = {stimDir.(groupFn)};
 groupList = unique(groups);
 nGroup = numel(groupList);
 
