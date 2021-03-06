@@ -14,6 +14,9 @@ function [imScrambled, imScrmAlpha] = im_boxscramble(imMatrix, imAlpha, widthPat
 %     imScramAlpha  <numeric array> box scrambled alpha layer.
 %
 % Created by Haiyang Jin (11-Aug-2020)
+%
+% See also:
+% im_bscrambledir; im_pscrambledir; im_phasescramble
 
 if ~exist('widthPatch', 'var') || isempty(widthPatch)
     widthPatch = 1;

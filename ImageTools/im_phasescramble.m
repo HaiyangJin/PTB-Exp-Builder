@@ -10,6 +10,9 @@ function imScrambled = im_phasescramble(imMatrix)
 %     imScrambled   <numeric array> phase-scrambled image matrix.
 %
 % Created by Haiyang Jin (18-Feb-2020)
+%
+% See also:
+% im_bscrambledir; im_pscrambledir; im_boxscramble
 
 % standarize the image matrix
 im = mat2gray(double(imMatrix));
