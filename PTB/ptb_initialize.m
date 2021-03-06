@@ -13,9 +13,9 @@ Priority(1);
 warning('off','MATLAB:sprintf:InputForPercentSIsNotOfClassChar');
 warning('off','MATLAB:fprintf:InputForPercentSIsNotOfClassChar');
 
+param = ptb_winrect(param);
 % if it is in debug mode
 if param.isDebug
-    param.winrect = [100 100 1300 900]; % default for debug mode
     param.SkipSyncTests = 1;  % skip screen sync test
 end
 
