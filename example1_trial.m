@@ -69,10 +69,7 @@ else
     
     % wrong key, double key or timeout
     beep;
-    DrawFormattedText(param.w, noRespText, 'center', 'center', param.forecolor);
-    Screen('Flip',param.w);
-    RestrictKeysForKbCheck([]);
-    KbWait([], 2);
+    ptb_disptext(param, noRespText);
 end
 
 % display feedback if necessary

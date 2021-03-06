@@ -176,10 +176,7 @@ else
             'Please press any key to continue...']);
     end
     beep;
-    DrawFormattedText(w, noRespText,'center','center',forecolor);
-    Screen('Flip',w);
-    RestrictKeysForKbCheck([]);
-    KbWait([], 2);
+    ptb_disptext(param, noRespText);
 end
 
 % display feedback if necessary

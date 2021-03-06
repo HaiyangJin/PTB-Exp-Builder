@@ -100,11 +100,7 @@ acc = ptb_output(param);
 %% Finishing screen
 if (~quitNow)
     doneText = sprintf('The current session is finished!\n \nPlease contact the experimenter.');
-    DrawFormattedText(param.w, doneText, 'center', 'center', param.forecolor);
-    Screen('Flip', param.w);
-    RestrictKeysForKbCheck(param.instructKey);
-    KbWait([],2);
-    clear doneText;
+    ptb_disptext(param, doneText, param.instructKey);
 end
 
 % close all screens
