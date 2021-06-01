@@ -24,6 +24,8 @@ function im_filtered = im_sffilter(imMatrix, varargin)
 %                 is 2.
 %    'filter'    <integer> which filter to be applied? 0 == lowpass; 
 %                 1 == highpass (default); 2 == bandpass.
+%    'contrast'  <numeric> contrast of the output image. Default is 1.
+%    'luminance' <numeric> luminance of the output image. Default is 0. 
 %
 % Output:
 %    im_filtered <numeric array> spatial frequency filtered image array.
@@ -35,6 +37,8 @@ defaultOpts.type = 'gauss';
 defaultOpts.cutoff = 8;
 defaultOpts.order = 2;
 defaultOpts.filter = 1;
+defaultOpts.contrast = 1;
+defaultOpts.luminance = 0;
 
 opts = ptb_mergestruct(defaultOpts, varargin{:});
 
@@ -111,17 +115,21 @@ switch opts.type
         BandFrequencies = real(BandFrequencies(1:nx,1:ny));
         
     otherwise
-        error('opt.type must be "butt" or "gauss"');
+        error('".type" must be "butt" or "gauss".');
 end
 
 if opts.filter == 0
-    im_filtered = LowFrequencies;
+    raw_filtered = LowFrequencies;
 elseif opts.filter == 1
-    im_filtered = HighFrequencies;
+    raw_filtered = HighFrequencies;
 elseif opts.filter == 2
-    im_filtered = BandFrequencies;
+    raw_filtered = BandFrequencies;
 else 
-    error('You need to set opt.filter to 0  1 or 2.');
+    error('You need to set .filter to 0, 1 or 2.');
 end
+
+% apply the contrast and luminance
+norm_filtered = (raw_filtered - mean(raw_filtered(:)))/std(raw_filtered(:));
+im_filtered = norm_filtered * opts.contrast + opts.luminance;
 
 end
