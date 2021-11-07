@@ -11,13 +11,13 @@ function S = ptb_mergestruct(varargin)
 % Example 1: 
 %  >> s1=struct('foo',7,'bar','some string');
 %  >> s2=struct('foo',14,'something',25);
-%  >> s3 = mergestruct(s1,s2)
+%  >> s3 = ptb_mergestruct(s1,s2)
 %  s3 = 
 %     foo: 14
 %     bar: 'some string'
 %     something: 25
 %
-%  >> s4 = mergestruct(s3,'foo',32,'code,'helloworld')
+%  >> s4 = ptb_mergestruct(s3,'foo',32,'code,'helloworld')
 %  s4 = 
 %     foo: 32
 %     bar: 'some string'
@@ -25,7 +25,7 @@ function S = ptb_mergestruct(varargin)
 %     code: 'helloworld'
 %
 % Example 2: 
-%  >> s1=mergestruct('foo',7,'bar','some string','foo',32);
+%  >> s1 = ptb_mergestruct('foo',7,'bar','some string','foo',32);
 %  s1 = 
 %     foo: 32
 %     bar: 'some string'
