@@ -11,10 +11,17 @@ function stimDir = im_setluminance(stimDir, reflum, mask)
 %    mask         <boo array> which pixels will be used to calculate the
 %                  luminance differences, which will be removed from all
 %                  pixels. Default is all pixels.
-%              OR <str> 'pngalpha': alpha layer of the png file will be
-%                  used as the mask; 'upperleft': only the left upper
-%                  corner of the first layer is 1 in the mask.
+%              OR <str> 'upperleft': only the left upper corner of the first
+%                  layer is 1 in the mask; other string: if it is a field
+%                  name of stimDir, this field will be used as the mask
+%                  (e.g., 'alpha' for png files). 
 %
+% % Example 1: use the mean luminance of all stimuli as reference.
+% stimDir = im_setluminance(stimDir, 'meanlum');
+%
+% % Example 2: use the alpha layer of the png file as the mask;
+% stimDir = im_setluminance(stimDir, '', 'alpha');
+% 
 % Output:
 %    stimDir      <struct> the updated stimulus struct.
 %
@@ -40,14 +47,13 @@ if ~exist('mask', 'var') || isempty(mask)
 end
 if ischar(mask)
     switch mask
-        case 'pngalpha'
-            % do nothing here (will do something in the for loop)
         case 'leftupper'
             mask = zeros(size(stimDir(1).matrix));
             mask(ones(1, ndims(mask))) = 1;
 
         otherwise
-            error('Mask for %s is not available.', mask);
+            % e.g., mask = 'alpha';
+            field = mask;
     end
 end
 
@@ -59,8 +65,8 @@ for i = 1:nImg
     themat = stimDir(i).matrix;
 
     % use the alpha as mask if needed
-    if ischar(mask) && strcmp(mask, 'pngalpha') && endsWith(stimDir(i).fn, 'png')
-        mask = stimDir(i).alpha;
+    if ischar(mask) && isfield(stimDir, field)
+        mask = stimDir(i).(field);
     end
 
     % calculate the luminance differences
