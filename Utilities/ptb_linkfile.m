@@ -61,7 +61,7 @@ end
 subsrccell{nsubf+1, 1} = fullfile({files.folder}, {files.name})';
 subtrgcell_link{nsubf+1, 1} = repmat({target}, numel({files.name}), 1);
 if ~isempty(files)
-    subtrgcell_copy{iSubf+1, 1} = fullfile(target, files.name);
+    subtrgcell_copy{end, 1} = {fullfile(target, files.name)};
 end
 
 % combine all files in both main and subfolders

@@ -78,7 +78,7 @@ if reformat
     % reformat stimuli structure by group (condition) names
     tempDir = cellfun(@(x) imgDir(strcmp({imgDir.condition}, x)), ...
         unique({imgDir.condition}), 'uni', false);
-    imgDir = vertcat(tempDir{:});
+    imgDir = horzcat(tempDir{:});
 end
     
 end
