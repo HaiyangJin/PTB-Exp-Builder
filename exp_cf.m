@@ -1,4 +1,4 @@
-function exp_cf(subjCode, cfVersion, skipSyncTest, paramUpdate)
+function exp_cf(subjCode, cfVersion, skipSyncTest, varargin)
 % exp_cf(subjCode, cfVersion, skipSyncTest)
 % 
 % This function runs the different versions of composite face tasks.
@@ -54,11 +54,6 @@ if ~exist('skipSyncTest', 'var') || isempty(skipSyncTest)
     skipSyncTest = 0;
 end
 param.SkipSyncTests = skipSyncTest;  % will skip in debug mode
-
-% param update
-if ~exist('paramUpdate', 'var') || isempty(paramUpdate)
-    paramUpdate = struct([]);
-end
 
 % add the functions folder to the path
 clc;
@@ -215,7 +210,7 @@ param.do_trial = @cf_trial; % run trials
 param.do_output = @cf_outtable;  % process output
 
 %% Update fieldnames of param with pre-defined values
-param = ptb_updatestruct(param, paramUpdate);
+param = ptb_mergestruct(param, varargin);
 
 %% Run the experiment
 ptb_runexp(param);
