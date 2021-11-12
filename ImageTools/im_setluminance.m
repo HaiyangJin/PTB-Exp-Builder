@@ -64,13 +64,15 @@ for i = 1:nImg
 
     themat = stimDir(i).matrix;
 
-    % use the alpha as mask if needed
+    % use the 'alpha' or other field as mask if needed
     if ischar(mask) && isfield(stimDir, field)
-        mask = stimDir(i).(field);
+        themask = stimDir(i).(field);
+    else
+        themask = mask;
     end
 
     % calculate the luminance differences
-    difflum = mean(themat(logical(mask)), 'all') - reflum;
+    difflum = mean(themat(logical(themask)), 'all') - reflum;
 
     % updated stimulus
     stimDir(i).matrix = themat-difflum;

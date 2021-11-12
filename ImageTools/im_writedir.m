@@ -116,19 +116,14 @@ for iImg = 1:nImg
     
     % write the image
     if isfield(thisImg, alphaFieldname)
-        theAlpha = double(thisImg.(alphaFieldname));
-        if any(theAlpha > 2); theAlpha = theAlpha/255; end
+        theAlpha = uint8(thisImg.(alphaFieldname));
         alphaCell = {'alpha', theAlpha};
     else
         alphaCell={};
     end
     
     % convert 0-255 to 0-1 if needed
-    outMatrix = double(thisImg.(matrixFieldname));
-    if any(outMatrix > 2)
-        outMatrix = outMatrix/255;
-    end
-   
+    outMatrix = uint8(thisImg.(matrixFieldname));   
     
     thisOut = fullfile(thePath, [theFn theExt]);
     switch theExt
