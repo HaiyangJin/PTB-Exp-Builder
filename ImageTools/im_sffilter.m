@@ -19,7 +19,8 @@ function im_filtered = im_sffilter(imMatrix, varargin)
 %                 gaussan filter (default).
 %    'cutoff'    <numeric> % can be one number (when .filter is
 %                 lowpass or highpass)or [low,high] (when .filter is
-%                 bandpass). Default is 8.
+%                 bandpass). Default is 8. Also known as sigma of the
+%                 Gaussian filter kernel. 
 %    'order'     <integer> this is only needed if .type == 'butt'; default
 %                 is 2.
 %    'filter'    <integer> which filter to be applied? 0 == lowpass; 

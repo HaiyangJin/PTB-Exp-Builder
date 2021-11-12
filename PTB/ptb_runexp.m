@@ -44,10 +44,6 @@ param.queueKeyList = keyList;
 
 % Instruction
 ptb_instruction(param);
-% DrawFormattedText(param.w, param.instructText, 'center', 'center', param.forecolor);
-% Screen('Flip', param.w);
-% RestrictKeysForKbCheck(param.instructKey);
-% KbWait([],2);
 
 % Fixations
 param.fixarray = ptb_fixcross(param.screenX, param.screenY, ...
