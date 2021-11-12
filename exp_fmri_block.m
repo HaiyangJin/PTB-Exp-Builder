@@ -60,7 +60,7 @@ param.runCode = runCode;
 
 %% Stimuli
 % load the stimulus
-stimPath = fullfile('images_loc', filesep);
+stimPath = fullfile('stim_loc', filesep);
 param.imgDir = im_dir(stimPath, '', 1);
 param.nStimCat = numel(unique({param.imgDir.condition}));
 

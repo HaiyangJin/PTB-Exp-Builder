@@ -35,5 +35,6 @@ codegen/
 octave-workspace
 
 Matlab Data/
-
 Excel Data/
+
+stim*/
