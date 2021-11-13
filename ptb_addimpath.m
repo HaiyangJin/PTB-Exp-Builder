@@ -12,5 +12,6 @@ function ptb_addimpath()
 thepath = fileparts(which('ptb_addimpath'));
 % add path
 addpath(fullfile(thepath, 'ImageTools'));
+addpath(fullfile(thepath, 'Utilities'))
 
 end
