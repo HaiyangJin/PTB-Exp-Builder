@@ -66,7 +66,8 @@ for iSubf = 1:nsubf
 end
 
 % for files in source
-subsrccell{nsubf+1, 1} = fullfile({files.folder}, {files.name})';
+subsrccell{nsubf+1, 1} = fullfile(source, {files.name})';
+subtrgcell{nsubf+1, 1} = fullfile(target, {files.name})';
 
 % combine all files in both main and subfolders
 srccell = vertcat(subsrccell{:});
@@ -87,7 +88,7 @@ function cmd = link_move(source, target)
 sourcefn = [fn, ext];
 
 % save linked files in the temporary folder
-cmd = sprintf('ln -s %s %s', ptb_2cmdpath(source), sourcefn);
+cmd = sprintf('ln -s %s %s', ptb_2cmdpath(source), ptb_2cmdpath(sourcefn));
 system(cmd);
 
 % move files from the temporary folders to the target folder
