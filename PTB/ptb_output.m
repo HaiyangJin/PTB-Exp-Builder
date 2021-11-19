@@ -5,13 +5,13 @@ function [acc, nResp] = ptb_output(param, fnExtra, outPath)
 % *.xlsx and *.csv.
 % 
 % Inputs:
-%     param         <structure> experiment parameters.
-%     fnExtra       <string> unique strings at the end of the file name.
-%     outPath       <string> where these files will be saved.
+%     param         <struc> experiment parameters.
+%     fnExtra       <str> unique strings at the end of the file name.
+%     outPath       <str> where these files will be saved.
 % 
 % Output:
-%     acc           <numeric> the average accuracy across all trials.
-%     nResp         <integer> the number of responses detected.
+%     acc           <num> the average accuracy across all trials.
+%     nResp         <int> the number of responses detected.
 %
 % Created by Haiyang Jin (2018)
 
@@ -42,18 +42,17 @@ if ~exist('outPath', 'var') || isempty(outPath)
 end
 
 %% file names
-excelPath = fullfile(outPath, 'Excel Data');
-matPath = fullfile(outPath, 'Matlab Data');
-if ~exist(excelPath, 'dir'); mkdir(excelPath); end
-if ~exist(matPath, 'dir'); mkdir(matPath); end
-% backupDir = ['']; % this should be the full path to the dropbox on the main experiment computer
+csvPath = fullfile(outPath, 'data');
+matPath = fullfile(outPath, 'matbackup');
+ptb_mkdir(csvPath);
+ptb_mkdir(matPath);
 
 outputFn = [param.subjCode '_' param.expCode '_' param.expAbbv '_' fnExtra];
-theExcelFile = fullfile(excelPath, [outputFn '.xlsx']);
+theCSVFile = fullfile(csvPath, [outputFn '.csv']);
 theMatlabFile = fullfile(matPath, [outputFn '.mat']);
 
 %% save the files
 save(theMatlabFile, '-struct', 'param');
-writetable(param.dtTable, theExcelFile);
+writetable(param.dtTable, theCSVFile);
 
 end
