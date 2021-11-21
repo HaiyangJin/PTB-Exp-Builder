@@ -188,6 +188,8 @@ end
 param.expEndTime = GetSecs;
 param.expDuration = param.expEndTime - param.expStartTime;
 [acc, nResp] = ptb_output(param, stimuli, sprintf('Run%d', param.runCode));
+% save par files used in FreeSurfer
+fmri_fspar(param.dtTable, '', 1);
 
 %% Finishing...
 % close all screens
