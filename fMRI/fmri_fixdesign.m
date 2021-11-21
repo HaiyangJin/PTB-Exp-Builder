@@ -40,11 +40,11 @@ if isstruct(nStimCat)
     
 end
 
-if ~exist('nRepetition', 'var') && isempty(nRepetition)
+if ~exist('nRepetition', 'var') || isempty(nRepetition)
     nRepetition = 1;
 end
 
-if ~exist('nBtwFixBlock', 'var') && isempty(nBtwFixBlock)
+if ~exist('nBtwFixBlock', 'var') || isempty(nBtwFixBlock)
     nBtwFixBlock = nStimCat;
 end
 
