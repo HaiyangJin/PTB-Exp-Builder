@@ -7,24 +7,24 @@ function [output, quitNow] = fmri_block_dotrial(ttn, param, stimuli, ...
 % blocks.
 %
 % Inputs:
-%     ttn            <numeric> this trial number. if ttn is empty, this
-%                    trial/block will be the fixation only task.
-%     param          <structure> the experiment parameters.
-%     stimuli        <structure> stimuli to be shown in this trial. [only
-%                    information of one image is included]
-%     runStartTime   <numeric> the start time point of this run.
-%     isFixBlock     <logical> 1: a fixation only block; 0: one trial in
-%                    the stimulus blocks.
+%     ttn            <num> this trial number. if ttn is empty, this
+%                     trial/block will be the fixation only task.
+%     param          <struct> the experiment parameters.
+%     stimuli        <struct> stimuli to be shown in this trial. [only
+%                     information of one image is included]
+%     runStartTime   <num> the start time point of this run.
+%     isFixBlock     <boo> 1: a fixation only block; 0: one trial in
+%                     the stimulus blocks.
 %
 % Output:
-%     output         <structure> this trial information to be saved.
-%     quitNow        <logical> 1: quit the experiment. 0: do not quit.
+%     output         <struct> this trial information to be saved.
+%     quitNow        <boo> 1: quit the experiment. 0: do not quit.
 %
 % Created by Haiyang Jin (27-Feb-2020)
 
 %% Preparation
 
-if nargin < 1 || isempty(ttn)
+if ~exist('ttn', 'var') || isempty(ttn)
     ttn = 0;
     isFixBlock = 1;
     
@@ -40,12 +40,12 @@ else
 end
 
 % by default use the param.runStartTime
-if nargin < 4 || isempty(runStartTime)
+if ~exist('runStartTime', 'var') || isempty(runStartTime)
     runStartTime = param.runStartTime;
 end
 
 % by default it is a trial [in stimulus block]
-if nargin < 5 || isempty(isFixBlock)
+if ~exist('isFixBlock', 'var') || isempty(isFixBlock)
     isFixBlock = 0;
 end
 

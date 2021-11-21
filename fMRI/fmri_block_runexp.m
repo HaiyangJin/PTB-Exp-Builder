@@ -4,7 +4,7 @@ function fmri_block_runexp(param)
 % This funciton runs an fMRI experiment with block design.
 %
 % Input:
-%     parameter            <structure> experiment structure
+%     parameter            <struct> experiment structure
 %
 % Created by Haiyang Jin (27-Feb-2020)
 
@@ -124,29 +124,24 @@ if ~quitNow
                 
                 % quit if experimenter key is pressed
                 if quitNow; break; end
-                
-            end
+            end % ttn
             
             % update the start trial number (within all stimulus blocks)
             tnStart = tn;
             
-        end
-        
+        end % isFixBlock
         % quit if experimenter key is pressed
         if quitNow; break; end
-        
-    end
-    
-end
+    end % iBlock
+end % quitNow
 
 % run finishes
 param.runEndTime = GetSecs;
 param.runDuration = param.runEndTime - param.runStartTime;
 
-
 %% Finishing screen
 if ~quitNow
-    doneText = sprintf('This part is finished');
+    doneText = sprintf('This part is finished.');
     DrawFormattedText(param.w, doneText, 'center', 'center', param.forecolor);
     Screen('Flip', param.w);
 end
@@ -187,7 +182,8 @@ end
 % save the output
 param.expEndTime = GetSecs;
 param.expDuration = param.expEndTime - param.expStartTime;
-[acc, nResp] = ptb_output(param, stimuli, sprintf('Run%d', param.runCode));
+[acc, nResp] = ptb_output(param, sprintf('Run%d', param.runCode));
+
 % save par files used in FreeSurfer
 fmri_fspar(param.dtTable, '', 1);
 

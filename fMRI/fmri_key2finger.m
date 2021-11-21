@@ -1,23 +1,23 @@
 function fingers = fmri_key2finger(keys, saveCell)
-% fingers = fmri_key2finger(keys)
+% fingers = fmri_key2finger(keys, saveCell)
 %
 % This function converts the key names [1to 5] to fingers.
 %
 % Input:
-%    keys                <numeric> or <cell of strings> KeyNames used for
-%                        responses. It has to be from 1 to 5.
-%    saveCell            <logical> 1: the output will be saved as a cell.
-%                        0: the output will be saved as a string if only
-%                        one finger name is obtained.
+%    keys                <num> or <cell str> KeyNames used for responses. 
+%                         It has to be from 1 to 5.
+%    saveCell            <boo> 1: the output will be saved as a cell.
+%                         0: the output will be saved as a string if only
+%                         one finger name is obtained.
 %
 % Output:
-%    fingers             <cell of strings> names of fingers to be used in
-%                        fMRI experiments (the response box)
+%    fingers             <cell str> names of fingers to be used in fMRI 
+%                         experiments (the response box).
 %
 % Created by Haiyang Jin (3-March-2020)
 
 % By default fingers will be a string if there is only one finger in the output 
-if nargin < 2 || isempty(saveCell)
+if ~isempty('saveCell', 'var') || isempty(saveCell)
     saveCell = 0;
 end
 

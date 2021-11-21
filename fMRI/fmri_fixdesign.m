@@ -5,18 +5,17 @@ function fixBlockNum = fmri_fixdesign(nStimCat, nRepetition, nBtwFixBlock)
 % design used in the block fmri experiments.
 %
 % Inputs:
-%     nStimCat           <integer> the number of stimulus category.
-%                        or <structure> the experiment parameters which
-%                        include the fieldnames (nStimCat, nRepetition,
-%                        nBtwFixBlock).
-%     nRepetition        <integer> how many times each stimulus category are
-%                        repeated.
-%     nBtwFixBlock       <integer> which design is used to generates the
-%                        fixation block numbers. 1
+%     nStimCat           <int> the number of stimulus category.
+%                     or <struct> the experiment parameters which include
+%                         the fieldnames (nStimCat, nRepetition,
+%                         nBtwFixBlock).
+%     nRepetition        <int> how many times each stimulus category are
+%                         repeated.
+%     nBtwFixBlock       <int> which design is used to generates the
+%                         fixation block numbers. 1
 %
 % Output:
-%     fixBlockNum    <vector of integers> the block numbers of fixation
-%                    blocks.
+%     fixBlockNum        <int vec> the block numbers of fixation blocks.
 %
 % Created by Haiyang (1-Mar-2020)
 
@@ -41,11 +40,11 @@ if isstruct(nStimCat)
     
 end
 
-if nargin < 2 && isempty(nRepetition)
+if ~exist('nRepetition', 'var') && isempty(nRepetition)
     nRepetition = 1;
 end
 
-if nargin < 3 && isempty(nBtwFixBlock)
+if ~exist('nBtwFixBlock', 'var') && isempty(nBtwFixBlock)
     nBtwFixBlock = nStimCat;
 end
 

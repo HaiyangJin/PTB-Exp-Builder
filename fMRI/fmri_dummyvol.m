@@ -5,11 +5,11 @@ function [output, quitNow] = fmri_dummyvol(param)
 % of the run.
 %
 % Inputs:
-%     param             <structure> experiment parameter structure
+%     param             <struct> experiment parameter structure
 %
 % Output:
-%     output            <structure> output structure
-%     quitNow           <logical> quit the experiment
+%     output            <struct> output structure
+%     quitNow           <boo> quit the experiment
 %
 % Created by Haiyang Jin (1-March-2020)
 

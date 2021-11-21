@@ -2,11 +2,11 @@ function param = fmri_block_stim(param, stimuli)
 % load stimulus information for composite face task.
 %
 % Input:
-%     param           <structure> parameters of the exp
-%     stimuli         <structure> stimulus structure
+%     param           <struct> parameters of the exp
+%     stimuli         <struct> stimulus structure
 %
 % Output:
-%     param           <structure> parameters of the exp
+%     param           <struct> parameters of the exp
 %
 % Created by Haiyang Jin (26-Feb-2020)
 
