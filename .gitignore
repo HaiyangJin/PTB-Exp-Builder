@@ -34,7 +34,9 @@ codegen/
 # Octave session info
 octave-workspace
 
-Matlab Data/
-Excel Data/
+data/
+MatBackup/
+parfile/
 
 stim*/
+*stim/

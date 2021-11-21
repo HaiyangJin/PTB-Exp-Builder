@@ -43,13 +43,13 @@ end
 
 %% file names
 csvPath = fullfile(outPath, 'data');
-matPath = fullfile(outPath, 'matbackup');
+matPath = fullfile(outPath, 'MatBackup');
 ptb_mkdir(csvPath);
 ptb_mkdir(matPath);
 
-outputFn = [param.subjCode '_' param.expCode '_' param.expAbbv '_' fnExtra];
-theCSVFile = fullfile(csvPath, [outputFn '.csv']);
-theMatlabFile = fullfile(matPath, [outputFn '.mat']);
+outFn = [param.subjCode '_' param.expCode '_' param.expAbbv '_' fnExtra];
+theCSVFile = fullfile(csvPath, [outFn '.csv']);
+theMatlabFile = fullfile(matPath, [outFn '.mat']);
 
 %% save the files
 save(theMatlabFile, '-struct', 'param');
