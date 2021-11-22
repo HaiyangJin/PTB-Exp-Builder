@@ -25,6 +25,7 @@ param.dispPress = 1;
 %% Experiment inforamtion
 param.expCode = '999';
 param.expAbbv = 'fMRI_block';
+param.outpath= 'Output';
 
 %% Process the in-arguments
 % subject code
@@ -72,9 +73,9 @@ param.nSamePerBlock = 1;
 
 %% Experiment design (ed)
 % number of stimili in each block+
-param.nStimPerBlock = 12;
+param.nStimPerBlock = 5;
 % how many times all blocks are repeated
-param.nRepetition = 4;
+param.nRepetition = 2;
 
 % experiment design array
 clear param.conditionsArray;

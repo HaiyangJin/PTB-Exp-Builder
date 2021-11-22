@@ -34,10 +34,7 @@ codegen/
 # Octave session info
 octave-workspace
 
-data/
-MatBackup/
-parfile/
-eventfile/
+Output/
 
 /stim*/
 /*stim/

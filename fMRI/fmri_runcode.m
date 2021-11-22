@@ -7,7 +7,7 @@ function runCode = fmri_runcode(param, outPath)
 % Inputs:
 %     param         <struct> the experiment parameters. [only use .SubjCode,
 %                    .expCode, .expAbbv]
-%     outputPath    <str> the path to save the output files.
+%     outPath       <str> the path to save the output files.
 %
 % Output:
 %     runCode       <int> the run code.
@@ -16,6 +16,10 @@ function runCode = fmri_runcode(param, outPath)
 
 if ~exist('outPath', 'var') || isempty(outPath)
     outPath = pwd;
+end
+
+if isfield(param, 'outpath')
+    outPath = param.outpath;
 end
 
 % outputfilename

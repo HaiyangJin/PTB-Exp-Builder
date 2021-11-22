@@ -182,10 +182,10 @@ end
 % save the output
 param.expEndTime = GetSecs;
 param.expDuration = param.expEndTime - param.expStartTime;
-[acc, nResp] = ptb_output(param, sprintf('Run%d', param.runCode));
+[acc, nResp] = ptb_output(param, sprintf('Run%d', param.runCode), param.outpath);
 
 % save par files used in FreeSurfer
-fmri_parevent(param.dtTable, '', 1);
+fmri_parevent(param.dtTable, 'outpath', param.outpath);
 
 %% Finishing...
 % close all screens

@@ -1,14 +1,16 @@
-function [outTable, eventTable] = fmri_parevent(input, condOrder, boxcar, extraFn, outtype)
-% [outTable, eventTable] = fmri_parevent(input, condOrder, boxcar, extraFn, outtype)
+function [outTable, eventTable] = fmri_parevent(input, varargin)
+% [outTable, eventTable] = fmri_parevent(input, varargin)
 %
-% Converts the 'input' [i.e., the dtTable] into a par file in FreeSurfer
-% or/and Event tsv file in BIDS.
+% Converts the 'input' [i.e., dtTable] into a par file in FreeSurfer or/and
+% Event tsv file in BIDS.
 %
 % Inputs:
 %     input            <str> or <table> could be *.mat file containing
 %                       dtTable or an Excel file of dtTable. Or it also
 %                       could be dtTable (table).
-%     condOrder        <cell str> the order of the condition
+%
+% Varargin:
+%     condorder        <cell str> the order of the condition
 %                       categories. [If 'fixation' is included, it has to
 %                       be the first string.] <this is mainly useful for
 %                       par files in FreeSurfer.
@@ -16,15 +18,17 @@ function [outTable, eventTable] = fmri_parevent(input, condOrder, boxcar, extraF
 %                       trial are treated as stimuli (boxcar); 0: stimuli
 %                       and blank in the same trial are estimated
 %                       separately. [blank will be treated as fixations]
-%     extraFn          <str> extra strings to be added at the end of
+%     extrafn          <str> extra strings to be added at the end of
 %                       the par filename; default is ''.
-%     outtype          <int> 1, 2, 3 (default). 1: only output the par
+%     type             <int> 1, 2, 3 (default). 1: only output the par
 %                       files used in FreeSurfer. 2: only output the event
 %                       tsv files used in BIDS. 3: will output both types
 %                       of files.
+%     outpath          <str> where to save the output file; default is pwd.
 %
 % Output:
-%     outTable         <table> the paradigm file table
+%     outTable         <table> the paradigm file table.
+%     eventTable       <table> the Event tsv table in BIDS.
 %
 % Created by Haiyang Jin (28-Feb-2020)
 
@@ -43,6 +47,12 @@ end
 % process the 'input' and load dtTable
 if istable(input)
     dtTable = input;
+elseif isfield(input, 'dtTable')
+    % if input is struct
+    dtTable = intput.dtTable;
+    outTable = table;
+    eventTable = table;
+    if input.isDebug; return; end
 else
     % get the extension of the file
     [~, ~, ext] = fileparts(input);
@@ -59,10 +69,21 @@ else
             dtTable = readtable(input);
     end
 end
-
 % all the block name information
 blockNames = dtTable{:, 'StimCategory'};
 
+% default settings
+defaultOpts = struct(...
+    'condorder', [], ...
+    'boxcar', 1, ...
+    'extrafn', [], ...
+    'type', 3, ...
+    'outpath', pwd ...
+    );
+
+opts = ptb_mergestruct(defaultOpts, varargin);
+
+condOrder =opts.condorder;
 % the identifier to be applied
 if ~exist('condOrder', 'var') || isempty(condOrder)
     % use the alphabet order by default
@@ -76,30 +97,20 @@ elseif ~strcmp(condOrder{1}, 'fixation')
     condOrder = horzcat('fixation', condOrder);
 end
 
-% both stimuli and blank in the same trial are treated as stimuli by default.
-if ~exist('boxcar', 'var') || isempty(boxcar)
-    boxcar = 1;
-end
-
 % the default strings to be added at the end of the par file name
-if ~exist('extraFn', 'var') || isempty(extraFn)
-    extraFn = '';
-end
+extraFn = opts.extrafn;
 if ~isempty(extraFn) && ~startsWith(extraFn, '_extra-')
     extraFn = ['_extra-' extraFn];
 end
 
-if ~exist('outtype', 'var') || isempty(outtype)
-    outtype = 3;
-end
 types = {{'fs'}; {'bids'}; {'fs', 'bids'}};
-type = types{outtype};
+type = types{opts.type};
 
 % the column of block names
 nRowDtTable = numel(blockNames);
 
 % whether is the first trial in each block
-if boxcar
+if opts.boxcar
     blockRows = [true arrayfun(@(x) ~strcmp(blockNames{x}, blockNames{x-1}), 2:nRowDtTable)];
 else
     blockRows = true(1, nRowDtTable);
@@ -116,7 +127,7 @@ trial_type = blockNames(blockRows);
 % stimulus identifier
 Identifier = cellfun(@(x) find(strcmp(x, condOrder))-1, trial_type);
 % stimulus durations
-if boxcar
+if opts.boxcar
     duration = transpose([arrayfun(@(x) onset(x) - onset(x-1), 2:nRowPar), ...
         dtTable{nRowDtTable, 'RunEndTime'} - dtTable{nRowDtTable, 'RunStartTime'} -  onset(nRowPar)]);
 else
@@ -164,12 +175,12 @@ runCode = unique(dtTable.RunCode);
 if ~iscell(runCode) && isint(runCode); runCode = {num2str(runCode)};end
 expAbbv = unique(dtTable.ExpAbbv);
 outFn = sprintf('sub-%s_task-%s_run-%s%s', ...
-        subjCode{1}, expAbbv{1}, runCode{1}, extraFn);
+    subjCode{1}, expAbbv{1}, runCode{1}, extraFn);
 
 % Save par files used in FreeSurfer
 if ismember('fs', type)
     % the folder to save the par file
-    parFolder = fullfile(pwd, 'parfile');
+    parFolder = fullfile(opts.outpath, 'parfile');
     ptb_mkdir(parFolder);
     % the filename of the par file
     parFn = sprintf('%s.par', outFn);
@@ -194,7 +205,7 @@ if ismember('bids', type)
     eventTable = outTable(:, {'onset', 'duration', 'trial_type'});
 
     % the folder to save the event tsv file
-    bidsFolder = fullfile(pwd, 'eventfile');
+    bidsFolder = fullfile(opts.outpath, 'eventfile');
     ptb_mkdir(bidsFolder);
 
     % save Event table as tsv
