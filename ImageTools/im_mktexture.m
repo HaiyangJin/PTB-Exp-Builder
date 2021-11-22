@@ -1,24 +1,29 @@
-function imTexture = im_mktexture(window, imMatrix)
-% imTexture = im_mktexture(window, imMatrix)
+function imTexture = im_mktexture(window, X, alpha)
+% imTexture = im_mktexture(window, X, alpha)
 %
 % This function uses ptb_mktexture to make texture if window is not empty.
 %
 % Inputs:
-%     window        <numeric> the window index in PTB
-%     imMatrix      <matrix of numeric> the image matrix
+%     window        <int> the window index in PTB.
+%     X             <num array> the image matrix.
+%     alpha         <num mat> the alpha layer. Default is [].
 %
 % Output:
-%     imTexture     <numeric> the texture index for the image
+%     imTexture     <int> the texture index for the image
 %
 % Created by Haiyang Jin (19-Feb-2020)
 
 % stop if window is empty
-if nargin < 1 || isempty(window)
+if ~exist('window', 'var') || isempty(window)
     imTexture = '';
     return;
 end
 
+if ~exist('alpha', 'var') || isempty(alpha)
+    alpha = [];
+end
+
 % create texture
-imTexture = ptb_mktexture(window, imMatrix);
+imTexture = ptb_mktexture(window, cat(3, X, alpha));
 
 end

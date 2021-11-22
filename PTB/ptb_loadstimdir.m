@@ -5,15 +5,15 @@ function stimDir = ptb_loadstimdir(imgDir, window)
 % and .texture for displaying images later.
 %
 % Inputs:
-%     stimDir       <structure> or <array of structure> created by ptb_dirstim.m
-%     window        <double> should be param.w
+%     stimDir       <struct> or <array of structure> created by im_readdir.m
+%     window        <int> should be param.w
 %
 % Output:
-%     stimDir       <structure> stimuli structure
+%     stimDir       <struct> stimuli structure
 %
 % Created by Haiyang Jin (3-Feb-2020)
 
-if nargin < 2 || isempty(window)
+if ~exist('window', 'var') || isempty(window)
     window = '';
 end
 
