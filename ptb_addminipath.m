@@ -1,5 +1,5 @@
-function ptb_addimpath()
-% ptb_addimpath()
+function ptb_addminipath()
+% ptb_addminipath()
 %
 % Usually subdirectories in PTB-Exp-Builder should not be included in 
 % Matlab Path. But some functions in PTB-Exp-Builder/ImageTools may be 
@@ -9,7 +9,7 @@ function ptb_addimpath()
 % Created by Haiyang Jin (2021-11-12)
 
 % locate this function
-thepath = fileparts(which('ptb_addimpath'));
+thepath = fileparts(which('ptb_addminipath'));
 % add path
 addpath(fullfile(thepath, 'ImageTools'));
 addpath(fullfile(thepath, 'Utilities'))
