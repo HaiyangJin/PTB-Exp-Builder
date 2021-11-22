@@ -20,12 +20,16 @@ if isempty(param.dtTable)
     acc = 0;
     nResp = 0;
     return;
-elseif ismember('isCorrect', param.dtTable.Properties.VariableNames)
-    acc = 100*mean(param.dtTable.isCorrect, 'omitnan');
-    nResp = sum(~isnan(param.dtTable.isCorrect));
 else
     acc = NaN;
     nResp = NaN;
+end
+
+if ismember('isCorrect', param.dtTable.Properties.VariableNames)
+    acc = 100*mean(param.dtTable.isCorrect, 'omitnan');
+end
+if ismember('Response', param.dtTable.Properties.VariableNames)
+    nResp = sum(~isnan(param.dtTable.Response));
 end
 
 % Do not save files if debug model is on

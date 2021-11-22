@@ -159,6 +159,11 @@ else
     
 end
 
+if isnan(isSame) && correctAns==1
+    % missing a key press was treated as incorrect
+    ACC = 0;
+end
+
 %% trial information to be saved
 % trial and block numbers
 output.BlockNum = param.BlockNum;
