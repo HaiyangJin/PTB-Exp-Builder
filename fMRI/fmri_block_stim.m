@@ -53,7 +53,7 @@ for iRepeat = 1:param.nRepetition
     sameCell = arrayfun(@(x) transpose(randperm(size(thisStim, 1), ...
         param.nSamePerBlock)), 1:size(thisStim, 2), 'uni', false);
     
-    % combine the same code with the stimulus code (all stimuli)
+    % combine the "same" code with the stimulus code (all stimuli)
     stimCode = vertcat(horzcat(sameCell{:}), transpose(repmat(1:nImgPerBlock, param.nStimCat, 1)));
     
     % code array for images

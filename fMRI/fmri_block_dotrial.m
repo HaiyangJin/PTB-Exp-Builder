@@ -89,7 +89,7 @@ else
     %% Stimulus trials
     
     % this stimulus rect and position
-    [imgY, imgX] = size(stimuli.matrix);
+    [imgY, imgX, ~] = size(stimuli.matrix);
     stimRect = [0 0 imgX imgY];
     stimPosition = CenterRect([0 0 imgX imgY], param.screenRect);
     
@@ -105,7 +105,7 @@ else
     
     % process some trial information
     subBlockNum = param.nStimBlock;
-    stimCategory = stimuli.condition; % to be updated
+    stimCategory = stimuli.condition; 
     stimName = stimuli.fn;
     correctAns = stimuli.correctAns;
     
@@ -117,7 +117,7 @@ else
         % check if any key is pressed
         [isKey, keyTime, keyCode] = KbCheck;
         
-        % only the first response within each trial will be saved
+        % only the first response within each trial will be recorded
         if isKey && isnan(isSame)
             quitNow = any(keyCode(param.expKey));
             isSame = any(keyCode(param.respKeys(:, 1)));

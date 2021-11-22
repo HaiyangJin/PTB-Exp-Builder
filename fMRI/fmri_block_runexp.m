@@ -4,7 +4,7 @@ function fmri_block_runexp(param)
 % This funciton runs an fMRI experiment with block design.
 %
 % Input:
-%     parameter            <struct> experiment structure
+%     param            <struct> experiment structure
 %
 % Created by Haiyang Jin (27-Feb-2020)
 
@@ -91,7 +91,7 @@ if ~quitNow
             if quitNow; break; end
             
         else
-            %%%%% do stimuli blocks %%%%%
+            %%%%% do stimulus blocks %%%%%
             % the number (index) of fixation blocks
             param.nStimBlock = param.nStimBlock + 1;
             
