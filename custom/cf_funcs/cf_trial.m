@@ -137,7 +137,7 @@ end
 %%% Response screen %%%
 if ~pressed
     [pressed, firstPress] = KbQueueCheck();
-    DrawFormattedText(w, sprintf('Respond?'), 'center', param.screenY-150, forecolor);
+    DrawFormattedText(w, sprintf('Respond?'), 'center', 'center', forecolor);
     Screen('Flip', w);
 end
 

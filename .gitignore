@@ -37,6 +37,7 @@ octave-workspace
 data/
 MatBackup/
 parfile/
+eventfile/
 
-stim*/
-*stim/
+/stim*/
+/*stim/

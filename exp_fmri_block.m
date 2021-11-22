@@ -13,7 +13,7 @@ function exp_fmri_block(subjCode, isEmulated, runCode)
 % Created by Haiyang Jin (25-Feb-2020)
 
 % add the functions folder to the path
-funcFolers = {'PTB/', 'fMRI/', 'ImageTools/'};
+funcFolers = {'PTB/', 'fMRI/', 'ImageTools/', 'Utilities/'};
 cellfun(@addpath, funcFolers);
 % addpath(genpath('functions/'));
 
@@ -60,7 +60,7 @@ param.runCode = runCode;
 
 %% Stimuli
 % load the stimulus
-stimPath = fullfile('stim_loc', filesep);
+stimPath = fullfile('custom/stimuli/loc_stim', filesep);
 param.imgDir = im_dir(stimPath, '', 1);
 param.nStimCat = numel(unique({param.imgDir.condition}));
 
@@ -128,8 +128,8 @@ param.fixBlockNum = fmri_fixdesign(param);
 
 %% Setting for the screen
 param.frameExpected = 60;
-param.forecolor = 'black';  % (white, black, grey or numbers)
-param.backcolor = 'white';  % (white, black, grey or numbers)
+param.forecolor = 'white';  % (white, black, grey or numbers)
+param.backcolor = 'grey';  % (white, black, grey or numbers)
 param.winrect = [];         % [] Window Rect; % default [100 100 1300 900];  %[100 100 600 600];
 param.whichscreen = [];     % which screen to display stimuli
 

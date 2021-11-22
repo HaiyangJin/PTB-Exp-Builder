@@ -1,4 +1,4 @@
-function [output, quitNow] = example1_trial(ttn, param)
+function [output, quitNow] = demo1_trial(ttn, param)
 % Example do trial.
 %
 % Inputs:

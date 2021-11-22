@@ -1,19 +1,25 @@
 function exp_cf(subjCode, cfVersion, skipSyncTest, varargin)
-% exp_cf(subjCode, cfVersion, skipSyncTest)
+% exp_cf(subjCode, cfVersion, skipSyncTest, varargin)
 % 
 % This function runs the different versions of composite face tasks.
 %
 % Inputs:
-%    subjCode      <integer> subject code.
-%    cfVersion     <string> the version of the composite face task.
+%    subjCode      <int> subject code.
+%    cfVersion     <str> the version of the composite face task.
 %                   'scf' -- standard composite face task (partial design);
 %                   'cf' -- complete design (without cues);
 %                   'ccf' -- complete design (with cues);
 %                   Default is 'cf'.
-%    skipSyncTest  <logical> 0 [default]: do not skip the sync test in 
+%    skipSyncTest  <boo> 0 [default]: do not skip the sync test in 
 %                   PsychToolbox. 1: skip the test.
 %
 % Created by Haiyang Jin (5-Feb-2019).
+
+% add the functions folder to the path
+clc;
+funcFolers = {'PTB/', 'ImageTools/', 'Utilities/', 'custom/cf_funcs/'};
+cellfun(@addpath, funcFolers);
+% addpath(genpath('functions/'));
 
 % Deal with inputs
 if ~exist('subjCode', 'var')
@@ -55,14 +61,9 @@ if ~exist('skipSyncTest', 'var') || isempty(skipSyncTest)
 end
 param.SkipSyncTests = skipSyncTest;  % will skip in debug mode
 
-% add the functions folder to the path
-clc;
-addpath('PTB/');
-% addpath(genpath('functions/'));
-
 %% Stimuli
 % faces
-stimPath = fullfile('CF_LineFaces', filesep); % CF_LineFaces
+stimPath = fullfile('custom/stimuli/CF_LineFaces', filesep); % CF_LineFaces
 param.imgDir = im_dir(stimPath, {'png'}, 1);
 param.nFacePerGroup = 4;
 nGroup = numel(unique({param.imgDir.condition}));  % number of groups (folders)
@@ -70,7 +71,7 @@ nGroup = numel(unique({param.imgDir.condition}));  % number of groups (folders)
 param.alpha = 1;  % 0: transparent; 1: opaque
 
 % scrambled masks
-maskPath = fullfile('CF_LineMasks', filesep); % CF_LineMasks
+maskPath = fullfile('custom/stimuli/CF_LineMasks', filesep); % CF_LineMasks
 param.maskDir = im_dir(maskPath, {'png'});
 
 %% Experiment inforamtion
@@ -214,5 +215,9 @@ param = ptb_mergestruct(param, varargin);
 
 %% Run the experiment
 ptb_runexp(param);
+
+%% remove path
+cellfun(@rmpath, funcFolers);
+% rmpath(genpath('functions/'));
 
 end

@@ -1,4 +1,4 @@
-function exp_example1(subjCode)
+function exp_demo1(subjCode)
 % Example experiment main body.
 %
 % Input:
@@ -8,7 +8,7 @@ function exp_example1(subjCode)
 
 % add the functions folder to the path
 % clc;
-paths = {'PTB', 'ImageTools'};
+paths = {'PTB', 'ImageTools', 'Utilities/', 'custom/demo1_funcs'};
 cellfun(@addpath, paths);
 % addpath(genpath('functions/'));
 
@@ -61,7 +61,7 @@ param.trialsPerRest = 40;
 param.restMinimumTime = 10; % seconds
 
 %% Stimuli
-stimPath = fullfile('CF_LineFaces', filesep);
+stimPath = fullfile('custom/stimuli/CF_LineFaces', filesep);
 param.imgDir = im_dir(stimPath, {'png'});
 
 %% Trial parameters
@@ -91,7 +91,7 @@ param.textFont = 'Helvetica';
 param.textColor = 255;
 
 %% Run the Experiment
-param.do_trial = @example1_trial;
+param.do_trial = @demo1_trial;
 param.do_output = @ptb_outtable;
 
 ptb_runexp(param);
