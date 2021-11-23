@@ -18,10 +18,10 @@ ListenChar(2);
 param = ptb_initialize(param);
 
 % Load stimuli
-stimuli = ptb_loadstimdir(param.imgDir, param.w);
+stimuli = ptb_loadstimdir(param.imgDir, param.w, param.isim);
 % get the information about stimuli
 if isfield(param, 'do_stim') && ~isempty(param.do_stim)
-    param = param.do_stim(param, stimuli);
+    [param, stimuli] = param.do_stim(param, stimuli);
 end
 
 % Build the experiment design

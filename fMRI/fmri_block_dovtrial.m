@@ -1,10 +1,10 @@
-function [output, quitNow] = fmri_block_dotrial(ttn, param, stimuli, ...
+function [output, quitNow] = fmri_block_dovtrial(ttn, param, stimuli, ...
     runStartTime, isFixBlock)
-% [output, quitNow] = fmri_doblocktrial(ttn, param, stimuli, ...
-%    runStartTime, isFixBlock)
+% [output, quitNow] = fmri_block_dovtrial(ttn, param, stimuli, ...
+%     runStartTime, isFixBlock)
 %
 % Run the fixation blocks and the trials in the stimulus blocks (with
-% images). For displaying videos, see fmri_block_dovtrial(). 
+% videos). For displaying images, see fmri_block_dotrial().
 %
 % Inputs:
 %     ttn            <int> this trial number. if ttn is empty, this
@@ -20,17 +20,17 @@ function [output, quitNow] = fmri_block_dotrial(ttn, param, stimuli, ...
 %     output         <struct> this trial information to be saved.
 %     quitNow        <boo> 1: quit the experiment. 0: do not quit.
 %
-% Created by Haiyang Jin (27-Feb-2020)
-% 
+% Created by Haiyang Jin (2021-11-23)
+%
 % See also:
-% fmri_block_dovtrial
+% fmri_block_dotrial
 
 %% Preparation
 
 if ~exist('ttn', 'var') || isempty(ttn)
     ttn = 0;
     isFixBlock = 1;
-    
+
     % the baseline time for this fixation block
     baseTime = (param.nFixBlock - 1) * param.fixBloDuration + ...
         param.nStimBlock * param.stimBloDuration + ...
@@ -68,16 +68,16 @@ if isFixBlock
     %%% Fixation %%%
     Screen('FillRect', w, param.forecolor, param.fixarray);
     stimBeganAt = Screen('Flip', w);
-    
+
     % process some trial information
     subBlockNum = param.nFixBlock;
     stimCategory = 'fixation';
     stimName = 'fixation';
     correctAns = NaN;
-    
+
     % only experimenter key is allowed
     RestrictKeysForKbCheck(param.expKey);
-    
+
     while checkTime < param.fixBloDuration
         % check if experimenter key is pressed
         quitNow = KbCheck;
@@ -85,41 +85,68 @@ if isFixBlock
         % check the time
         checkTime = GetSecs - runStartTime - baseTime;
     end
-    
+
     stimEndAt = checkTime + runStartTime + baseTime; % (roughly, not accurate)
-    
+
 else
     %% Stimulus trials
-    
+
     % this stimulus rect and position
-    [imgY, imgX, ~] = size(stimuli.matrix);
-    stimRect = [0 0 imgX imgY];
-    stimPosition = CenterRect([0 0 imgX imgY], param.screenRect);
-    
+    stimRect = [0 0 stimuli.imgX stimuli.imgY];
+    stimPosition = CenterRect([0 0 stimuli.imgX stimuli.imgY], param.screenRect);
+
     % random jitters
     jitter = -param.jitter : param.jitter;
     xJitterRand = jitter(randperm(numel(jitter),1))*5; %
     yJitterRand = jitter(randperm(numel(jitter),1))*5; %
-    
-    % display the stimulus
-    Screen('DrawTexture', w, stimuli.texture, stimRect,...
-        OffsetRect(stimPosition, xJitterRand, yJitterRand), [], []);
-    stimBeganAt = Screen('Flip', w);
-    
+
     % process some trial information
     subBlockNum = param.nStimBlock;
-    stimCategory = stimuli.condition; 
-    stimName = stimuli.fn;
+    stimCategory = stimuli.condition;
+    stimName = stimuli.name;
     correctAns = stimuli.correctAns;
-    
+
     % only response and experimenter keys are allowed
     RestrictKeysForKbCheck([param.respKeys(:)', param.expKey]);
-    
+
+    % play video
+    Screen('PlayMovie', stimuli.movieptr, 1, 0);
+
+    %%%%%%% the first frame %%%%%%
+    texture = Screen('GetMovieImage', w, stimuli.movieptr);
+    % Draw the new texture immediately to screen:
+    Screen('DrawTexture', w, texture, stimRect,...
+        OffsetRect(stimPosition, xJitterRand, yJitterRand), [], []);
+    % Update display:
+    stimBeganAt = Screen('Flip', w);
+    % Release texture:
+    Screen('Close', texture);
+
+    % Playback loop: Runs until end of movie and check key press
     while checkTime < param.stimDuration
-        
+
+        % Wait for next movie frame, retrieve texture handle to it
+        texture = Screen('GetMovieImage', w, stimuli.movieptr, 1);
+
+        % Valid texture returned? A negative value means end of movie reached:
+        if texture<=0
+            % We're done, break out of loop:
+            break;
+        end
+
+        % Draw the new texture immediately to screen:
+        Screen('DrawTexture', w, texture, stimRect,...
+            OffsetRect(stimPosition, xJitterRand, yJitterRand), [], []);
+
+        % Update display:
+        Screen('Flip', w);
+
+        % Release texture:
+        Screen('Close', texture);
+
         % check if any key is pressed
         [isKey, keyTime, keyCode] = KbCheck;
-        
+
         % only the first response within each trial will be recorded
         if isKey && isnan(isSame)
             quitNow = any(keyCode(param.expKey));
@@ -130,36 +157,19 @@ else
                 disp(KbName(find(keyCode)));
             end
         end
-        
+
         if quitNow; break; end
         % check the time
         checkTime = GetSecs - runStartTime - baseTime;
     end
-    
-    % display the fixation
-%     Screen('FillRect', w, param.forecolor, OffsetRect(param.fixarray, ...
-%         xJitterRand, yJitterRand));
-    stimEndAt = Screen('Flip', w);
-    
-    while checkTime < param.trialDuration && ~quitNow
-        % check if any key is pressed
-        [isKey, keyTime, keyCode] = KbCheck;
-        % only the first response within each trial will be saved
-        if isKey && isnan(isSame)
-            quitNow = any(keyCode(param.expKey));
-            isSame = any(keyCode(param.respKeys(:, 1)));
-            ACC = isSame == correctAns;
-            RT = keyTime - stimBeganAt;
-            if param.dispPress
-                disp(KbName(find(keyCode)));
-            end
-        end
-        
-        if quitNow; break; end
-        % check the time
-        checkTime = GetSecs - runStartTime - baseTime;
-    end
-    
+    % Roughly when the video ends but actually it should be the onset of
+    % the next video
+    stimEndAt = GetSecs;
+
+    % Stop playback and close movie
+    Screen('PlayMovie', stimuli.movieptr, 0);
+    %     Screen('CloseMovie', stimuli.movieptr);
+
 end
 
 if isnan(isSame) && correctAns==1
