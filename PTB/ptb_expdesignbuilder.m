@@ -138,9 +138,6 @@ if isRand
     % randomize the whole design
     designFF = designFF(randperm(size(designFF,1)),:);
     
-    % sort by sortBlock (sort by the order in sortBlock).
-%     designFF = sortrows(designFF, [sortBlockNum, randBlockNum]);
-    
     nRandColu = numel(randBlockNum);  % number of columns for randBlockNum
     for iRand = nRandColu:-1:1 % reverse loop
         
@@ -177,6 +174,11 @@ if isRand
         % sort the design by sortBlockNum and to be randomized randBlock
         designFF = sortrows(designFF, [sortBlockNum, toBeRand]);
 
+    end
+
+    if nRandColu == 0
+        % sort by sortBlock (sort by the order in sortBlock).
+        designFF = sortrows(designFF, sortBlockNum);
     end
 end
 

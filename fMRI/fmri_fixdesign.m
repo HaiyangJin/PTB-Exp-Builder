@@ -22,6 +22,12 @@ function fixBlockNum = fmri_fixdesign(nStimCat, nRepetition, nBtwFixBlock)
 %% process inputs
 % if nStimCat is structure 
 if isstruct(nStimCat)
+
+    if nStimCat.fixBloDuration == 0
+        % return if the fixation block duration is 0
+        fixBlockNum = [];
+        return;
+    end
     
     if isfield(nStimCat, 'nRepetition')
         nRepetition = nStimCat.nRepetition;
