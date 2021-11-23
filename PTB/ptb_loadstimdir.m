@@ -1,12 +1,13 @@
-function stimDir = ptb_loadstimdir(imgDir, window)
-% stimDir = ptb_loadstimdir(imgDir, window)
+function stimDir = ptb_loadstimdir(imgDir, window, isim)
+% stimDir = ptb_loadstimdir(imgDir, window, isim)
 %
 % This function loads the stimDir created by ptb_dirstim and add .matrix
 % and .texture for displaying images later.
 %
 % Inputs:
-%     stimDir       <struct> or <array of structure> created by im_readdir.m
+%     stimDir       <struct> or <struct array> created by im_readdir.m
 %     window        <int> should be param.w
+%     isim          <boo> whether imgDir is image (default: 1) or video (0).
 %
 % Output:
 %     stimDir       <struct> stimuli structure
@@ -17,9 +18,19 @@ if ~exist('window', 'var') || isempty(window)
     window = '';
 end
 
+if ~exist('isim', 'var') || isempty(isim)
+    isim = 1;
+end
+
+% return if imgDir is not images (e.g., videos)
+if ~isim
+    stimDir = imgDir;
+    return;
+end
+
 % return if the dir is empty
 if isempty(imgDir)
-    stimDir = '';
+    stimDir = struct();
     return;
 end
 
