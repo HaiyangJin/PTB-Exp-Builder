@@ -162,13 +162,40 @@ else
         % check the time
         checkTime = GetSecs - runStartTime - baseTime;
     end
-    % Roughly when the video ends but actually it should be the onset of
-    % the next video
-    stimEndAt = GetSecs;
 
-    % Stop playback and close movie
-    Screen('PlayMovie', stimuli.movieptr, 0);
-    %     Screen('CloseMovie', stimuli.movieptr);
+    %%%%%%%%%% display the fixation/blank %%%%%%%%%%
+    %     Screen('FillRect', w, param.forecolor, OffsetRect(param.fixarray, ...
+    %         xJitterRand, yJitterRand));
+    if param.trialDuration > param.stimDuration
+        stimEndAt = Screen('Flip', w);
+    else
+        % Roughly when the video ends but actually it should be the onset of
+        % the next video
+        stimEndAt = GetSecs;
+
+        % Stop playback and close movie
+        Screen('PlayMovie', stimuli.movieptr, 0);
+        %     Screen('CloseMovie', stimuli.movieptr);
+    end
+
+    while checkTime < param.trialDuration && ~quitNow
+        % check if any key is pressed
+        [isKey, keyTime, keyCode] = KbCheck;
+        % only the first response within each trial will be saved
+        if isKey && isnan(isSame)
+            quitNow = any(keyCode(param.expKey));
+            isSame = any(keyCode(param.respKeys(:, 1)));
+            ACC = isSame == correctAns;
+            RT = keyTime - stimBeganAt;
+            if param.dispPress
+                disp(KbName(find(keyCode)));
+            end
+        end
+
+        if quitNow; break; end
+        % check the time
+        checkTime = GetSecs - runStartTime - baseTime;
+    end
 
 end
 

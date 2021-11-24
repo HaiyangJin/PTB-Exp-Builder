@@ -4,7 +4,7 @@ function [output, quitNow] = fmri_block_dotrial(ttn, param, stimuli, ...
 %    runStartTime, isFixBlock)
 %
 % Run the fixation blocks and the trials in the stimulus blocks (with
-% images). For displaying videos, see fmri_block_dovtrial(). 
+% images). For displaying videos, see fmri_block_dovtrial().
 %
 % Inputs:
 %     ttn            <int> this trial number. if ttn is empty, this
@@ -21,7 +21,7 @@ function [output, quitNow] = fmri_block_dotrial(ttn, param, stimuli, ...
 %     quitNow        <boo> 1: quit the experiment. 0: do not quit.
 %
 % Created by Haiyang Jin (27-Feb-2020)
-% 
+%
 % See also:
 % fmri_block_dovtrial
 
@@ -30,7 +30,7 @@ function [output, quitNow] = fmri_block_dotrial(ttn, param, stimuli, ...
 if ~exist('ttn', 'var') || isempty(ttn)
     ttn = 0;
     isFixBlock = 1;
-    
+
     % the baseline time for this fixation block
     baseTime = (param.nFixBlock - 1) * param.fixBloDuration + ...
         param.nStimBlock * param.stimBloDuration + ...
@@ -68,16 +68,16 @@ if isFixBlock
     %%% Fixation %%%
     Screen('FillRect', w, param.forecolor, param.fixarray);
     stimBeganAt = Screen('Flip', w);
-    
+
     % process some trial information
     subBlockNum = param.nFixBlock;
     stimCategory = 'fixation';
     stimName = 'fixation';
     correctAns = NaN;
-    
+
     % only experimenter key is allowed
     RestrictKeysForKbCheck(param.expKey);
-    
+
     while checkTime < param.fixBloDuration
         % check if experimenter key is pressed
         quitNow = KbCheck;
@@ -85,41 +85,41 @@ if isFixBlock
         % check the time
         checkTime = GetSecs - runStartTime - baseTime;
     end
-    
+
     stimEndAt = checkTime + runStartTime + baseTime; % (roughly, not accurate)
-    
+
 else
     %% Stimulus trials
-    
+
     % this stimulus rect and position
     [imgY, imgX, ~] = size(stimuli.matrix);
     stimRect = [0 0 imgX imgY];
     stimPosition = CenterRect([0 0 imgX imgY], param.screenRect);
-    
+
     % random jitters
     jitter = -param.jitter : param.jitter;
     xJitterRand = jitter(randperm(numel(jitter),1))*5; %
     yJitterRand = jitter(randperm(numel(jitter),1))*5; %
-    
+
     % display the stimulus
     Screen('DrawTexture', w, stimuli.texture, stimRect,...
         OffsetRect(stimPosition, xJitterRand, yJitterRand), [], []);
     stimBeganAt = Screen('Flip', w);
-    
+
     % process some trial information
     subBlockNum = param.nStimBlock;
-    stimCategory = stimuli.condition; 
+    stimCategory = stimuli.condition;
     stimName = stimuli.fn;
     correctAns = stimuli.correctAns;
-    
+
     % only response and experimenter keys are allowed
     RestrictKeysForKbCheck([param.respKeys(:)', param.expKey]);
-    
+
     while checkTime < param.stimDuration
-        
+
         % check if any key is pressed
         [isKey, keyTime, keyCode] = KbCheck;
-        
+
         % only the first response within each trial will be recorded
         if isKey && isnan(isSame)
             quitNow = any(keyCode(param.expKey));
@@ -130,17 +130,19 @@ else
                 disp(KbName(find(keyCode)));
             end
         end
-        
+
         if quitNow; break; end
         % check the time
         checkTime = GetSecs - runStartTime - baseTime;
     end
-    
-    % display the fixation
-%     Screen('FillRect', w, param.forecolor, OffsetRect(param.fixarray, ...
-%         xJitterRand, yJitterRand));
-    stimEndAt = Screen('Flip', w);
-    
+
+    %%%%%%%%%% display the fixation/blank %%%%%%%%%%
+    %     Screen('FillRect', w, param.forecolor, OffsetRect(param.fixarray, ...
+    %         xJitterRand, yJitterRand));
+    if param.trialDuration > param.stimDuration
+        stimEndAt = Screen('Flip', w);
+    end
+
     while checkTime < param.trialDuration && ~quitNow
         % check if any key is pressed
         [isKey, keyTime, keyCode] = KbCheck;
@@ -154,12 +156,12 @@ else
                 disp(KbName(find(keyCode)));
             end
         end
-        
+
         if quitNow; break; end
         % check the time
         checkTime = GetSecs - runStartTime - baseTime;
     end
-    
+
 end
 
 if isnan(isSame) && correctAns==1
