@@ -110,7 +110,7 @@ else
     RestrictKeysForKbCheck([param.respKeys(:)', param.expKey]);
 
     % play video
-    Screen('PlayMovie', stimuli.movieptr, 1, 0);
+    Screen('PlayMovie', stimuli.movieptr, 1, 1);
 
     %%%%%%% the first frame %%%%%%
     texture = Screen('GetMovieImage', w, stimuli.movieptr);
@@ -172,11 +172,10 @@ else
         % Roughly when the video ends but actually it should be the onset of
         % the next video
         stimEndAt = GetSecs;
-
-        % Stop playback and close movie
-        Screen('PlayMovie', stimuli.movieptr, 0);
-        %     Screen('CloseMovie', stimuli.movieptr);
     end
+    % Stop playback and close movie
+    Screen('PlayMovie', stimuli.movieptr, 0);
+    %     Screen('CloseMovie', stimuli.movieptr);
 
     while checkTime < param.trialDuration && ~quitNow
         % check if any key is pressed

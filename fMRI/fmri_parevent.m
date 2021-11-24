@@ -49,10 +49,10 @@ if istable(input)
     dtTable = input;
 elseif isfield(input, 'dtTable')
     % if input is struct
-    dtTable = intput.dtTable;
+    dtTable = input.dtTable;
     outTable = table;
     eventTable = table;
-    if input.isDebug; return; end
+    if input.isDebug || isempty(dtTable); return; end
 else
     % get the extension of the file
     [~, ~, ext] = fileparts(input);

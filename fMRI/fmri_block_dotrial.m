@@ -141,6 +141,10 @@ else
     %         xJitterRand, yJitterRand));
     if param.trialDuration > param.stimDuration
         stimEndAt = Screen('Flip', w);
+    else
+        % this is a rough time; the stimulus offset should be the onset of
+        % the next stimuli
+        stimEndAt = GetSecs;
     end
 
     while checkTime < param.trialDuration && ~quitNow
