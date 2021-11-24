@@ -57,8 +57,8 @@ KbCheck;
 ptb_instruction(param);
 
 % wait for trigger if is not emulated
-if ~param.isEmulated
-    fmri_nyuad;
+if ~param.isEmulated 
+    param.do_trigger;
 end
 
 % run starts
