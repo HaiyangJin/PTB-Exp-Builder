@@ -74,6 +74,7 @@ if isFixBlock
     stimCategory = 'fixation';
     stimName = 'fixation';
     correctAns = NaN;
+    frameDrop = NaN;
 
     % only experimenter key is allowed
     RestrictKeysForKbCheck(param.expKey);
@@ -174,7 +175,7 @@ else
         stimEndAt = GetSecs;
     end
     % Stop playback and close movie
-    Screen('PlayMovie', stimuli.movieptr, 0);
+    frameDrop = Screen('PlayMovie', stimuli.movieptr, 0);
     %     Screen('CloseMovie', stimuli.movieptr);
 
     while checkTime < param.trialDuration && ~quitNow
@@ -218,6 +219,7 @@ output.StimDuration = stimEndAt - stimBeganAt;
 % stimulus
 output.StimCategory = stimCategory;
 output.StimName = stimName;
+output.FrameDrop = frameDrop;
 
 % responses
 output.CorrectAns = correctAns;
