@@ -1,34 +1,44 @@
-function cmd_link = ptb_linkfile(source, target, islink)
-% cmd_link = ptb_linkfile(source, target, islink)
+function cmd = ptb_touch(source, target, istouch)
+% cmd = ptb_touch(source, target, istouch)
 %
-% This function links (or copy) files from source to targets. This may be
-% useful if the actual stimuli cannot be put in the target folder (for
-% saving space or copy right issues). The links created by this function
-% does not seem to work properly but they may serve to show the directory
-% structure.
+% This function touches (or copies; links) files from source to targets. 
+% This may be useful if the actual stimuli cannot be put in the target 
+% folder (for saving space or copy right issues). 
+% 
+% The links (via istouch=2) created by this function does not seem to work 
+% properly but they may serve to show the directory structure.
 %
 % Inputs:
 %     source       <str> the source folder which stores stimuli and
 %                   subfolders that stores stimuli.
 %     target       <str> the target folder.
-%     islink       <boo> whether link the files (default: 1) or copy (0).
+%     istouch      <boo> whether touch the files (default: 1) or copy (0);
+%                   or link (2).
 %
 % Output:
-%     cmd_link     <cell str> a list of commands using ln.
+%     cmd          <cell str> a list of commands using ln.
 %
 % Created by Haiyang Jin (2021-11-07)
 
-if ~exist('islink', 'var') || isempty(islink)
-    islink = 1;
+assert(exist(source, 'dir'), '<source> should be a directory.');
+
+if ~exist('target', 'var') || isempty(target)
+    if endsWith(source, filesep); source = source(1:end-1); end
+    [~, srcfolder] = fileparts(source);
+    target = fullfile(source, '..', [srcfolder '_tmp']);
+end
+
+if ~exist('istouch', 'var') || isempty(istouch)
+    istouch = 1;
 end
 
 % make the target folder
 if logical(exist(target, 'dir')); rmdir(target, 's'); end
 mkdir(target);
 
-if ~islink
+if istouch == 0
     % copy files
-    cmd_link = {''};
+    cmd = {''};
     copyfile(source, target, 'f');
     return;
 end
@@ -77,9 +87,16 @@ trgcell = vertcat(subtrgcell{:});
 isexist = cellfun(@(x) logical(exist(x, 'file')), trgcell);
 cellfun(@delete, trgcell(isexist));
 
-% link and move files
-cmd_link = cellfun(@(x,y) link_move(x, y), srccell, trgcell, 'uni', false);
-
+% touch OR link and move files
+switch istouch
+    case 1
+        % touch
+        cmd = cellfun(@(x) sprintf('touch %s', x), trgcell, 'uni', false);
+        cellfun(@system, cmd);
+    case 2
+        % link
+        cmd = cellfun(@(x,y) link_move(x, y), srccell, trgcell, 'uni', false);
+end
 end
 
 function cmd = link_move(source, target)
