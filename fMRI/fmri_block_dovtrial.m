@@ -150,6 +150,7 @@ else
         % only the first response within each trial will be recorded
         if isKey && isnan(isSame)
             quitNow = any(keyCode(param.expKey));
+            if quitNow; break; end
             isSame = any(keyCode(param.respKeys(:, 1)));
             ACC = isSame == correctAns;
             RT = keyTime - stimBeganAt;
@@ -158,7 +159,6 @@ else
             end
         end
 
-        if quitNow; break; end
         % check the time
         checkTime = GetSecs - runStartTime - baseTime;
     end
@@ -183,6 +183,7 @@ else
         % only the first response within each trial will be saved
         if isKey && isnan(isSame)
             quitNow = any(keyCode(param.expKey));
+            if quitNow; break; end
             isSame = any(keyCode(param.respKeys(:, 1)));
             ACC = isSame == correctAns;
             RT = keyTime - stimBeganAt;
@@ -191,7 +192,6 @@ else
             end
         end
 
-        if quitNow; break; end
         % check the time
         checkTime = GetSecs - runStartTime - baseTime;
     end
