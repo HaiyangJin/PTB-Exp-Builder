@@ -58,7 +58,7 @@ ptb_instruction(param);
 
 % wait for trigger if is not emulated
 if ~param.isEmulated 
-    param.do_trigger;
+    param.do_trigger();
 end
 
 % run starts

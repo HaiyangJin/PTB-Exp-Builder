@@ -1,4 +1,4 @@
-function fmri_nyuad
+function fmri_nyuad()
 % fmri_nyuad
 %
 % This function sets up the experiment to wait for triggers and 'finishi'

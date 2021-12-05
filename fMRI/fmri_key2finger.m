@@ -17,7 +17,7 @@ function fingers = fmri_key2finger(keys, saveCell)
 % Created by Haiyang Jin (3-March-2020)
 
 % By default fingers will be a string if there is only one finger in the output 
-if ~isempty('saveCell', 'var') || isempty(saveCell)
+if ~exist('saveCell', 'var') || isempty(saveCell)
     saveCell = 0;
 end
 
