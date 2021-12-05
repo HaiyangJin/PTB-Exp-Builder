@@ -91,7 +91,7 @@ cellfun(@delete, trgcell(isexist));
 switch istouch
     case 1
         % touch
-        cmd = cellfun(@(x) sprintf('touch %s', x), trgcell, 'uni', false);
+        cmd = cellfun(@(x) sprintf('touch %s', x), ptb_2cmdpath(trgcell), 'uni', false);
         cellfun(@system, cmd);
     case 2
         % link
