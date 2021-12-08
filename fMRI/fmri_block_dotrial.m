@@ -122,14 +122,27 @@ else
 
         % only the first response within each trial will be recorded
         if isKey && isnan(isSame)
+
+            if ~param.isEmulated && ~isempty(param.respButton)
+                % check response from response box
+                [isSame, keyTime] = param.do_trigger('resp', param.respButton);
+                if param.dispPress && isSame
+                    disp(param.respButton);
+                end
+            else
+                % deal with response from keyboard
+                isSame = any(keyCode(param.respKeys(:, 1)));
+                if param.dispPress
+                    disp(KbName(find(keyCode)));
+                end
+            end
+
             quitNow = any(keyCode(param.expKey));
             if quitNow; break; end
-            isSame = any(keyCode(param.respKeys(:, 1)));
+
             ACC = isSame == correctAns;
             RT = keyTime - stimBeganAt;
-            if param.dispPress
-                disp(KbName(find(keyCode)));
-            end
+
         end
 
         % check the time
@@ -148,18 +161,33 @@ else
     end
 
     while checkTime < param.trialDuration && ~quitNow
+
         % check if any key is pressed
         [isKey, keyTime, keyCode] = KbCheck;
-        % only the first response within each trial will be saved
+
+        % only the first response within each trial will be recorded
         if isKey && isnan(isSame)
+
+            if ~param.isEmulated && ~isempty(param.respButton)
+                % check response from response box
+                [isSame, keyTime] = param.do_trigger('resp', param.respButton);
+                if param.dispPress && isSame
+                    disp(param.respButton);
+                end
+            else
+                % deal with response from keyboard
+                isSame = any(keyCode(param.respKeys(:, 1)));
+                if param.dispPress
+                    disp(KbName(find(keyCode)));
+                end
+            end
+
             quitNow = any(keyCode(param.expKey));
             if quitNow; break; end
-            isSame = any(keyCode(param.respKeys(:, 1)));
+
             ACC = isSame == correctAns;
             RT = keyTime - stimBeganAt;
-            if param.dispPress
-                disp(KbName(find(keyCode)));
-            end
+
         end
 
         % check the time

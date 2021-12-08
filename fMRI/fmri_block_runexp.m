@@ -58,7 +58,7 @@ ptb_instruction(param);
 
 % wait for trigger if is not emulated
 if ~param.isEmulated 
-    param.do_trigger();
+    param.do_trigger('on');
 end
 
 % run starts
@@ -194,6 +194,11 @@ param.expDuration = param.expEndTime - param.expStartTime;
 fmri_parevent(param, 'outpath', param.outpath);
 
 %% Finishing...
+% colse vpixx
+if ~param.isEmulated 
+    param.do_trigger('off');
+end
+
 % close all screens
 Screen('CloseAll');
 

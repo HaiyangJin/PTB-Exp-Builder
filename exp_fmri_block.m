@@ -143,6 +143,7 @@ param.textColor = 255;
 param.do_trial = @fmri_block_dotrial;
 param.do_stim = @fmri_block_stim;
 param.do_output = @ptb_outtable;
+param.do_trigger = @fmri_vpixx;
 
 % run the fmri experiment in block design
 fmri_block_runexp(param);
