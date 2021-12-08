@@ -28,6 +28,8 @@ function out = fmri_vpixx(status, corrButton)
 %
 % Created by Haiyang Jin (2021-12-06)
 
+out = [];
+
 if ~exist('status', 'var') || isempty(status)
     status = 'on';
 end
@@ -40,8 +42,6 @@ if ~isempty(corrButton)
     buttons = fmri_vpixx('buttons');
     assert(ismember(corrButton, buttons));
 end
-
-out = [];
 
 switch status
     case 'on'
@@ -76,14 +76,19 @@ switch status
         trialValues =dec2bin(Datapixx('GetDinValues'));
 
         % row vector
-        out = cellfun(@(x) num2double(x), trialValues(15:19));
-
-        if ~isempty(corrButton)
-            respButton = buttons(out);
-            out = NaN(1,2);    
-            out(1) = strcmp(respButton, corrButton);
-            out(2) = GetSecs;
+        out = arrayfun(@(x) str2double(trialValues(x)), 15:19);
+        
+        respButton = buttons(logical(out));
+        out = cell(1,4);
+        if ~isempty(respButton)
+            out{1} = 1;
+            out{2} = strcmp(respButton, corrButton);
+            out(4) = respButton; 
+        else
+            out{1} = 0;
+            out{2} = 0;
         end
+        out{3} = GetSecs;
 
     case {'button', 'buttons'}
         %% All available responses

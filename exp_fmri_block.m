@@ -91,6 +91,7 @@ param.sortBlock = 'repeated';
 param.expKeyName = {'escape', '=+'};
 param.instructKeyName = 'q';
 param.respKeyNames = {'2'; '2@'};
+param.respButton = 'red';
 
 %% instructions
 if isEmulated
