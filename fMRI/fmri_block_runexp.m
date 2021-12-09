@@ -58,7 +58,7 @@ ptb_instruction(param);
 
 % wait for trigger if is not emulated
 if ~param.isEmulated 
-    param.do_trigger();
+    param.do_trigger('on');
 end
 
 % run starts
@@ -139,16 +139,17 @@ if ~quitNow
     end % iBlock
 end % quitNow
 
-% run finishes
-param.runEndTime = GetSecs;
-param.runDuration = param.runEndTime - param.runStartTime;
-
 %% Finishing screen
+% run finishes
 if ~quitNow
     doneText = sprintf('This part is finished.');
     DrawFormattedText(param.w, doneText, 'center', 'center', param.forecolor);
-    Screen('Flip', param.w);
+    param.runEndTime = Screen('Flip', param.w);
+else
+    param.runEndTime = GetSecs;
 end
+
+param.runDuration = param.runEndTime - param.runStartTime;
 
 %% Process the outputs
 if isempty(dtStimTable)
@@ -194,6 +195,11 @@ param.expDuration = param.expEndTime - param.expStartTime;
 fmri_parevent(param, 'outpath', param.outpath);
 
 %% Finishing...
+% colse vpixx
+if ~param.isEmulated 
+    param.do_trigger('off');
+end
+
 % close all screens
 Screen('CloseAll');
 

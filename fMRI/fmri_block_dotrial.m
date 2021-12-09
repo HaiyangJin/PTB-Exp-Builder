@@ -78,7 +78,7 @@ if isFixBlock
     % only experimenter key is allowed
     RestrictKeysForKbCheck(param.expKey);
 
-    while checkTime < param.fixBloDuration
+    while checkTime < param.fixBloDuration - param.flipSlack
         % check if experimenter key is pressed
         quitNow = KbCheck;
         if quitNow; break; end
@@ -115,21 +115,42 @@ else
     % only response and experimenter keys are allowed
     RestrictKeysForKbCheck([param.respKeys(:)', param.expKey]);
 
-    while checkTime < param.stimDuration
+    while checkTime < param.stimDuration - param.flipSlack
 
+        if ~param.isEmulated && ~isempty(param.respButton)
+            theout = param.do_trigger('resp', param.respButton);
+            isButton = theout{1};
+        else 
+            isButton = 0;
+        end
         % check if any key is pressed
         [isKey, keyTime, keyCode] = KbCheck;
 
         % only the first response within each trial will be recorded
-        if isKey && isnan(isSame)
+        if (isKey || isButton) && isnan(isSame)
+            
             quitNow = any(keyCode(param.expKey));
             if quitNow; break; end
-            isSame = any(keyCode(param.respKeys(:, 1)));
+
+            if ~param.isEmulated && ~isempty(param.respButton)
+                 isSame = theout{2};
+                 keyTime = theout{3};
+                % check response from response box
+                if param.dispPress && ~isempty(theout{4})
+                    fprintf('\nA button was pressed (%s).', theout{4});
+                end
+            else
+                % deal with response from keyboard
+                isSame = any(keyCode(param.respKeys(:, 1)));
+                if param.dispPress
+                    fprintf('\nA key was pressed (%s).', KbName(find(keyCode)));
+                end
+            end
+
             ACC = isSame == correctAns;
             RT = keyTime - stimBeganAt;
-            if param.dispPress
-                disp(KbName(find(keyCode)));
-            end
+
+            fprintf(' [ACC: %d]', ACC);
         end
 
         % check the time
@@ -147,19 +168,42 @@ else
         stimEndAt = GetSecs;
     end
 
-    while checkTime < param.trialDuration && ~quitNow
+    while checkTime < param.trialDuration - param.flipSlack && ~quitNow
+
+        if ~param.isEmulated && ~isempty(param.respButton)
+            theout = param.do_trigger('resp', param.respButton);
+            isButton = theout{1};
+        else 
+            isButton = 0;
+        end
         % check if any key is pressed
         [isKey, keyTime, keyCode] = KbCheck;
-        % only the first response within each trial will be saved
-        if isKey && isnan(isSame)
+
+        % only the first response within each trial will be recorded
+        if (isKey || isButton) && isnan(isSame)
+            
             quitNow = any(keyCode(param.expKey));
             if quitNow; break; end
-            isSame = any(keyCode(param.respKeys(:, 1)));
+
+            if ~param.isEmulated && ~isempty(param.respButton)
+                 isSame = theout{2};
+                 keyTime = theout{3};
+                % check response from response box
+                if param.dispPress && ~isempty(theout{4})
+                    fprintf('\nA button was pressed (%s).', theout{4});
+                end
+            else
+                % deal with response from keyboard
+                isSame = any(keyCode(param.respKeys(:, 1)));
+                if param.dispPress
+                    fprintf('\nA key was pressed (%s).', KbName(find(keyCode)));
+                end
+            end
+
             ACC = isSame == correctAns;
             RT = keyTime - stimBeganAt;
-            if param.dispPress
-                disp(KbName(find(keyCode)));
-            end
+
+            fprintf(' [ACC: %d]', ACC);
         end
 
         % check the time

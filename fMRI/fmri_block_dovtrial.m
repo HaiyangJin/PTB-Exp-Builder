@@ -79,7 +79,7 @@ if isFixBlock
     % only experimenter key is allowed
     RestrictKeysForKbCheck(param.expKey);
 
-    while checkTime < param.fixBloDuration
+    while checkTime < param.fixBloDuration - param.flipSlack
         % check if experimenter key is pressed
         quitNow = KbCheck;
         if quitNow; break; end
@@ -178,7 +178,7 @@ else
     frameDrop = Screen('PlayMovie', stimuli.movieptr, 0);
     %     Screen('CloseMovie', stimuli.movieptr);
 
-    while checkTime < param.trialDuration && ~quitNow
+    while checkTime < param.trialDuration - param.flipSlack && ~quitNow
         % check if any key is pressed
         [isKey, keyTime, keyCode] = KbCheck;
         % only the first response within each trial will be saved
