@@ -78,7 +78,7 @@ if isFixBlock
     % only experimenter key is allowed
     RestrictKeysForKbCheck(param.expKey);
 
-    while checkTime < param.fixBloDuration
+    while checkTime < param.fixBloDuration - param.flipSlack
         % check if experimenter key is pressed
         quitNow = KbCheck;
         if quitNow; break; end
@@ -115,7 +115,7 @@ else
     % only response and experimenter keys are allowed
     RestrictKeysForKbCheck([param.respKeys(:)', param.expKey]);
 
-    while checkTime < param.stimDuration
+    while checkTime < param.stimDuration - param.flipSlack
 
         if ~param.isEmulated && ~isempty(param.respButton)
             theout = param.do_trigger('resp', param.respButton);
@@ -168,7 +168,7 @@ else
         stimEndAt = GetSecs;
     end
 
-    while checkTime < param.trialDuration && ~quitNow
+    while checkTime < param.trialDuration - param.flipSlack && ~quitNow
 
         if ~param.isEmulated && ~isempty(param.respButton)
             theout = param.do_trigger('resp', param.respButton);

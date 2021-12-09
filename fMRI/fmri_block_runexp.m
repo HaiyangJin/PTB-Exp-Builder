@@ -139,16 +139,17 @@ if ~quitNow
     end % iBlock
 end % quitNow
 
-% run finishes
-param.runEndTime = GetSecs;
-param.runDuration = param.runEndTime - param.runStartTime;
-
 %% Finishing screen
+% run finishes
 if ~quitNow
     doneText = sprintf('This part is finished.');
     DrawFormattedText(param.w, doneText, 'center', 'center', param.forecolor);
-    Screen('Flip', param.w);
+    param.runEndTime = Screen('Flip', param.w);
+else
+    param.runEndTime = GetSecs;
 end
+
+param.runDuration = param.runEndTime - param.runStartTime;
 
 %% Process the outputs
 if isempty(dtStimTable)

@@ -122,6 +122,7 @@ nRowPar = sum(blockRows);
 
 % stimlus/block onsets
 onset = dtTable{blockRows, 'StimOnsetRela'};
+onset(1) = 0; % force the first onset to be 0
 % stimulus category names
 trial_type = blockNames(blockRows);
 % stimulus identifier
@@ -140,14 +141,6 @@ Weight = ones(numel(trial_type), 1);
 outTable = table(onset, Identifier, duration, Weight, trial_type);
 
 %% add dummy volumes if needed
-% the onset of the first block
-iniOnset = outTable{1, 'onset'};
-
-% if the first simOnsets is not 0
-if round(iniOnset) ~= 0
-    outTable{1, 'duration'} = outTable{1, 'duration'} + iniOnset;
-    outTable{1, 'onset'} = 0;
-end
 
 % fill the gaps between trials if needed
 needFix = arrayfun(@(x) onset(x) + duration(x) ~= onset(x+1), 1:nRowPar-1);

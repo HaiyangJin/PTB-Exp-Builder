@@ -141,10 +141,17 @@ param.textFont = 'Helvetica';
 param.textColor = 255;
 
 %% Run the Experiment
+param.do_trigger = @fmri_vpixx; % mandatory to work with MRI
 param.do_trial = @fmri_block_dotrial;
 param.do_stim = @fmri_block_stim;
 param.do_output = @ptb_outtable;
-param.do_trigger = @fmri_vpixx;
+param.do_ed = [];
+
+% % to use ABABABABA design
+% param.do_ed = @fmri_block_ABAed;
+% param.ed_remove = 1:10;
+% % to use ABCCBA design
+% param.do_ed = @fmri_block_ABBAed;
 
 % run the fmri experiment in block design
 fmri_block_runexp(param);
