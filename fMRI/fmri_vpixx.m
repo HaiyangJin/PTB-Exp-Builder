@@ -76,9 +76,12 @@ switch status
         trialValues =dec2bin(Datapixx('GetDinValues'));
 
         % row vector
-        out = arrayfun(@(x) str2double(trialValues(x)), 15:19);
+        buttonChecked = arrayfun(@(x) str2double(trialValues(x)), 15:19);
         
-        respButton = buttons(logical(out));
+        % regard "all resp" as "no resp"
+        if all(buttonChecked); buttonChecked = zeros(size(buttonChecked)); end
+        
+        respButton = buttons(logical(buttonChecked));
         out = cell(1,4);
         if ~isempty(respButton)
             out{1} = 1;
