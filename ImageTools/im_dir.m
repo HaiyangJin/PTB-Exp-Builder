@@ -1,18 +1,17 @@
-function imgDir = im_dir(imgPath, imgExt, reformat)
-% imgDir = im_dir(imgPath, imgExt, reformat)
+function fileDir = im_dir(imgPath, imgExt, reformat)
+% fileDir = im_dir(imgPath, imgExt, reformat)
 %
 % This function get the directory information of all the images matching the
 % image extension in the imgPath and its subfolders.
 %
 % Inputs:
-%     imgPath      <strings> the path to the sitmuli folder
-%     imgExt       <strings> or <a cell of strings> the file extentions of
-%                   the images.
-%     reformat     <logical> if true, imgDir will be re-formated to multiple
+%     imgPath      <str> the path to the sitmuli folder
+%     imgExt       <str> or <cell str> the file extentions of the images.
+%     reformat     <boo> if true, fileDir will be re-formated to multiple
 %                   columns and each column is one condition (folder). By
 %                   default reformat is false.
 % Output:
-%     imgDir       <structure> the dir structure with condition name. The
+%     fileDir      <struct> the dir structure with condition name. The
 %                   names of subfolders will be the condition names for the
 %                   images in those subfolders. 'main' will be the
 %                   condition name for images in imgPath.
@@ -20,7 +19,7 @@ function imgDir = im_dir(imgPath, imgExt, reformat)
 % Created by Haiyang Jin (03-Feb-2020)
 %
 % See also:
-% im_readdir, im_writedir
+% im_readdir, im_writedir, im_resizevd, im_writedirvd
 
 if ~exist('imgPath', 'var') || isempty(imgPath)
     imgPath = fullfile('stimuli', filesep);
@@ -33,7 +32,7 @@ elseif ischar(imgExt)
 end
 
 if ~exist('reformat', 'var') || isempty(reformat)
-    reformat = 0; % by deafult do not reformat imgDir
+    reformat = 0; % by deafult do not reformat fileDir
 end
 
 %% dir information in the imgPath folder
@@ -42,7 +41,7 @@ mainDir = dir_img(imgPath);
 % image files matching imgExt in the imgPath
 isExt = endsWith({mainDir.name}, imgExt);
 
-mainImgDir = dir_imgcond(mainDir(isExt), 'main');
+mainFileDir = dir_imgcond(mainDir(isExt), 'main');
 
 
 %% dir information in the subfolders
@@ -55,30 +54,30 @@ subDir = cellfun(@(x, y) dir_img(fullfile(x, ['*' y])), tempPath(:), tempExt(:),
 
 % add the condition names
 tempName = ndgrid(subNames, imgExt);
-subImgDir = cellfun(@(x, y) dir_imgcond(x, y), subDir, tempName(:), 'uni', false);
+subFileDir = cellfun(@(x, y) dir_imgcond(x, y), subDir, tempName(:), 'uni', false);
 
 
 %% coombine all dir together
-isEmpty = cellfun(@isempty, subImgDir);
-subImgDir(isEmpty) = [];
+isEmpty = cellfun(@isempty, subFileDir);
+subFileDir(isEmpty) = [];
 
-if ~isempty(mainImgDir)
-    imgDir = vertcat(mainImgDir, subImgDir{:});
+if ~isempty(mainFileDir)
+    fileDir = vertcat(mainFileDir, subFileDir{:});
 else
-    imgDir = vertcat(subImgDir{:});
+    fileDir = vertcat(subFileDir{:});
 end
 
 % error if there is no image files
-if size(imgDir) == 0
+if size(fileDir) == 0
     error('There are no image files in folder ''%s''.', imgPath);
 end
 
 %% reformat the dir (if reformat)
 if reformat
     % reformat stimuli structure by group (condition) names
-    tempDir = cellfun(@(x) imgDir(strcmp({imgDir.condition}, x)), ...
-        unique({imgDir.condition}), 'uni', false);
-    imgDir = horzcat(tempDir{:});
+    tempDir = cellfun(@(x) fileDir(strcmp({fileDir.condition}, x)), ...
+        unique({fileDir.condition}), 'uni', false);
+    fileDir = horzcat(tempDir{:});
 end
     
 end
