@@ -1,5 +1,5 @@
 function out = fmri_vpixx(status, corrButton)
-% out = fmri_vpixx(status)
+% out = fmri_vpixx(status, corrButton)
 %
 % Sets up the experiment to use Vpixx to wait for triggers, 'finish' 
 % when it is triggered, or detect the response.
@@ -43,15 +43,26 @@ if ~isempty(corrButton)
     assert(ismember(corrButton, buttons));
 end
 
+% The following code is mainly from the Scene study (SceneLocalizer.m).
+% NYUAD_MRI_trigger_Datapixx;
 switch status
     case 'on'
-        %% Open the device and wait for trigger
-        % The following code is obtained from the Scene study (SceneLocalizer.m).
-        disp('Datapixx is ready...');
-
-        % NYUAD_MRI_trigger_Datapixx;
-        Datapixx('Open');
+        %% Open the device
+        isopen = Datapixx('Open');
+        if isopen
+            disp('Datapixx is ready...'); 
+        else
+            error('Datapixx(''Open'') failed...');
+        end
         Datapixx('StopAllSchedules');
+
+    case 'off'
+        %% Close the device
+        Datapixx('StopAllSchedule');
+        Datapixx('Close');
+
+    case 'trigger'
+        %% Wait for one trigger
         Datapixx('RegWrRd');
         init_check =dec2bin(Datapixx('GetDinValues'));
         trigger_state =init_check(14);
@@ -64,11 +75,6 @@ switch status
                 break;
             end
         end
-
-    case 'off'
-        %% Close the device
-        Datapixx('StopAllSchedule');
-        Datapixx('Close');
 
     case {'resp', 'response'}
         %% Deal with responses
@@ -98,7 +104,7 @@ switch status
         out = {'white', 'blue', 'green', 'yellow', 'red'};
 
     otherwise
-        error('Cannot recognize the status (%s) for fmri_vpixx().', status);
+        error('Cannot recognize the in-argument (%s) for fmri_vpixx().', status);
 end
 
 end
