@@ -62,6 +62,7 @@ checkTime = 0;
 isSame = NaN;
 ACC = NaN;
 RT = NaN;
+pressed = '';
 
 if isFixBlock
     %% Fixation only blocks
@@ -135,15 +136,17 @@ else
             if ~param.isEmulated && ~isempty(param.respButton)
                  isSame = theout{2};
                  keyTime = theout{3};
+                 pressed = theout{4};
                 % check response from response box
-                if param.dispPress && ~isempty(theout{4})
-                    fprintf('\nA button was pressed (%s).', theout{4});
+                if param.dispPress && ~isempty(pressed)
+                    fprintf('\nA button was pressed (%s).', pressed);
                 end
             else
                 % deal with response from keyboard
+                pressed = KbName(find(keyCode));
                 isSame = any(keyCode(param.respKeys(:, 1)));
                 if param.dispPress
-                    fprintf('\nA key was pressed (%s).', KbName(find(keyCode)));
+                    fprintf('\nA key was pressed (%s).', pressed);
                 end
             end
 
@@ -188,15 +191,17 @@ else
             if ~param.isEmulated && ~isempty(param.respButton)
                  isSame = theout{2};
                  keyTime = theout{3};
+                 pressed = theout{4};
                 % check response from response box
-                if param.dispPress && ~isempty(theout{4})
-                    fprintf('\nA button was pressed (%s).', theout{4});
+                if param.dispPress && ~isempty(pressed)
+                    fprintf('\nA button was pressed (%s).', pressed);
                 end
             else
                 % deal with response from keyboard
+                pressed = KbName(find(keyCode));
                 isSame = any(keyCode(param.respKeys(:, 1)));
                 if param.dispPress
-                    fprintf('\nA key was pressed (%s).', KbName(find(keyCode)));
+                    fprintf('\nA key was pressed (%s).', pressed);
                 end
             end
 
@@ -235,6 +240,7 @@ output.StimName = stimName;
 
 % responses
 output.CorrectAns = correctAns;
+output.Pressed = pressed;
 output.Response = isSame;
 output.isCorrect = ACC;
 output.RespTime = RT;
