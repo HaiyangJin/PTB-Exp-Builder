@@ -122,7 +122,7 @@ nRowPar = sum(blockRows);
 
 % stimlus/block onsets
 onset = dtTable{blockRows, 'StimOnsetRela'};
-onset(1) = 0; % force the first onset to be 0
+% onset(1) = 0; % force the first onset to be 0
 % stimulus category names
 trial_type = blockNames(blockRows);
 % stimulus identifier

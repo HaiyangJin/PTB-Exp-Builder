@@ -69,6 +69,9 @@ if isFixBlock
     %%% Fixation %%%
     Screen('FillRect', w, param.forecolor, param.fixarray);
     stimBeganAt = Screen('Flip', w);
+    if param.nFixBlock == 1
+        stimBeganAt = runStartTime;
+    end
 
     % process some trial information
     subBlockNum = param.nFixBlock;
