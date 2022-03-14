@@ -119,6 +119,8 @@ if ischar(colorString)
     end
 elseif ~isnumeric(colorString)
     error('Failed to identify the color...');
+else
+    color=colorString;
 end
 
 end
