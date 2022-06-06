@@ -1,4 +1,4 @@
-function im_writedir(stimDir, outPath, matrixFn, imgExt, extraStr)
+function im_writedir(stimDir, outPath, matrixFn, imgExt, extraStr, extraArg)
 % im_writedir(stimDir, outPath, matrixFn, imgExt, extraStr)
 %
 % This function write image directory into image files with specific image
@@ -15,6 +15,8 @@ function im_writedir(stimDir, outPath, matrixFn, imgExt, extraStr)
 %                OR <cell> if extraStr is a fieldname of stimDir (which 
 %                    has to be string), it will be used as the extra 
 %                    strings to be added to the output filename.
+%     extraArg      <cell str> extra argument to be used in imwrite(), 
+%                    e.g., {'BitDepth',24}. Default is {}.
 %
 % Output:
 %     creat images in the outputPath
@@ -60,6 +62,10 @@ if ~exist('extraStr', 'var') || isempty(extraStr)
         otherwise
             theextraStr = '';
     end
+end
+
+if ~exist('extraArg', 'var') || isempty(extraArg)
+    extraArg = {};
 end
 
 %% Write images
@@ -128,7 +134,7 @@ for iImg = 1:nImg
                 print(fig, thisOut,'-dpdf');
             end
         otherwise
-            imwrite(outMatrix, thisOut, alphaCell{:});
+            imwrite(outMatrix, thisOut, alphaCell{:}, extraArg{:});
     end
 
 end
