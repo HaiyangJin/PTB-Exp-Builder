@@ -31,6 +31,8 @@ end
 if ~exist('ptbpath', 'var') || isempty(ptbpath)
     % use functions in PTB-Exp-Builder by default
     ptbpath = fileparts(which('ptb_addpath'));
+%     ptbpath = fileparts(matlab.desktop.editor.getActiveFilename);
+%     ptbpath = fileparts(mfilename('fullpath'));
 end
 if isempty(ptbpath)
     % if PTB-Exp-Builder is not added to path, use 'functions/' in pwd.
