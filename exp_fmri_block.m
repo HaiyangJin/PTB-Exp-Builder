@@ -64,6 +64,7 @@ param.runCode = runCode;
 stimPath = fullfile('custom/stimuli/loc_stim', filesep);
 param.imgDir = im_dir(stimPath, '', 1);
 param.nStimCat = numel(unique({param.imgDir.condition}));
+param.isim = 1;
 
 % the jitter of stimulus
 param.jitter = 3; % the jitter is [-4:4] * 3
