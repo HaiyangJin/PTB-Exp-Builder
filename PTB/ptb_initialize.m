@@ -55,6 +55,7 @@ end
 
 [window, screenRect] = Screen('OpenWindow', whichScreen, param.backcolor, ...
     param.winrect, max(pixelSizes));
+param.w = window;
 [screenCenX,screenCenY] = RectCenter(screenRect);
 screenX = screenRect(3);
 screenY = screenRect(4);
@@ -76,19 +77,19 @@ flipSlack = .5 * msPerFrame; % needed so that Screen('Flip') can be prepared whe
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Set font, size, and color for texts
+param = ptb_language(param);
 Screen('TextSize', window, param.textSize);
 if ~ismac, Screen('TextFont', window, param.textFont); end
 Screen('TextColor', window, param.forecolor);
 
 %% Matlab is loading the program...
 % Screen('DrawText', window, 'Experiment is loading... Please wait.', screenX/2, screenY/2, white);
-loadingText = sprintf('Experiment is loading... Please wait...');
+loadingText = param.loadingText;
 DrawFormattedText(window, loadingText,'center','center', param.forecolor);
 
 Screen('Flip', window);
 
 %% output for ptb_initialize
-param.w = window;
 param.screenCenX = screenCenX;
 param.screenCenY = screenCenY;
 param.screenRect = screenRect;
@@ -119,8 +120,6 @@ if ischar(colorString)
     end
 elseif ~isnumeric(colorString)
     error('Failed to identify the color...');
-else
-    color=colorString;
 end
 
 end

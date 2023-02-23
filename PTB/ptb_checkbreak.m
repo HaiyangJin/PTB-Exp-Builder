@@ -11,7 +11,13 @@ function ptb_checkbreak(ttn, param)
 if (mod(ttn, param.trialsPerRest)==0 && ttn~=param.tn)
     
     % break message
-    breakText = sprintf(['Please take a rest.\n\n You''re ' num2str(floor(100*ttn/param.tn),'%0.0f') '%% finished for this part.']);
+    if strcmp(param.language, 'en')
+        breakText = sprintf(['Please take a rest.\n\n You''re ' ...
+            num2str(floor(100*ttn/param.tn),'%0.0f') '%% finished for this part.']);
+    elseif strcmp(param.language, 'cn')
+        breakText = double(sprintf(['请稍作休息.\n\n你已经完成了这部分的' ...
+            num2str(floor(100*ttn/param.tn)) '%%.']));
+    end
     DrawFormattedText(param.w, breakText, 'center', param.screenY-150, param.forecolor);
     
     % show break message
@@ -20,17 +26,14 @@ if (mod(ttn, param.trialsPerRest)==0 && ttn~=param.tn)
     WaitSecs(param.restMinimumTime);
     
     % break finish message
-    breakText = sprintf('You can now continue with this part.\n \nPress any key when ready.');
-    DrawFormattedText(param.w, breakText, 'center', param.screenY-150, param.forecolor);
+    DrawFormattedText(param.w, param.breakEndText, 'center', param.screenY-150, param.forecolor);
     
     Screen('Flip', param.w);
     Beeper(1280,.15,.25);
     
     RestrictKeysForKbCheck([]);
     KbWait([],3);
-    
-    clear breakText;
-    
+        
 end
 
 end

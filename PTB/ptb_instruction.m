@@ -27,7 +27,7 @@ function ptb_instruction(param)
 % created by Haiyang Jin (10-Feb-2020)
 
 % convert the instructText to cell if it is char
-if ischar(param.instructText)
+if ischar(param.instructText) || isnumeric(param.instructText)
     instructText = {param.instructText};
 else
     instructText = param.instructText;
