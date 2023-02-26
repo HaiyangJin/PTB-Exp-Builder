@@ -172,7 +172,7 @@ output.StimDuration = stimEndAt - stimBeganAt;
 % stimulus
 output.StimCategory = stimuli.condition;
 output.StimName = stimuli.fn;
-output.StimXY = size(stimuli.matrix);
+output.StimXY = size(stimuli.matrix, 1:2);
 output.stimPosiRela = stimPosi;
 output.stimPosition = stimPosition;
 
