@@ -9,26 +9,25 @@ function [design, nTrial, nBlock] = ptb_expdesignbuilder(expConditions, randBloc
 %
 % Inputs:
 %     expConditions      <cell> expConditions is Nx2 cell, where N is the 
-%                        number of levels with condition names in the first
-%                        column and possible values for each condition in 
-%                        the second column.
-%     randBlock          <cell of strings> the name of the variables. or
-%                        <numeric> the order/number of the variables. The
-%                        design will be sorted and then be randomized as
-%                        chunks based on randBlock. The order for sorting
-%                        each condition is the same as their order in
-%                        randBlock.
-%     sortBlock          <cell of strings> the name of the variables. or
-%                        <numeric> the order/number of the variables. The
-%                        design will only be sorted (no randomization) 
-%                        based on sortBlock. The order for sorting
-%                        each condition is the same as their order in
-%                        sortBlock.
-%     isRand             <logical> if randomize the design. By default
-%                        isRand is 1 and the design will be randomized.
+%                         number of levels with condition names in the 
+%                         first column and possible values for each 
+%                         condition in the second column.
+%     randBlock          <cell str> the name of the variables. 
+%                     OR <num vec> the order/number of the variables. 
+%                         After fully randomized (if needed), the design 
+%                         will then be sorted by randBlcok and be 
+%                         randomized as chunks based on randBlock. 
+%     sortBlock          <cell str> the name of the variables. 
+%                     OR <num> the order/number of the variables. 
+%                         The design will only be sorted (no randomization) 
+%                         based on sortBlock. The order for sorting
+%                         each condition is the same as their order in
+%                         sortBlock.
+%     isRand             <boo> if randomize the design. By default
+%                         isRand is 1 and the design will be randomized.
 %
 % Output:
-%     design             <strucutre> a structure of the design. The
+%     design             <struct> a structure of the design. The
 %                        fieldnames will be the variable names. Each row is
 %                        one trial.
 %
