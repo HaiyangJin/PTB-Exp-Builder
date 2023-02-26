@@ -165,7 +165,7 @@ else
     dtStimTable.Repetitions = ceil(dtStimTable.SubBlockNum/param.nStimCat);
 
     % combine fixation and stimulus tables
-    dtTable = vertcat(dtFixTable, dtStimTable);
+    dtTable = outerjoin(dtFixTable, dtStimTable, 'MergeKeys', true);
 
     % create the experiment information table
     nRowInfo = size(dtTable,1);

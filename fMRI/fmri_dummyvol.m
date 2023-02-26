@@ -37,7 +37,6 @@ stimBeganAt = Screen('Flip', param.w);
 % process some trial information
 stimCategory = 'dummyVol';
 stimName = 'fixation';
-correctAns = NaN;
 
 % only experimenter key is allowed
 RestrictKeysForKbCheck(param.expKey);
@@ -54,11 +53,6 @@ end
 stimEndAt = checkTime + basetime; % (roughly, not accurate)
 
 %% dummy volumes information to be saved
-% trial and block numbers
-output.BlockNum = 0;
-output.SubBlockNum = 0;
-output.SubTrialNum = 0;
-
 % stimulus onsets
 output.StimOnset = stimBeganAt;
 output.StimOnsetRela = stimBeganAt - param.runStartTime;
@@ -68,13 +62,5 @@ output.StimDuration = stimEndAt - stimBeganAt;
 % stimulus
 output.StimCategory = stimCategory;
 output.StimName = stimName;
-
-% responses
-output.CorrectAns = correctAns;
-output.Pressed = {''};
-output.Response = NaN;
-output.isCorrect = NaN;
-output.RespTime = NaN;
-output.Repetitions = NaN;
 
 end
