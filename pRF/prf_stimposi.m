@@ -11,12 +11,12 @@ function param = prf_stimposi(param)
 %
 % Example 1:
 % param = struct;
-% param.canvasxy = [1000, 800];
+% param.canvasxy = [800, 800];
 % param = prf_stimposi(param);
 %
 % Example 2:
 % param = struct;
-% param.canvasxy = [1000, 800];
+% param.canvasxy = [800, 800];
 % param.prfcoorsys = 'polar';
 % param = prf_stimposi(param);
 %
@@ -34,15 +34,14 @@ else
     prfNxy = param.prfNxy;
 end
 if ~isfield(param, 'canvasxy')
-    canvasxy = floor(param.screenRect(3:4) * .7);
-else
-    canvasxy = param.canvasxy;
+    oneside = floor(min(param.screenRect(3:4)) * .7);
+    param.canvasxy = [oneside, oneside];
 end
 
 % generate the positions of stimulus centers
 switch prfcoorsys
     case {'Cartesian', 'cartesian', 'carte', 'cart'}
-        param.prfposi = prfposi_carte(prfNxy, canvasxy);
+        param.prfposi = prfposi_carte(prfNxy, param.canvasxy);
 
     case {'Polar', 'polar', 'pola'}
         % default of [phase] to 0
@@ -51,7 +50,7 @@ switch prfcoorsys
         else
             phase = param.phase;
         end
-        param.prfposi = prfposi_polar(prfNxy, canvasxy, phase);
+        param.prfposi = prfposi_polar(prfNxy, param.canvasxy, phase);
 
     otherwise
         error('Unknown coordinate systems...')

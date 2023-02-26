@@ -12,8 +12,6 @@ function exp_prf(subjCode, isEmulated, runCode)
 %
 % Created by Haiyang Jin (2023-Feb-25)
 
-Screen('Preference','TextRenderer', 0)
-
 % add the functions folder to the path
 funcFolers = {'PTB/', 'fMRI/', 'ImageTools/', 'Utilities/', 'pRF/'};
 cellfun(@addpath, funcFolers);

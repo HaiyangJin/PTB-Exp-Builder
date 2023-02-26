@@ -35,7 +35,7 @@ Screen('FillRect', param.w, param.forecolor, param.fixarray); %
 stimBeganAt = Screen('Flip', param.w);
 
 % process some trial information
-stimCategory = 'dummyVol';
+stimCategory = 'fixation';
 stimName = 'fixation';
 
 % only experimenter key is allowed

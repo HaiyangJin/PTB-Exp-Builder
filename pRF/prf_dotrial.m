@@ -173,8 +173,9 @@ output.StimDuration = stimEndAt - stimBeganAt;
 output.StimCategory = stimuli.condition;
 output.StimName = stimuli.fn;
 output.StimXY = size(stimuli.matrix, 1:2);
-output.stimPosiRela = stimPosi;
-output.stimPosition = stimPosition;
+output.StimPosiRela = stimPosi;
+output.StimPosition = stimPosition;
+output.apXY = param.canvasxy + output.StimXY;
 
 % responses
 output.CorrectAns = correctAns;
