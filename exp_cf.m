@@ -1,5 +1,5 @@
-function exp_cf_line(subjCode, cfVersion, skipSyncTest, varargin)
-% exp_cf_line(subjCode, cfVersion, skipSyncTest, varargin)
+function exp_cf(subjCode, cfVersion, skipSyncTest, varargin)
+% exp_cf(subjCode, cfVersion, skipSyncTest, varargin)
 % 
 % This function runs the different versions of composite face tasks.
 %

@@ -1,5 +1,7 @@
-function exp_demo1(subjCode)
+function exp_categorization(subjCode)
 % Example experiment main body.
+%
+% An experiment for categorization.
 %
 % Input:
 %    subjCode      subject code
