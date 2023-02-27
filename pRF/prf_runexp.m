@@ -141,8 +141,10 @@ if isempty(dtStimTable)
 else
 
     % combine fixation and stimulus tables
-    tmpTable = outerjoin(dtStimTable, dummyTable, 'MergeKeys',true);
-    dtTable = outerjoin(tmpTable, dummyTableEnd, 'MergeKeys',true);
+    dtTable = outerjoin(dtStimTable, dummyTable, 'MergeKeys',true);
+    if ~isempty(dummyTableEnd)
+        dtTable = outerjoin(dtTable, dummyTableEnd, 'MergeKeys',true);
+    end
 
     % create the experiment information table
     nRowInfo = size(dtTable,1);
