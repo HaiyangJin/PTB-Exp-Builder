@@ -33,7 +33,7 @@ for ttn = 1:param.tn
         param.nStimPerBlock - param.nFixaEndPerBlock));
 
     % add fixation at the end
-    imgCell{ttn, 1} = vertcat(thisStim, transImg); 
+    imgCell{ttn, 1} = vertcat(thisStim, repmat(transImg, param.nFixaEndPerBlock,1)); 
 
 end
 

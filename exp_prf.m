@@ -121,6 +121,9 @@ param.nStimPerBlock = 4;  % .5*8 = 4s
 param.nFixaEndPerBlock = 1; 
 param.stimBloDuration = param.trialDuration * param.nStimPerBlock;
 
+assert(param.nFixaEndPerBlock<param.nStimPerBlock, ...
+    'The number of fixation trials should be smaller than the stimlus ones.')
+
 %% Fixation parameters
 % fixations
 param.widthFix = 4;
