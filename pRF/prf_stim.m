@@ -1,11 +1,13 @@
-function [param, stimOut] = prf_stim(param, stimIn)
-% [param, stimOut] = prf_stim(param, stimIn)
+function param = prf_stim(param)
+% param = prf_stim(param)
 %
 % Input:
 %     param           <struct> experiment structure.
-%     stimIn          <struct> stimuli loaded by ptb_loadstimdir().
 %
 % Created by Haiyang Jin (2023-Feb-26)
+
+stimIn = param.stimuli;
+param.stimuli_orig = param.stimuli; % make a backup
 
 %% Fake transparent image
 % make a fake transparent image struct
@@ -44,6 +46,6 @@ stimCell = repmat({transBlock}, param.tn + param.fixBlockN, 1);
 stimCell(param.imageBlockNum) = imgCell;
 
 % saveas struct
-stimOut = horzcat(stimCell{:});
+param.stimuli = horzcat(stimCell{:});
 
 end

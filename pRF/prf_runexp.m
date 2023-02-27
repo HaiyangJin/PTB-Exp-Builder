@@ -19,7 +19,7 @@ ListenChar(2);
 param = ptb_initialize(param);
 
 % Load stimuli
-stimuli = ptb_loadstimdir(param.imgDir, param.w);
+param.stimuli = ptb_loadstimdir(param.imgDir, param.w);
 % Build the experiment design
 [param.ed, param.tn, param.bn] = ptb_expdesignbuilder( ...
     param.conditionsArray, ...
@@ -27,7 +27,7 @@ stimuli = ptb_loadstimdir(param.imgDir, param.w);
 
 % get the information about stimuli
 if isfield(param, 'do_stim') && ~isempty(param.do_stim)
-    [param, stimuli] = param.do_stim(param, stimuli);
+    param = param.do_stim(param);
 end
 % apply additional function to ed if needed
 if isfield(param, 'do_ed') && ~isempty(param.do_ed)
@@ -88,7 +88,7 @@ if ~quitNow
             % tn is the trial number within this block
 
             % stimuli to be used in this trial
-            thisStim = stimuli(tn, iBlock);
+            thisStim = param.stimuli(tn, iBlock);
 
             % the correct answer
 %             if ttn == 1
