@@ -41,9 +41,9 @@ ACCBlock = NaN;
 % task information
 switch param.do_attentaskstr
     case 'prf_nbackletter'
-        thestim = param.taskstim{param.subBlockNum, param.BlockNum};
-        correctAns = param.answers(param.subBlockNum, param.BlockNum); % stimuli.correctAns;
-        correctAnsBlock = sum(param.answers(1:param.subBlockNum,param.BlockNum),'omitnan');
+        thestim = param.taskstim{param.subTrialNum, param.BlockNum};
+        correctAns = param.answers(param.subTrialNum, param.BlockNum); % stimuli.correctAns;
+        correctAnsBlock = sum(param.answers(1:param.subTrialNum,param.BlockNum),'omitnan');
 end
 
 %% Display each (sub-)trial
@@ -184,8 +184,8 @@ end
 %% trial information to be saved
 % trial and block numbers
 output.BlockNum = param.BlockNum;
-output.SubBlockNum = param.subBlockNum;
-output.SubTrialNum = ttn;
+output.SubTrialNum = param.subTrialNum;
+output.TrialNum = ttn;
 
 % stimulus onsets
 output.StimOnset = stimBeganAt;

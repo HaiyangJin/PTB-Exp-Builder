@@ -65,12 +65,9 @@ stimPath = fullfile('custom/stimuli/loc_stim', filesep);
 param.imgDir = im_dir(stimPath, '', 1);
 param.nStimCat = numel(unique({param.imgDir.condition}));
 
-% number of same trials in each block (for 1-back task)
-% param.nSamePerBlock = 1;
-
 %% Experiment design (ed)
 % how many times the same trials will be repeated
-param.nRepetition = 1; % not in use
+param.nRepetition = 1; 
 
 % pRF designs (to be used in prf_stimposi())
 param.prfcoorsys = 'carte';
@@ -104,14 +101,14 @@ end
 
 % instruction texts
 param.instructText = sprintf(['Welcome to this experiment... \n\n\n' ...
-    'Please press %s when the image is the same as '...
+    'Please press %s when the letter in the center is the same as '...
     'the previous one. \n\n', ...
     '(%s)'], ...
-    keyStr, continueStr); % not in use
+    keyStr, continueStr); 
 
 %% Dummy volumes
-param.dummyDuration = 1; % seconds; fixation duration before any trial
-param.dummyDurationEnd = 1; % fixation duration after all trials
+param.dummyDuration = 1; % seconds; fixation duration before any block/trial
+param.dummyDurationEnd = 1; % fixation duration after all blocks/trials
 
 %% Trial parameters
 % stimuli
@@ -131,7 +128,7 @@ param.lengthFix = 20;
 param.fixDuration = param.stimBloDuration;
 
 % the block numbers for fixation
-param.fixBlockN = 2; % randomly interleaved with experimental trials
+param.fixBlockN = 2; % randomly interleaved with experimental blocks
 
 %% Setting for the screen
 param.frameExpected = 60;
@@ -147,8 +144,8 @@ param.textColor = 255;
 
 %% Tasks
 param.do_task = @prf_nbackletter;
-param.nback = 1;   % number of "backs"
-param.ratio = 0.5; % percentage of trials have the .nback task
+param.nback = 1;   % number of repetitions
+param.ratio = 0.5; % percentage of blocks have the .nback task
 
 %% Run the Experiment
 param.do_trigger = @fmri_vpixx; % mandatory to work with MRI
@@ -156,6 +153,7 @@ param.do_trial = @prf_dotrial;
 param.do_stim = @prf_stim;
 param.do_output = @ptb_outtable;
 param.do_ed = @prf_doed;
+param.do_attentask = @prf_nbackletter;
 
 % run the fmri experiment in block design
 try

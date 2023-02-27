@@ -24,10 +24,10 @@ transBlock = repmat(transImg, param.nStimPerBlock, 1);
 
 %% Images blocks
 % generate stimlus cell for each Block/trial
-imgCell = cell(param.tn, 1);
+imgCell = cell(param.bn, 1);
 
 % for each block/trial separately
-for ttn = 1:param.tn
+for ttn = 1:param.bn
 
     % randomly select stimuli for each block/trial
     thisAll = stimIn(:, param.ed(ttn).stimCategory);
@@ -41,8 +41,8 @@ end
 
 %% Combine fixation and images
 % obtain the trial numbers for fixations
-param.imageBlockNum = sort(randperm(param.tn + param.fixBlockN, param.tn));
-stimCell = repmat({transBlock}, param.tn + param.fixBlockN, 1);
+param.imageBlockNum = sort(randperm(param.bn + param.fixBlockN, param.bn));
+stimCell = repmat({transBlock}, param.bn + param.fixBlockN, 1);
 stimCell(param.imageBlockNum) = imgCell;
 
 % saveas struct

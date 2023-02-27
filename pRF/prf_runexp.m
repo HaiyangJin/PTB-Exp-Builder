@@ -21,7 +21,7 @@ param = ptb_initialize(param);
 % Load stimuli
 param.stimuli = ptb_loadstimdir(param.imgDir, param.w);
 % Build the experiment design
-[param.ed, param.tn, param.bn] = ptb_expdesignbuilder( ...
+[param.ed, param.bn] = ptb_expdesignbuilder( ...
     param.conditionsArray, ...
     param.sortBlock);
 
@@ -84,7 +84,7 @@ dummyTableEnd = table; % save fixation data (before)
 % quit if experimenter key is pressed
 if ~quitNow
 
-    for iBlock = 1:param.tn+param.fixBlockN
+    for iBlock = 1:param.bn+param.fixBlockN
 
         param.BlockNum = iBlock;
         thisPosi = param.prfposi{param.alled(iBlock).stimPosiY, ...
@@ -92,8 +92,8 @@ if ~quitNow
 
         for tn = 1 : param.nStimPerBlock
             
-            % tn is the trial number within this block
-            param.subBlockNum = tn;
+            % tn is the trial number (sub-trial) within this block
+            param.subTrialNum = tn;
 
             % stimuli to be used in this trial
             thisStim = param.stimuli(tn, iBlock);
@@ -116,7 +116,7 @@ end % quitNow
 
 % fixations at the end of the experiment
 if ~quitNow
-    basetime = (param.tn+param.fixBlockN) * param.stimBloDuration + ...
+    basetime = (param.bn+param.fixBlockN) * param.stimBloDuration + ...
         param.dummyDuration + param.runStartTime;
     [outDummyEnd, quitNow] = fmri_dummyvol(param, basetime);
     dummyTableEnd = struct2table(outDummyEnd, 'AsArray', true);
@@ -151,12 +151,12 @@ else
     ExpCode = repmat({param.expCode}, nRowInfo, 1);
     SubjCode = repmat({param.subjCode}, nRowInfo, 1);
     RunCode = repmat({num2str(param.runCode)}, nRowInfo, 1);
-    TrialNum = transpose(1:size(dtTable, 1));
+    OverallTrialNum = transpose(1:size(dtTable, 1));
     RunStartTime = repmat(param.runStartTime, nRowInfo, 1);
     RunEndTime = repmat(param.runEndTime, nRowInfo, 1);
 
     expInfoTable = table(ExpAbbv, ExpCode, SubjCode, RunCode, ....
-        RunEndTime, TrialNum, RunStartTime);
+        RunEndTime, OverallTrialNum, RunStartTime);
 
     % process the output
     param.dtTable = param.do_output(sortrows(dtTable, 'StimOnset'), expInfoTable);

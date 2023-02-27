@@ -16,7 +16,7 @@ transEd.stimCategory = 0;
 transEd.repeated = 0;
 
 % combine the original param.ed with the transparent (fixation) ed
-param.alled = repmat(transEd, param.tn + param.fixBlockN, 1);
+param.alled = repmat(transEd, param.bn + param.fixBlockN, 1);
 param.alled(param.imageBlockNum) = param.ed;
 
 end
