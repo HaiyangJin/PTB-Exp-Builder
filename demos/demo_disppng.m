@@ -1,5 +1,5 @@
-function demo_png(imfn, winrect)
-% demo_png(imfn, winrect)
+function demo_disppng(imfn, winrect)
+% demo_disppng(imfn, winrect)
 %
 % Inputs:
 %    imfn     <str> path to the image to be displayed. Please make sure the
