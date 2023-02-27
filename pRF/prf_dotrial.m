@@ -34,7 +34,17 @@ isSame = NaN;
 ACC = NaN;
 RT = NaN;
 pressed = '';
-correctAns = NaN; % stimuli.correctAns;
+correctAns = NaN;
+correctAnsBlock = NaN;
+ACCBlock = NaN;
+
+% task information
+switch param.do_attentaskstr
+    case 'prf_nbackletter'
+        thestim = param.taskstim{param.subBlockNum, param.BlockNum};
+        correctAns = param.answers(param.subBlockNum, param.BlockNum); % stimuli.correctAns;
+        correctAnsBlock = sum(param.answers(1:param.subBlockNum,param.BlockNum),'omitnan');
+end
 
 %% Display each (sub-)trial
 % this stimulus rect and position
@@ -46,7 +56,12 @@ stimPosition = [stimPosi(1)-stimX/2+param.screenCenX ...
     stimPosi(2)+stimY/2-1+param.screenCenY];
 
 % display the stimulus
-Screen('FillRect', w, param.forecolor, param.fixarray);
+switch param.do_attentaskstr
+    case 'fixation'
+        Screen('FillRect', w, param.forecolor, param.fixarray);
+    case 'prf_nbackletter'
+        DrawFormattedText(param.w, thestim, 'center', 'center', param.forecolor);
+end
 Screen('DrawTexture', w, stimuli.texture, stimRect,...
     stimPosition, [], []);
 stimBeganAt = Screen('Flip', w);
@@ -90,8 +105,10 @@ while checkTime < param.stimDuration - param.flipSlack
         end
 
         ACC = isSame == correctAns;
+        ACCBlock = isSame == correctAnsBlock;
         RT = keyTime - stimBeganAt;
-        fprintf(' [ACC: %d]', ACC);
+        fprintf(' [ACC: %d; BACC: %d]', ACC, ACCBlock);
+
     end
 
     % check the time
@@ -99,7 +116,10 @@ while checkTime < param.stimDuration - param.flipSlack
 end
 
 %%%%%%%%%% display the fixation/blank %%%%%%%%%%
-Screen('FillRect', w, param.forecolor, param.fixarray);
+switch param.do_attentaskstr
+    case 'fixation'
+        Screen('FillRect', w, param.forecolor, param.fixarray);
+end
 if param.trialDuration > param.stimDuration
     stimEndAt = Screen('Flip', w);
 else
@@ -143,9 +163,9 @@ while checkTime < param.trialDuration - param.flipSlack && ~quitNow
         end
 
         ACC = isSame == correctAns;
+        ACCBlock = isSame == correctAnsBlock;
         RT = keyTime - stimBeganAt;
-
-        fprintf(' [ACC: %d]', ACC);
+        fprintf(' [ACC: %d; BACC: %d]', ACC, ACCBlock);
     end
 
     % check the time
@@ -155,6 +175,10 @@ end
 if isnan(isSame) && correctAns==1
     % missing a key press was treated as incorrect
     ACC = 0;
+end
+if isnan(isSame) && correctAnsBlock==1
+    % missing a key press was treated as incorrect
+    ACCBlock = 0;
 end
 
 %% trial information to be saved
@@ -179,9 +203,11 @@ output.apXY = param.canvasxy + output.StimXY;
 
 % responses
 output.CorrectAns = correctAns;
+output.CorrectAnsBlock = correctAnsBlock;
 output.Pressed = pressed;
 output.Response = isSame;
 output.isCorrect = ACC;
+output.isCorrectBlock = ACCBlock;
 output.RespTime = RT;
 
 end

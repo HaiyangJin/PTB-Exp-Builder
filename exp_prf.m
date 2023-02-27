@@ -117,7 +117,7 @@ param.dummyDurationEnd = 1; % fixation duration after all trials
 % stimuli
 param.stimDuration = .3;
 param.trialDuration = .5; % The total duration of one trial
-param.nStimPerBlock = 4;  % .5*8 = 4s
+param.nStimPerBlock = 4;  % 
 param.nFixaEndPerBlock = 1; 
 param.stimBloDuration = param.trialDuration * param.nStimPerBlock;
 
@@ -144,6 +144,11 @@ param.whichscreen = [];     % which screen to display stimuli
 param.textSize = 20;
 param.textFont = 'Helvetica';
 param.textColor = 255;
+
+%% Tasks
+param.do_task = @prf_nbackletter;
+param.nback = 1;   % number of "backs"
+param.ratio = 0.5; % percentage of trials have the .nback task
 
 %% Run the Experiment
 param.do_trigger = @fmri_vpixx; % mandatory to work with MRI

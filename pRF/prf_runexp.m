@@ -33,6 +33,13 @@ end
 if isfield(param, 'do_ed') && ~isempty(param.do_ed)
     param = param.do_ed(param);
 end
+if isfield(param, 'do_attentask') && ~isempty(param.do_attentask)
+    % generate stimuli for extra task (attention)
+    param = param.do_attentask(param);
+    param.do_attentaskstr = func2str(param.do_attentask);
+else
+    param.do_attentaskstr = 'fixation';
+end
 % generate the stimulus positions
 param = prf_stimposi(param);
 
@@ -84,18 +91,12 @@ if ~quitNow
             param.alled(iBlock).stimPosiX};
 
         for tn = 1 : param.nStimPerBlock
-            param.subBlockNum = tn;
+            
             % tn is the trial number within this block
+            param.subBlockNum = tn;
 
             % stimuli to be used in this trial
             thisStim = param.stimuli(tn, iBlock);
-
-            % the correct answer
-%             if ttn == 1
-%                 thisStim.correctAns = NaN;
-%             else
-%                 thisStim.correctAns = thisBlockStim(ttn) == thisBlockStim(ttn-1);
-%             end
 
             % do this trial
             ttn = (iBlock-1)*param.nStimPerBlock + tn; % overall trial number
