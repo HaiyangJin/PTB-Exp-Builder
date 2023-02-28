@@ -15,6 +15,19 @@ ListenChar(2);
 % Initilize the screen
 param = ptb_initialize(param);
 
+% initialize EL if needed
+if param.isEyelink
+    % make ROIs
+    if isfield(param, 'do_roi') && ~isempty(param.do_roi)
+        param = param.do_roi(param);
+    end
+    % create IA files to be displayed in Eyelink
+    if isfield(param, 'do_iafile') && ~isempty(param.do_iafile)
+        param = param.do_iafile(param);
+    end
+    param = el_initialize(param);
+end
+
 % Load stimuli
 param.stimuli = ptb_loadstimdir(param.imgDir, param.w);
 if isfield(param, 'maskDir')
@@ -44,6 +57,9 @@ param.queueKeyList = keyList;
 
 % Instruction
 ptb_instruction(param);
+
+% Calibration and validation (if needed)
+if param.isEyelink; el_calivali(param); end
 
 % Fixations
 param.fixarray = ptb_fixcross(param.screenX, param.screenY, ...
@@ -99,6 +115,8 @@ if (~quitNow)
     ptb_disptext(param, doneText, param.instructKey);
 end
 
+% quit EL if needed
+if param.isEyelink; el_end(param); end
 % close all screens
 Screen('CloseAll');
 

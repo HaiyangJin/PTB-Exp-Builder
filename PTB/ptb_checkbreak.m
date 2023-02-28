@@ -33,6 +33,9 @@ if (mod(ttn, param.trialsPerRest)==0 && ttn~=param.tn)
     
     RestrictKeysForKbCheck([]);
     KbWait([],3);
+
+    % re-calibrate and validate (if needed)
+    if param.isEyelink; el_calivali(param); end
         
 end
 
