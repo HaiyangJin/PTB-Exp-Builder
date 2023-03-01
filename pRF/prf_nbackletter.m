@@ -26,6 +26,10 @@ nLetterPerTrial = param.nStimPerBlock-param.nFixaEndPerBlock; % PerBlock
 % which block will show the .nback repetition
 istask = sort(randperm(nCol, ceil(nCol * param.ratio)));
 
+% block answers
+param.blockAns = zeros(nCol, 1);
+param.blockAns(istask) = 1;
+
 for itn = 1:nCol % each column in stimuli
 
     % only some of the blocks show .nback repetitions

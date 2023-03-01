@@ -138,6 +138,7 @@ param.runDuration = param.runEndTime - param.runStartTime;
 if isempty(dtStimTable)
     % if quit at first fixation...
     param.dtTable = '';
+    param.blockAcc = NaN(param.bn+param.fixBlockN, 1);
 else
 
     % combine fixation and stimulus tables
@@ -163,12 +164,16 @@ else
     % process the output
     param.dtTable = param.do_output(sortrows(dtTable, 'StimOnset'), expInfoTable);
 
+    % calculate the block acc
+    isPressedBlock = grpstats(dtStimTable(:,["BlockNum", "Response"]),"BlockNum", "sum");
+    param.blockAcc = (isPressedBlock.sum_Response>0) == param.blockAns; 
+
 end
 
 % save the output
 param.expEndTime = GetSecs;
 param.expDuration = param.expEndTime - param.expStartTime;
-[acc, nResp] = ptb_output(param, sprintf('Run%d', param.runCode), param.outpath);
+[~, nResp] = ptb_output(param, sprintf('Run%d', param.runCode), param.outpath);
 
 % save par files used in FreeSurfer
 fmri_parevent(param, 'outpath', param.outpath);
@@ -186,7 +191,8 @@ Screen('CloseAll');
 fprintf('\nThis run lasted %2.2f minutes (%.3f seconds).\n', ...
     param.runDuration/60, param.runDuration);
 
-% display behvioral responses
+% display behavioral response by block
+acc = 100*mean(param.blockAcc, 'omitnan');
 fprintf('%d responses were detected (Accuracy: %2.1f%%).\n', nResp, acc);
 
 % start receiving typed characters
