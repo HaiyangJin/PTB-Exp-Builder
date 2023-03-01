@@ -1,4 +1,4 @@
-function exp_categorization(subjCode)
+function exp_categorize(subjCode, isEyelink)
 % Example experiment main body.
 %
 % An experiment for categorization.
@@ -7,6 +7,8 @@ function exp_categorization(subjCode)
 %    subjCode      subject code
 %
 % Created by Haiyang Jin (2018).
+
+Screen('Preference','TextRenderer', 0)
 
 % add the functions folder to the path
 % clc;
@@ -29,8 +31,12 @@ if strcmp(subjCode, '0')
 else
     param.isDebug = 0;
 end
-
 param.subjCode = subjCode;
+
+if ~exist('isEyelink', 'var') || isempty(isEyelink)
+    isEyelink = 0;
+end
+param.isEyelink = isEyelink;
 
 %% Experiment inforamtion
 param.expCode = '999';
@@ -66,6 +72,9 @@ param.restMinimumTime = 10; % seconds
 stimPath = fullfile('custom/stimuli/CF_LineFaces', filesep);
 param.imgDir = im_dir(stimPath, {'png'});
 
+% param.jitterX = ((1:nRand)-4)*5; % jitter of the stimuli
+% param.jitterY = ((1:nRand)-4)*5; % jitter of the stimuli
+
 %% Trial parameters
 % fixations
 param.widthFix = 4;
@@ -91,6 +100,11 @@ param.whichscreen = [];    % which screen will be used
 param.textSize = 20;
 param.textFont = 'Helvetica';
 param.textColor = 255;
+
+%% Eyelink
+param.eldummymode = ~isEyelink;
+param.do_roi = []; % @cf_roi;
+param.do_iafile = []; % @cf_iafiles;
 
 %% Run the Experiment
 param.do_trial = @demo1_trial;
