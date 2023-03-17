@@ -1,4 +1,4 @@
-function exp_categorize(subjCode, isEyelink)
+function exp_cate(subjCode, isEyelink)
 % Example experiment main body.
 %
 % An experiment for categorization.
@@ -7,14 +7,6 @@ function exp_categorize(subjCode, isEyelink)
 %    subjCode      subject code
 %
 % Created by Haiyang Jin (2018).
-
-Screen('Preference','TextRenderer', 0)
-
-% add the functions folder to the path
-% clc;
-paths = {'PTB', 'ImageTools', 'Utilities/', 'custom/demo1_funcs'};
-cellfun(@addpath, paths);
-% addpath(genpath('functions/'));
 
 param.SkipSyncTests = 0;  % will skip in debug mode
 
@@ -38,9 +30,16 @@ if ~exist('isEyelink', 'var') || isempty(isEyelink)
 end
 param.isEyelink = isEyelink;
 
+% add the functions folder to the path
+% clc;
+paths = {'PTB', 'ImageTools', 'Utilities/', 'custom/cate_funcs'};
+if isEyelink; paths=horzcat(paths, {'Eyelink'}); end
+cellfun(@addpath, paths);
+% addpath(genpath('functions/'));
+
 %% Experiment inforamtion
 param.expCode = '999';
-param.expAbbv = 'ExpAbbv';
+param.expAbbv = 'ExpEL';
 
 % experiment design (ed)
 clear param.conditionsArray;
@@ -72,8 +71,8 @@ param.restMinimumTime = 10; % seconds
 stimPath = fullfile('custom/stimuli/CF_LineFaces', filesep);
 param.imgDir = im_dir(stimPath, {'png'});
 
-% param.jitterX = ((1:nRand)-4)*5; % jitter of the stimuli
-% param.jitterY = ((1:nRand)-4)*5; % jitter of the stimuli
+param.jitterX = ((1:5)-4)*50; % jitter of the stimuli
+param.jitterY = ((1:5)-4)*50; % jitter of the stimuli
 
 %% Trial parameters
 % fixations
@@ -103,11 +102,11 @@ param.textColor = 255;
 
 %% Eyelink
 param.eldummymode = ~isEyelink;
-param.do_roi = []; % @cf_roi;
-param.do_iafile = []; % @cf_iafiles;
+param.do_roi = []; % @cate_roi;
+param.do_iafile = @cate_iafiles;
 
 %% Run the Experiment
-param.do_trial = @demo1_trial;
+param.do_trial = @cate_trial;
 param.do_output = @ptb_outtable;
 
 ptb_runexp(param);

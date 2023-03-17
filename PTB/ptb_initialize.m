@@ -69,7 +69,8 @@ Screen('BlendFunction', window, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 frameRate = Screen('NominalFrameRate', window); % the Hz refresh rate
 if (frameRate ~= param.frameExpected) && ispc
    beep;
-   disp(['WARNING... the framerate is not ', num2str(frameRateExpected), '; it''s ' num2str(frameRate) ' Hz. This may cause timing issues.']);
+   warning(['The framerate is not %d; it''s %d Hz. ' ...
+       'This may cause timing issues.'], param.frameExpected, frameRate);
 end
 msPerFrame = Screen('GetFlipInterval',window); % milliseconds per frame
 flipSlack = .5 * msPerFrame; % needed so that Screen('Flip') can be prepared when the flip occurs.

@@ -22,7 +22,7 @@ elopts = struct;
 % and perform some initializations. The information is returned
 % in a structure that also contains useful defaults
 % and control codes (e.g. tracker state bit and Eyelink key values).
-el=EyelinkInitDefaults(param.window);
+el=EyelinkInitDefaults(param.w);
 
 %% STEP 3
 % Initialization of the connection with the Eyelink Gazetracker.
@@ -39,11 +39,11 @@ end
 % and version of the host software
 sw_version = 0;
 [elopts.version, elopts.vs]=Eyelink('GetTrackerVersion');
-fprintf('Running experiment on a ''%s'' tracker.\n', param.elopts.vs);
+fprintf('Running experiment on a ''%s'' tracker.\n', elopts.vs);
 
 %% STEP 5
 % Name Eyelinke file and open it to record data 
-elopts.edfFile = [param.experimentAbbv, param.subjCode]; 
+elopts.edfFile = [param.expAbbv, param.subjCode, '.edf']; 
 
 i = Eyelink('Openfile', elopts.edfFile);
 if i~=0
@@ -61,8 +61,10 @@ Eyelink('command', 'sample_rate = 1000');
 
 % Setting the proper recording resolution, proper calibration type, 
 % as well as the data file content;
-Eyelink('command','screen_pixel_coords = %ld %ld %ld %ld', 0, 0, screenX-1, screenY-1);
-Eyelink('message', 'DISPLAY_COORDS %ld %ld %ld %ld', 0, 0, screenX-1, screenY-1);    
+Eyelink('command','screen_pixel_coords = %ld %ld %ld %ld', ...
+    0, 0, param.screenX-1, param.screenY-1);
+Eyelink('message', 'DISPLAY_COORDS %ld %ld %ld %ld', ...
+    0, 0, param.screenX-1, param.screenY-1);    
 
 % set calibration type.
 Eyelink('command', 'calibration_type = HV9');
@@ -89,7 +91,7 @@ end
 % Eyelink('command', 'button_function 5 "accept_target_fixation"');
 
 % make sure we're still connected.
-if Eyelink('IsConnected')~=1 && dummymode == 0
+if Eyelink('IsConnected')~=1 && param.eldummymode == 0
     fprintf('not connected, clean up\n');
     Eyelink( 'Shutdown');
     Screen('CloseAll');
