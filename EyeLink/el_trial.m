@@ -109,8 +109,8 @@ trialBeginsAt = GetSecs;
 % otherwise you may lose a few msec of data
 
 param.elopts.eye_used = Eyelink('EyeAvailable'); % get eye that's tracked
-if param.elopts.eye_used == el.BINOCULAR % if both eyes are tracked
-    param.elopts.eye_used = el.LEFT_EYE; % use left eye
+if param.elopts.eye_used == param.el.BINOCULAR % if both eyes are tracked
+    param.elopts.eye_used = param.el.LEFT_EYE; % use left eye
 end
 
 end

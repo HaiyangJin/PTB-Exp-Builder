@@ -11,8 +11,9 @@ WaitSecs(0.5);
 Eyelink('CloseFile');
 
 % download data file
+edfFile = param.elopts.edfFile;   
 try
-    fprintf('Receiving data file ''%s''\n', param.elopts.edfFile);
+    fprintf('Receiving data file ''%s''\n', edfFile);
     status=Eyelink('ReceiveFile');
     if status > 0
         fprintf('ReceiveFile status %d\n', status);

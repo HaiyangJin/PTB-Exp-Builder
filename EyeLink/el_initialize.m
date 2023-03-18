@@ -1,7 +1,7 @@
 function param = el_initialize(param)
 % param = el_initialize(param)
 %
-% This function should run after ptb_initialize()
+% This function should run after ptb_initialize().
 
 % initialize the struct for opts
 elopts = struct;
@@ -43,12 +43,15 @@ fprintf('Running experiment on a ''%s'' tracker.\n', elopts.vs);
 
 %% STEP 5
 % Name Eyelinke file and open it to record data 
-elopts.edfFile = [param.expAbbv, param.subjCode, '.edf']; 
+edffn = [param.expAbbv, param.subjCode, '.edf']; 
+edffolder = fullfile(pwd, '0_ELData');
+if ~exist(edffolder, 'dir'); mkdir(edffolder); end
+elopts.edfFile = fullfile(edffolder, edffn);
 
 i = Eyelink('Openfile', elopts.edfFile);
 if i~=0
     fprintf('Cannot create EDF file ''%s'' ', elopts.edfFile);
-    Eyelink( 'Shutdown');
+    Eyelink('Shutdown');
     Screen('CloseAll');
     return;
 end

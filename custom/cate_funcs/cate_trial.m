@@ -1,4 +1,4 @@
-function [output, quitNow] = demo1_trial(ttn, param)
+function [output, quitNow] = cate_trial(ttn, param)
 % Example do trial.
 %
 % Inputs:
@@ -16,21 +16,34 @@ quitNow = 0;
 
 % experiment design
 stimuli = param.stimuli;
-ed = param.ed;
 respKeys = param.respKeys;
 
 correctAns = 1;
 
+%% This jitter
+jitterX = param.jitterX(randperm(length(param.jitterX),1));
+jitterY = param.jitterY(randperm(length(param.jitterY),1));
+
+stimRect = [0 0 size(stimuli(ttn).matrix,2) size(stimuli(ttn).matrix,1)];
+
 if param.isEyelink
-    [trialBeginsAt, param] = el_trial(ttn, param);
-else
-    trialBeginsAt = GetSecs;
+    % set the IA filename
+    iaFilename = fullfile(param.iafolder, ...
+        sprintf([repmat('%d_', 1, 3), '%d', '.ias'],...
+        jitterX, jitterY, ...
+        param.screenX, param.screenY));
 end
+
+% stim position
+stimXPosition = param.screenCenX - size(stimuli(ttn).matrix,2)/2;
+stimYPosition = param.screenCenY - size(stimuli(ttn).matrix,1)/2;
 
 %% Do the trial
 if param.isEyelink
-    stimBeginsWhen = now;
+    [trialBeginsAt, param] = el_trial(ttn, param);
+    stimBeginsWhen = GetSecs;
 else
+    trialBeginsAt = GetSecs;
     %%%%%%%%%%%%%% fixation %%%%%%%%%%%%%%
     Screen('FillRect', param.w, param.forecolor, param.fixarray);
     fixationBeganAt = Screen('Flip', param.w);
@@ -38,16 +51,18 @@ else
 end
 
 %%%%%%%%%%%%%% stimuli %%%%%%%%%%%%%%
-Screen('DrawTexture', param.w, stimuli(ttn).texture,[]); %OffsetRect(faceTopRect,100*(1-ed(ttn).isAligned)*(1-ed(ttn).topIsCued),0)
+Screen('DrawTexture', param.w, stimuli(ttn).texture,[], ...
+    OffsetRect(stimRect, stimXPosition+jitterX, stimYPosition+jitterY));
 stimBeganAt = Screen('Flip', param.w, stimBeginsWhen);
 respBeginsWhen = stimBeganAt + param.stimDuration - param.flipSlack;
-if param.isEyelink 
+if param.isEyelink
     Eyelink('Message', ['Trial_' num2str(ttn)]);
     %%%%% load the IA file for this trial %%%%%
-%     Eyelink('Message', '!V IAREA File %s', 'path/to/file');
+    Eyelink('Message', '!V IAREA File %s', iaFilename); % ROI file
     Eyelink('Message', sprintf('!V CLEAR %d %d %d', param.backcolor));
-%     Eyelink('Message', '!V IMGLOAD TOP_LEFT %s %d %d', imgfile_study, ...
-%         trackerXPosition, trackerYPosition);
+    Eyelink('Message', '!V IMGLOAD TOP_LEFT %s %d %d', ...
+        fullfile(stimuli(ttn).folder, stimuli(ttn).fn), ...
+        stimXPosition+jitterX, stimYPosition+jitterY); % image to show in Eyelink
 end
 
 %%%%%%%%%%%%%% response %%%%%%%%%%%%%%
@@ -69,16 +84,16 @@ trialEndedAt = Screen('Flip',param.w);
 totalTrialDuration = trialEndedAt - trialBeginsAt;
 
 %%%%%%%%%% Post-processing %%%%%%%%%%
-if sum(sum(keyCode(respKeys)))==1 
+if sum(sum(keyCode(respKeys)))==1
     Resp = find(sum(keyCode(respKeys)));
     ACC = double(Resp == correctAns);
     reactionTime = pressTime - responseBegins;
-    
+
 else
     Resp = NaN;
-    ACC = NaN; 
+    ACC = NaN;
     reactionTime = NaN;
-    
+
     if any(keyCode(param.expKey))
         % quit if the experimenter key is pressed
         quitNow = 1;
@@ -88,7 +103,7 @@ else
         noRespText = sprintf(['Something wrong happended... \n\n'...
             'Please press any key to continue...']);
     end
-    
+
     % wrong key, double key or timeout
     beep;
     ptb_disptext(param, noRespText);
@@ -102,38 +117,7 @@ end
 %% STEP 8.7 AOI and conditions
 if param.isEyelink
     % Send out necessary integration messages for data analysis
-    % Send out interest area information for the trial (AOIs)
-    
-    % FREEHAND ROI (half oval) for study face
-    % studyStartStamp1 = round((GetSecs - studyBeganAt)*1000);
-    % Eyelink('Message', sprintf(['!V IAREA %d %d FREEHAND %d ', repmat('%d,%d ', 1, nXOval), '%s'],...
-    %     studyStartStamp1, studyStartStamp1 - studyDuration*1000 + 1,...
-    %     1, topStudyOval, 'topStudyOval'));
-    % studyStartStamp2 = round((GetSecs - studyBeganAt)*1000);
-    % Eyelink('Message', sprintf(['!V IAREA %d %d FREEHAND %d ', repmat('%d,%d ', 1, nXOval), '%s'],...
-    %     studyStartStamp2, studyStartStamp2 - studyDuration*1000 + 1,...
-    %     2, bottomStudyOval, 'bottomStudyOval'));
-    
-    % Rectangular ROI
-    %     Eyelink('Message', sprintf('!V IAREA %d %d RECTANGLE %d %d %d %d %d %s',...
-    %         studyStartStamp1, studyStartStamp1 - studyDuration*1000 + 1, 11, topStudyPosition,'topStudy'));
-    %     Eyelink('Message', sprintf('!V IAREA %d %d RECTANGLE %d %d %d %d %d %s',...
-    %         studyStartStamp2, studyStartStamp2 - studyDuration*1000 + 1, 12, bottomStudyPosition,'bottomStudy'));
-    
-    WaitSecs(0.001);
-    
-    % FREEHAND ROI (half oval)
-    % Eyelink('Message', sprintf(['!V IAREA %d %d FREEHAND %d ', repmat('%d,%d ', 1, nXOval), '%s'],...
-    %     round((GetSecs - responseBegins)*1000), round((GetSecs - pressTime)*1000), 3, topTestOval, 'topTestOval'));
-    % Eyelink('Message', sprintf(['!V IAREA %d %d FREEHAND %d ', repmat('%d,%d ', 1, nXOval), '%s'],...
-    %     round((GetSecs - responseBegins)*1000), round((GetSecs - pressTime)*1000), 4, bottomTestOval, 'bottomTestOval'));
-    
-    % Rectangular ROI
-    %     Eyelink('Message', sprintf('!V IAREA %d %d RECTANGLE %d %d %d %d %d %s', ...
-    %         round((GetSecs - responseBegins)*1000), round((GetSecs - pressTime)*1000), 13, topTestPosition,'topTest'));
-    %     Eyelink('Message', sprintf('!V IAREA %d %d RECTANGLE %d %d %d %d %d %s', ...
-    %         round((GetSecs - responseBegins)*1000), round((GetSecs - pressTime)*1000), 14, bottomTestPosition,'bottomTest'));
-    
+
     % Send messages to report trial condition information
     % Each message may be a pair of trial condition variable and its
     % corresponding value follwing the '!V TRIAL_VAR' token message
@@ -141,13 +125,9 @@ if param.isEyelink
     % Message Commands" section of the EyeLink Data Viewer User Manual
     WaitSecs(0.001);
     Eyelink('Message', '!V TRIAL_VAR trialNum %d', ttn);
-    Eyelink('Message', '!V TRIAL_VAR Congruency %s', congruency(2-ed(ttn).isCongruent));
-    Eyelink('Message', '!V TRIAL_VAR Alignment %s', alignment(2-ed(ttn).bottomIsAligned));
-    Eyelink('Message', '!V TRIAL_VAR SameDifferent %s', sameDifferent(2-ed(ttn).topIsSame));
-    Eyelink('Message', '!V TRIAL_VAR SameDifferent %d', ACC);
-    
-    %collect eye movement data
-    % EyelinkCollectData;
+    Eyelink('Message', '!V TRIAL_VAR JitterX %d', jitterX);
+    Eyelink('Message', '!V TRIAL_VAR JitterY %d', jitterY);
+    Eyelink('Message', '!V TRIAL_VAR Response %d', ACC);
 
 end
 
@@ -155,6 +135,8 @@ end
 RestrictKeysForKbCheck([]);
 
 output.Trial = ttn;
+output.JitterX = jitterX;
+output.JitterY = jitterY;
 output.ThisResponse = Resp;
 output.correctAnswer = correctAns;
 output.isCorrect = ACC;
