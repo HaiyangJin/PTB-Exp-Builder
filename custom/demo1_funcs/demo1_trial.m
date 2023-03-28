@@ -27,16 +27,19 @@ trialBeginsAt = GetSecs;
 %%%%%%%%%%%%%% fixation %%%%%%%%%%%%%%
 Screen('FillRect', param.w, param.forecolor, param.fixarray);
 
-fixationBeganAt = Screen('Flip', param.w);
-stimBeginsWhen = fixationBeganAt + param.fixDuration - param.flipSlack;
+stimBeginsWhen = ptb_flip(param, [], param.fixDuration);
+% fixationBeganAt = Screen('Flip', param.w);
+% stimBeginsWhen = fixationBeganAt + param.fixDuration - param.flipSlack;
 
 %%%%%%%%%%%%%% stimuli %%%%%%%%%%%%%%
 Screen('DrawTexture', param.w, stimuli(ttn).texture,[]); %OffsetRect(faceTopRect,100*(1-ed(ttn).isAligned)*(1-ed(ttn).topIsCued),0)
-stimBeganAt = Screen('Flip', param.w, stimBeginsWhen);
-respBeginsWhen = stimBeganAt + param.stimDuration - param.flipSlack;
+respBeginsWhen = ptb_flip(param, stimBeginsWhen, param.stimDuration);
+% stimBeganAt = Screen('Flip', param.w, stimBeginsWhen);
+% respBeginsWhen = stimBeganAt + param.stimDuration - param.flipSlack;
 
 %%%%%%%%%%%%%% response %%%%%%%%%%%%%%
-responseBegins = Screen('Flip', param.w, respBeginsWhen);
+responseBegins = ptb_flip(param, respBeginsWhen, 1);
+% responseBegins = Screen('Flip', param.w, respBeginsWhen);
 
 %%%%%%%%%% Response (keys) %%%%%%%%%%
 RestrictKeysForKbCheck([respKeys(:)', param.expKey]);  % , KbName('5')

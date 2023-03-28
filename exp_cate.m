@@ -1,4 +1,4 @@
-function exp_categorization(subjCode)
+function exp_cate(subjCode)
 % Example experiment main body.
 %
 % An experiment for categorization.
@@ -91,6 +91,9 @@ param.whichscreen = [];    % which screen will be used
 param.textSize = 20;
 param.textFont = 'Helvetica';
 param.textColor = 255;
+
+%% Record experiments
+param.record = 1;
 
 %% Run the Experiment
 param.do_trial = @demo1_trial;

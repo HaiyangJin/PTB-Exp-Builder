@@ -76,6 +76,12 @@ flipSlack = .5 * msPerFrame; % needed so that Screen('Flip') can be prepared whe
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%% Record the session if needed
+if isfield(param, 'record') && param.record
+    mvfn = sprintf('%s_%s_%s.mp4', param.expCode, param.expAbbv, param.subjCode);
+    param.mvptr = Screen('CreateMovie', window, mvfn);
+end
+
 %% Set font, size, and color for texts
 param = ptb_language(param);
 Screen('TextSize', window, param.textSize);

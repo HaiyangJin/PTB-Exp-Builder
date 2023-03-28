@@ -99,6 +99,11 @@ if (~quitNow)
     ptb_disptext(param, doneText, param.instructKey);
 end
 
+if isfield(param, 'record') && param.record
+    Screen('FinalizeMovie', param.mvptr);
+    Screen('CloseMovie');
+end
+
 % close all screens
 Screen('CloseAll');
 
