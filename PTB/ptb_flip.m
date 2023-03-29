@@ -1,5 +1,5 @@
-function nextBeginsWhen = ptb_flip(param, beginWhen, duration)
-% nextBeginsWhen = ptb_flip(param, beginWhen, duration)
+function [beganAt, nextBeginsWhen] = ptb_flip(param, beginWhen, duration)
+% [beganAt, nextBeginsWhen] = ptb_flip(param, beginWhen, duration)
 %
 % Flip screen and record screens to video.
 %
@@ -10,6 +10,7 @@ function nextBeginsWhen = ptb_flip(param, beginWhen, duration)
 %                      0, i.e., not add to the video.
 %
 % Output:
+%    beganAt          <num> timestamp when the screen began.
 %    nextBeginsWehn   <num> timestamp for next screen to flip. 
 %
 % Created by Haiyang Jin (2023-March-28)
@@ -23,12 +24,12 @@ if ~exist('duration', 'var') || isempty(duration)
 end
 
 % flip the screen
-BeganAt = Screen('Flip', param.w, beginWhen);
-nextBeginsWhen = BeganAt + duration - param.flipSlack;
+beganAt = Screen('Flip', param.w, beginWhen);
+nextBeginsWhen = beganAt + duration - param.flipSlack;
 
 % add frames to the record if needed
 if param.record && duration > 0
-    frameduration = floor(duration*30);
+    frameduration = round(duration*param.mvfr);
     Screen('AddFrameToMovie', param.w, [], [], param.mvptr,frameduration);
 end
 

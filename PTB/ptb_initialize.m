@@ -78,8 +78,12 @@ flipSlack = .5 * msPerFrame; % needed so that Screen('Flip') can be prepared whe
 
 %% Record the session if needed
 if isfield(param, 'record') && param.record
-    mvfn = sprintf('%s_%s_%s.mp4', param.expCode, param.expAbbv, param.subjCode);
-    param.mvptr = Screen('CreateMovie', window, mvfn);
+    if ~isfield(param, 'mvfr') || isempty(param.mvfr)
+        param.mvfr = 30;
+    end
+
+    mvfn = sprintf('%s_%s_%s_%d.avi', param.expCode, param.expAbbv, param.subjCode, param.runCode);
+    param.mvptr = Screen('CreateMovie', window, mvfn, [], [], param.mvfr);
 end
 
 %% Set font, size, and color for texts
