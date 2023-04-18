@@ -82,7 +82,12 @@ if isfield(param, 'record') && param.record
         param.mvfr = 30;
     end
 
-    mvfn = sprintf('%s_%s_%s_%d.avi', param.expCode, param.expAbbv, param.subjCode, param.runCode);
+    if ~isfield(param, 'runCode') || isempty(param.runCode)
+        runstr = '';
+    else
+        runstr = sprintf('_%d', param.runCode);
+    end
+    mvfn = sprintf('%s_%s_%s%s.avi', param.expCode, param.expAbbv, param.subjCode, runstr);
     param.mvptr = Screen('CreateMovie', window, mvfn, [], [], param.mvfr);
 end
 

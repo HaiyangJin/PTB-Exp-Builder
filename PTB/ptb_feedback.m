@@ -1,4 +1,4 @@
-function ptb_feedback(acc, window)
+function ptb_feedback(acc, param)
 % This functions displays the accuracy and response times for the current
 % trial.
 %
@@ -16,12 +16,12 @@ if isnan(acc)
 end
 
 % feedback options
-feedbackOptions = {'Incorrect!','Correct!'};
+feedbackOptions = param.feedbackOptions;
 feedbackColor = {[255 0 0 ],[ 0 0 255]}; % red, blue
 
 % display feedback
-DrawFormattedText(window,feedbackOptions{acc+1},'center','center',feedbackColor{acc+1});    
-Screen('Flip',window);
+DrawFormattedText(param.w,feedbackOptions{acc+1},'center','center',feedbackColor{acc+1});    
+Screen('Flip',param.w);
 WaitSecs(1);
 
 end

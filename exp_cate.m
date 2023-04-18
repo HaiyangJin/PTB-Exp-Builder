@@ -99,6 +99,12 @@ param.record = 1;
 param.do_trial = @demo1_trial;
 param.do_output = @ptb_outtable;
 
-ptb_runexp(param);
+try
+    ptb_runexp(param);
+catch error
+    ListenChar(0);
+    sca;
+    rethrow(error);
+end
 
 end

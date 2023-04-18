@@ -27,6 +27,7 @@ switch param.language
             '\n \nPlease contact the experimenter.']);
         param.expEnd = sprintf(['This task is finished!' ...
             '\n \nPlease contact the experimenter.']);
+        param.feedbackOptions = {'Incorrect!','Correct!'};
 
     case 'cn'
 
@@ -38,9 +39,10 @@ switch param.language
             '请按任意键继续...']);
         param.noRespText = double(['未知错误... \n\n'...
             '请按任意键继续...']);
-        param.breakEndText = double('你现在可以继续进行实验。\n\n请准备好后按任意键继续.');
-        param.partEnd = double('恭喜你完成了这一部分.\n \n请联系实验主试.');
-        param.expEnd = double('恭喜你完成了这个实验!\n \n请联系实验主试.');
+        param.breakEndText = double('你现在可以继续进行实验。\n\n请准备好后按任意键继续。');
+        param.partEnd = double('恭喜你完成了这一部分。\n \n请联系实验主试。');
+        param.expEnd = double('恭喜你完成了这个实验!\n \n请联系实验主试。');
+        param.feedbackOptions = {double('不正确'),double('正确')};
 
     otherwise
         error('Unknown language...');

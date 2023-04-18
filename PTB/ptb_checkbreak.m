@@ -15,8 +15,8 @@ if (mod(ttn, param.trialsPerRest)==0 && ttn~=param.tn)
         breakText = sprintf(['Please take a rest.\n\n You''re ' ...
             num2str(floor(100*ttn/param.tn),'%0.0f') '%% finished for this part.']);
     elseif strcmp(param.language, 'cn')
-        breakText = double(sprintf(['请稍作休息.\n\n你已经完成了这部分的' ...
-            num2str(floor(100*ttn/param.tn)) '%%.']));
+        breakText = double(sprintf(['请稍作休息。\n\n你已经完成了这部分的' ...
+            num2str(floor(100*ttn/param.tn)) '%%。']));
     end
     DrawFormattedText(param.w, breakText, 'center', param.screenY-150, param.forecolor);
     
