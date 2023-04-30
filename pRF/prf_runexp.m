@@ -166,7 +166,7 @@ else
 
     % calculate the block acc
     isPressedBlock = grpstats(dtStimTable(:,["BlockNum", "Response"]),"BlockNum", "sum");
-    param.blockAcc = (isPressedBlock.sum_Response>0) == param.blockAns; 
+    param.blockAcc = (isPressedBlock.sum_Response>0) == param.blockAns(1:size(isPressedBlock,1)); 
 
 end
 
