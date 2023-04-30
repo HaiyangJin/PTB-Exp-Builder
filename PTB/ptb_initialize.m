@@ -13,12 +13,10 @@ Priority(1);
 warning('off','MATLAB:sprintf:InputForPercentSIsNotOfClassChar');
 warning('off','MATLAB:fprintf:InputForPercentSIsNotOfClassChar');
 
-param = ptb_winrect(param);
 % if it is in debug mode
 if param.isDebug
     param.SkipSyncTests = 1;  % skip screen sync test
 end
-
 Screen('Preference', 'SkipSyncTests', param.SkipSyncTests);
 
 % setup the randomizations
@@ -32,7 +30,9 @@ screens = Screen('Screens');
 if ~isfield(param, 'whichscreen') || isempty(param.whichscreen)
     param.whichscreen = max(screens);
 end
+if param.isDebug; param.whichscreen=0; end
 whichScreen = param.whichscreen;
+param = ptb_winrect(param);
 
 % Define black and white (white will be 1 and black 0). This is because
 % in general luminace values are defined between 0 and 1 with 255 steps in
