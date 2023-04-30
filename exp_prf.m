@@ -70,8 +70,12 @@ param.nStimCat = numel(unique({param.imgDir.condition}));
 param.nRepetition = 1; 
 
 % pRF designs (to be used in prf_stimposi())
-param.prfcoorsys = 'carte';
-param.prfNxy = [2, 2]; % number of rows and columns
+param.prfcoorsys = 'carte'; 
+param.prfNxy = [3, 3]; % number of columns and rows
+param.facevva = 3.2;   % (vertical) visual angle 
+param.facebtw = 1.5;   % between faces 
+param.dsize = 15;
+param.dcolor = [255; 255; 100; 128]; % transparent yellow
 
 % experiment design array
 clear param.conditionsArray;
@@ -101,7 +105,7 @@ end
 
 % instruction texts
 param.instructText = sprintf(['Welcome to this experiment... \n\n\n' ...
-    'Please press %s when the letter in the center is the same as '...
+    'Please press %s when the letter at the center is the same as '...
     'the previous one. \n\n', ...
     '(%s)'], ...
     keyStr, continueStr); 
@@ -133,9 +137,10 @@ param.fixBlockN = 2; % randomly interleaved with experimental blocks
 %% Setting for the screen
 param.frameExpected = 60;
 param.forecolor = 'white';  % (white, black, grey or numbers)
-param.backcolor = 'grey';  % (white, black, grey or numbers)
+param.backcolor = 'grey';   % (white, black, grey or numbers)
 param.winrect = [];         % [] Window Rect; % default [100 100 1300 900];  %[100 100 600 600];
 param.whichscreen = [];     % which screen to display stimuli
+param.distance = 57;        % distance to the screen (cm)
 
 %% Parameters of fonts used in this exp
 param.textSize = 20;

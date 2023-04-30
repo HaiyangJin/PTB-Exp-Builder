@@ -5,7 +5,11 @@ function param = prf_stimposi(param)
 %     param        <struct> experiment parameters.
 %     .prfcoordys  <str> pRF coordiante system. Default to 'Cartesian',
 %                   alternative is 'polar'.
-%     .prfNxy      <int> number of positions along the x and y axis.
+%     .prfNxy      <int> number of positions along different dimenstions.
+%                   For 'Cartesian', {.prfNxy} refers to number of
+%                   positions for rows and columns axis. 
+%                   For 'polar', {.prfNxy} refers to the number of
+%                   positions along each angle and the number of angles.
 %     .canvasxy    <int> the X and Y size of the canvas to display the
 %                   stimlus.
 %
@@ -29,7 +33,7 @@ else
     prfcoorsys = param.prfcoorsys;
 end
 if ~isfield(param, 'prfNxy')
-    prfNxy = [5, 5];
+    prfNxy = [5, 4];
 else
     prfNxy = param.prfNxy;
 end
@@ -41,7 +45,7 @@ end
 % generate the positions of stimulus centers
 switch prfcoorsys
     case {'Cartesian', 'cartesian', 'carte', 'cart'}
-        param.prfposi = prfposi_carte(prfNxy, param.canvasxy);
+        [param.prfposi, param.prfposi2] = prfposi_carte(prfNxy, param.canvasxy);
 
     case {'Polar', 'polar', 'pola'}
         % default of [phase] to 0
@@ -50,14 +54,14 @@ switch prfcoorsys
         else
             phase = param.phase;
         end
-        param.prfposi = prfposi_polar(prfNxy, param.canvasxy, phase);
+        [param.prfposi, param.prfposi2] = prfposi_polar(prfNxy, param.canvasxy, phase);
 
     otherwise
         error('Unknown coordinate systems...')
 end
 end
 
-function prfposi = prfposi_carte(Nxy, canvasxy, ~)
+function [prfposi, prfposi2] = prfposi_carte(Nxy, canvasxy, ~)
 % prfposi = prfposi_carte(Nxy, canvasxy, ~)
 %
 % Nxy        <int vec> the number of stimulus on each row and column.
@@ -75,10 +79,11 @@ ys = (0 : distxy(2) : canvasxy(2)) - canvasxy(2)/2;
 
 % coordinates for all stim positions
 prfposi = arrayfun(@(x,y) [x,y], x, y, 'uni', false);
+prfposi2 = [x(:),y(:)]';
 
 end
 
-function prfposi = prfposi_polar(Nxy, canvasxy, phase)
+function [prfposi, prfposi2] = prfposi_polar(Nxy, canvasxy, phase)
 % prfposi = prfposi_polar(Nxy, canvasxy, phase)
 %
 % Nxy        <int vec> the number of angles and distances along each angle.
@@ -91,9 +96,9 @@ if ~exist('phase', 'var') || isempty(phase)
 end
 
 % angles between positions
-perangle = 360/Nxy(1);
+perangle = 360/Nxy(2);
 % disntances between positions
-perdist = min(canvasxy)/2/Nxy(2);
+perdist = min(canvasxy)/2/Nxy(1);
 
 % all angles and distances
 angles = (0 : perangle : 359) + phase;
@@ -107,6 +112,7 @@ outposi = arrayfun(@(x) rotatecarte(distances, x), angles, 'uni', false);
 
 % save as one cell
 prfposi = horzcat(outposi{:});
+prfposi2 = vertcat(prfposi{:})';
 
 end
 

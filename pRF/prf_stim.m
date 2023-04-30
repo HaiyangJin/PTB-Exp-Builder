@@ -48,4 +48,11 @@ stimCell(param.imageBlockNum) = imgCell;
 % saveas struct
 param.stimuli = horzcat(stimCell{:});
 
+%% Calculate stimulus size and positions
+facevva_pi = ptb_va2pixel(param.facevva, param.distance, param.pipercm);
+param.faceratio = facevva_pi/size(param.stimuli(1).matrix,1);
+
+facebtw_pi = ptb_va2pixel(param.facebtw, param.distance, param.pipercm);
+param.canvasxy = (param.prfNxy-1) * facebtw_pi;
+
 end

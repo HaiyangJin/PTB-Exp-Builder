@@ -50,20 +50,25 @@ end
 % this stimulus rect and position
 [stimY, stimX, ~] = size(stimuli.matrix);
 stimRect = [0 0 stimX stimY];
-stimPosition = [stimPosi(1)-stimX/2+param.screenCenX ...
-    stimPosi(2)-stimY/2+param.screenCenY ...
-    stimPosi(1)+stimX/2-1+param.screenCenX ...
-    stimPosi(2)+stimY/2-1+param.screenCenY];
+stimXtrg = stimX*param.faceratio;
+stimYtrg = stimY*param.faceratio;
+stimPosition = [stimPosi(1)-stimXtrg/2+param.screenCenX ...
+    stimPosi(2)-stimYtrg/2+param.screenCenY ...
+    stimPosi(1)+stimXtrg/2-1+param.screenCenX ...
+    stimPosi(2)+stimYtrg/2-1+param.screenCenY];
 
 % display the stimulus
+Screen('DrawDots', w, param.prfposi2, param.dsize, param.dcolor, ...
+    [param.screenCenX, param.screenCenY+4], 1);
+Screen('DrawTexture', w, stimuli.texture, stimRect, stimPosition);
 switch param.do_attentaskstr
     case 'fixation'
         Screen('FillRect', w, param.forecolor, param.fixarray);
     case 'prf_nbackletter'
-        DrawFormattedText(param.w, thestim, 'center', 'center', param.forecolor);
+        Screen('DrawDots', w, [0,0], 25, [255;51;51], ...
+    [param.screenCenX, param.screenCenY+4], 1);
+        DrawFormattedText(w, thestim, 'center', 'center', param.forecolor);
 end
-Screen('DrawTexture', w, stimuli.texture, stimRect,...
-    stimPosition, [], []);
 stimBeganAt = Screen('Flip', w);
 
 % only response and experimenter keys are allowed
@@ -120,6 +125,8 @@ switch param.do_attentaskstr
     case 'fixation'
         Screen('FillRect', w, param.forecolor, param.fixarray);
 end
+Screen('DrawDots', w, param.prfposi2, param.dsize, param.dcolor, ...
+    [param.screenCenX, param.screenCenY+4], 1);
 if param.trialDuration > param.stimDuration
     stimEndAt = Screen('Flip', w);
 else
