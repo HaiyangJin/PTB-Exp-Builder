@@ -74,7 +74,7 @@ param.prfcoorsys = 'carte';
 param.prfNxy = [3, 3]; % number of columns and rows
 param.facevva = 3.2;   % (vertical) visual angle 
 param.facebtw = 1.5;   % between faces 
-param.dva = 0.35;
+param.dva = 0.25;
 param.dcolor = [255; 255; 100; 128]; % transparent yellow
 param.circleva = 0.5:3:100;
 
@@ -141,7 +141,7 @@ param.forecolor = 'white';  % (white, black, grey or numbers)
 param.backcolor = 'grey';   % (white, black, grey or numbers)
 param.winrect = [];         % [] Window Rect; % default [100 100 1300 900];  %[100 100 600 600];
 param.whichscreen = [];     % which screen to display stimuli
-param.distance = 57;        % distance to the screen (cm)
+param.distance = 139;        % distance to the screen (cm)
 
 %% Parameters of fonts used in this exp
 param.textSize = 20;
@@ -155,7 +155,7 @@ param.ratio = 0.5; % percentage of blocks have the .nback task
 
 % load letter images
 param.imgLetterDir = im_dir('custom/stimuli/letters/');
-param.lettervva = 0.5;
+param.lettervva = 0.4;
 
 %% Run the Experiment
 param.do_trigger = @fmri_vpixx; % mandatory to work with MRI
