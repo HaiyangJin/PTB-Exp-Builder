@@ -28,7 +28,8 @@ assert(isfield(param, 'pipercm'), ['Please use ptb_screensize() to get ' ...
     'the pixels per centimeter.']);
 
 % pixels for each circle
-pixels = arrayfun(@(x) ptb_va2pixel(x, param.distance, param.pipercm), param.circleva);
+pixels_size = arrayfun(@(x) ptb_va2pixel(x, param.distance, param.pipercm), param.circleva);
+pixels = [pixels_size.pi];
 
 % rects for all circles
 circlearray=[param.screenCenX-pixels;

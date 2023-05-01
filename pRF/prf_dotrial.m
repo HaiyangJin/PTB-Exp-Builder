@@ -64,12 +64,12 @@ if isfield(param, 'letterstimuli')
     letterRect = [0 0 letterX letterY];
 
     % calculate the ratio
-    letterva_pi = ptb_va2pixel(param.lettervva, param.distance, param.pipercm);
-    letterratio = letterva_pi/size(thisletter.matrix,1);
-    
+    letterTrg = ptb_va2pixel(param.lettervva, param.distance, param.pipercm);
+    param.letterratio = letterTrg.pi/size(param.letterstimuli(1).matrix,1);
+
     % letter image position
-    letterXtrg = letterX*letterratio;
-    letterYtrg = letterY*letterratio;
+    letterXtrg = letterX*param.letterratio;
+    letterYtrg = letterY*param.letterratio;
     letterPosition = [letterRect(1)-letterXtrg/2+param.screenCenX ...
         letterRect(2)-letterYtrg/2+param.screenCenY ...
         letterRect(1)+letterXtrg/2-1+param.screenCenX ...
@@ -85,7 +85,7 @@ switch param.do_attentaskstr
     case 'fixation'
         Screen('FillRect', w, param.forecolor, param.fixarray);
     case 'prf_nbackletter'
-        Screen('DrawDots', w, [0,0], 25, [255;51;51], ...
+        Screen('DrawDots', w, [0,0], letterTrg.pi*1.25, [255;51;51], ...
             [param.screenCenX, param.screenCenY], 1); % red dot background
         if isfield(param, 'letterstimuli')
             Screen('DrawTexture', w, thisletter.texture, letterRect, letterPosition);

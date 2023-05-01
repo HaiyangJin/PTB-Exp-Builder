@@ -1,5 +1,5 @@
-function [stimPi, stimCm] = ptb_va2pixel(va, dist, pipercm)
-% [stimPi, stimCm] = ptb_va2pixel(va, dist, pipercm)
+function stim = ptb_va2pixel(va, dist, pipercm)
+% stim = ptb_va2pixel(va, dist, pipercm)
 % 
 % Calcualte the size of stimulus based on the visual angle (and monitor).
 %
@@ -11,13 +11,13 @@ function [stimPi, stimCm] = ptb_va2pixel(va, dist, pipercm)
 %               OR <int> screen index. Default to the main screen (0).
 %
 % Outputs:
-%    stimPi        <num> stimulus size in pixel.
-%    stimCm        <num> stimulus size in centimeter.
+%    stim          <struct> stimulus size in centimeter (.cm), points (.pt),
+%                   and pixels (.pi).
 %
 % Created by Haiyang Jin (2023-April-30)
 
 if nargin<1
-    fprintf('Usage: [stimPi, stimCm] = ptb_va2pixel(va, dist, pipercm);\n');
+    fprintf('Usage: stim = ptb_va2pixel(va, dist, pipercm);\n');
     return
 end
 
@@ -34,9 +34,12 @@ if isint(pipercm)
     pipercm = ssize.pipercm;
 end
 
+stim = struct();
 % stimulus in centimeters
-stimCm = tan(deg2rad(va))*dist;
+stim.cm = tan(deg2rad(va))*dist;
+% stimulus in points
+stim.pt = stim.cm * (72/2.54);
 % stimulus in pixels
-stimPi = round(pipercm * stimCm);
+stim.pi = round(pipercm * stim.cm);
 
 end
