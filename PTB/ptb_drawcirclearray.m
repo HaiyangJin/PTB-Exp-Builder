@@ -19,7 +19,7 @@ if ~isfield(param, 'circlecolor') || isempty(param.circlecolor)
 end
 
 if ~isfield(param, 'circleva') || isempty(param.circleva)
-    param.circleva = 1:20;
+    param.circleva = 1:100;
 end
 
 assert(isfield(param, 'distance'), ['Please set the distance between the ' ...

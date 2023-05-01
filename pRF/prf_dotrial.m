@@ -78,7 +78,7 @@ end
 
 % display the stimulus
 ptb_drawcirclearray(param);
-Screen('DrawDots', w, param.prfposi2, param.dsize, param.dcolor, ...
+Screen('DrawDots', w, param.prfposi2, param.dotva.pi, param.dcolor, ...
     [param.screenCenX, param.screenCenY], 1);
 Screen('DrawTexture', w, stimuli.texture, stimRect, stimPosition);
 switch param.do_attentaskstr
@@ -153,7 +153,7 @@ switch param.do_attentaskstr
         Screen('FillRect', w, param.forecolor, param.fixarray);
 end
 ptb_drawcirclearray(param);
-Screen('DrawDots', w, param.prfposi2, param.dsize, param.dcolor, ...
+Screen('DrawDots', w, param.prfposi2, param.dotva.pi, param.dcolor, ...
     [param.screenCenX, param.screenCenY], 1);
 if param.trialDuration > param.stimDuration
     stimEndAt = Screen('Flip', w);

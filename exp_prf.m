@@ -74,8 +74,9 @@ param.prfcoorsys = 'carte';
 param.prfNxy = [3, 3]; % number of columns and rows
 param.facevva = 3.2;   % (vertical) visual angle 
 param.facebtw = 1.5;   % between faces 
-param.dsize = 15;
+param.dva = 0.35;
 param.dcolor = [255; 255; 100; 128]; % transparent yellow
+param.circleva = 0.5:3:100;
 
 % experiment design array
 clear param.conditionsArray;
@@ -154,7 +155,7 @@ param.ratio = 0.5; % percentage of blocks have the .nback task
 
 % load letter images
 param.imgLetterDir = im_dir('custom/stimuli/letters/');
-param.lettervva = 0.25;
+param.lettervva = 0.5;
 
 %% Run the Experiment
 param.do_trigger = @fmri_vpixx; % mandatory to work with MRI
