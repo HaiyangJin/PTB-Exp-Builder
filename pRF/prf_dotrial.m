@@ -20,7 +20,7 @@ function [output, quitNow] = prf_dotrial(ttn, param, stimuli, stimPosi)
 % Created by Haiyang Jin (2023-Feb-26)
 
 %% Preparation
-% the baseline time for this trial 
+% the baseline time for this trial
 baseTime = (ttn-1) * param.trialDuration + param.dummyDuration + param.runStartTime;
 
 % get the window index
@@ -57,18 +57,44 @@ stimPosition = [stimPosi(1)-stimXtrg/2+param.screenCenX ...
     stimPosi(1)+stimXtrg/2-1+param.screenCenX ...
     stimPosi(2)+stimYtrg/2-1+param.screenCenY];
 
+if isfield(param, 'letterstimuli')
+    % get this letter image information
+    thisletter = param.letterstimuli(thestim);
+    [letterY, letterX, ~] = size(thisletter.matrix);
+    letterRect = [0 0 letterX letterY];
+
+    % calculate the ratio
+    letterva_pi = ptb_va2pixel(param.lettervva, param.distance, param.pipercm);
+    letterratio = letterva_pi/size(thisletter.matrix,1);
+    
+    % letter image position
+    letterXtrg = letterX*letterratio;
+    letterYtrg = letterY*letterratio;
+    letterPosition = [letterRect(1)-letterXtrg/2+param.screenCenX ...
+        letterRect(2)-letterYtrg/2+param.screenCenY ...
+        letterRect(1)+letterXtrg/2-1+param.screenCenX ...
+        letterRect(2)+letterYtrg/2-1+param.screenCenY];
+end
+
 % display the stimulus
 ptb_drawcirclearray(param);
 Screen('DrawDots', w, param.prfposi2, param.dsize, param.dcolor, ...
-    [param.screenCenX, param.screenCenY+4], 1);
+    [param.screenCenX, param.screenCenY], 1);
 Screen('DrawTexture', w, stimuli.texture, stimRect, stimPosition);
 switch param.do_attentaskstr
     case 'fixation'
         Screen('FillRect', w, param.forecolor, param.fixarray);
     case 'prf_nbackletter'
         Screen('DrawDots', w, [0,0], 25, [255;51;51], ...
-    [param.screenCenX, param.screenCenY+4], 1);
-        DrawFormattedText(w, thestim, 'center', 'center', param.forecolor);
+            [param.screenCenX, param.screenCenY], 1); % red dot background
+        if isfield(param, 'letterstimuli')
+            Screen('DrawTexture', w, thisletter.texture, letterRect, letterPosition);
+        else
+            DrawFormattedText(w, thestim, param.screenCenX-7, ...
+                param.screenCenY+7, param.forecolor);
+%             DrawFormattedText2(['<size=40><color=000000>' thestim], 'win', w, ...
+%                 'sx','center','sy','center','xalign','center','yalign','center');
+        end
 end
 stimBeganAt = Screen('Flip', w);
 
@@ -128,7 +154,7 @@ switch param.do_attentaskstr
 end
 ptb_drawcirclearray(param);
 Screen('DrawDots', w, param.prfposi2, param.dsize, param.dcolor, ...
-    [param.screenCenX, param.screenCenY+4], 1);
+    [param.screenCenX, param.screenCenY], 1);
 if param.trialDuration > param.stimDuration
     stimEndAt = Screen('Flip', w);
 else

@@ -55,4 +55,10 @@ param.faceratio = facevva_pi/size(param.stimuli(1).matrix,1);
 facebtw_pi = ptb_va2pixel(param.facebtw, param.distance, param.pipercm);
 param.canvasxy = (param.prfNxy-1) * facebtw_pi;
 
+%% Load letter images
+if isfield(param, 'imgLetterDir')
+    param.letterstimuli = ptb_loadstimdir(param.imgLetterDir, param.w);
+    param.letterstimuli(27) = transImg;
+end
+
 end

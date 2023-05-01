@@ -152,6 +152,10 @@ param.do_task = @prf_nbackletter;
 param.nback = 1;   % number of repetitions
 param.ratio = 0.5; % percentage of blocks have the .nback task
 
+% load letter images
+param.imgLetterDir = im_dir('custom/stimuli/letters/');
+param.lettervva = 0.5;
+
 %% Run the Experiment
 param.do_trigger = @fmri_vpixx; % mandatory to work with MRI
 param.do_trial = @prf_dotrial;

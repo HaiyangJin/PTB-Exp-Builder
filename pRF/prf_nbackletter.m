@@ -14,12 +14,17 @@ function param = prf_nbackletter(param)
 stimuli = param.stimuli;
 nCol = size(stimuli,2);
 
-% all letters
-letters = 'A':'Z';
-
 % create default empty outpus
 lettStim = repmat({''}, size(stimuli));
 answers = NaN(size(stimuli));
+
+% all letters
+if isfield(param, 'letterstimuli')
+    letters = 1:26;
+    lettStim(size(lettStim,1), :) = {27};
+else
+    letters = 'A':'Z';
+end
 
 % number of letters to be shown in each block
 nLetterPerTrial = param.nStimPerBlock-param.nFixaEndPerBlock; % PerBlock
