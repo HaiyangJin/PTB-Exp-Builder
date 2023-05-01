@@ -77,7 +77,7 @@ if isfield(param, 'letterstimuli')
 end
 
 % display the stimulus
-ptb_drawcirclearray(param);
+ptb_bgarray(param);
 Screen('DrawDots', w, param.prfposi2, param.dotva.pi, param.dcolor, ...
     [param.screenCenX, param.screenCenY], 1);
 Screen('DrawTexture', w, stimuli.texture, stimRect, stimPosition);
@@ -85,7 +85,7 @@ switch param.do_attentaskstr
     case 'fixation'
         Screen('FillRect', w, param.forecolor, param.fixarray);
     case 'prf_nbackletter'
-        Screen('DrawDots', w, [0,0], letterTrg.pi*1.25, [255;51;51], ...
+        Screen('DrawDots', w, [0,0], letterTrg.pi*1.15, [255;51;51], ...
             [param.screenCenX, param.screenCenY], 1); % red dot background
         if isfield(param, 'letterstimuli')
             Screen('DrawTexture', w, thisletter.texture, letterRect, letterPosition);
@@ -152,7 +152,7 @@ switch param.do_attentaskstr
     case 'fixation'
         Screen('FillRect', w, param.forecolor, param.fixarray);
 end
-ptb_drawcirclearray(param);
+ptb_bgarray(param);
 Screen('DrawDots', w, param.prfposi2, param.dotva.pi, param.dcolor, ...
     [param.screenCenX, param.screenCenY], 1);
 if param.trialDuration > param.stimDuration
