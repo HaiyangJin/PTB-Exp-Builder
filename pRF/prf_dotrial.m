@@ -58,6 +58,7 @@ stimPosition = [stimPosi(1)-stimXtrg/2+param.screenCenX ...
     stimPosi(2)+stimYtrg/2-1+param.screenCenY];
 
 % display the stimulus
+ptb_drawcirclearray(param);
 Screen('DrawDots', w, param.prfposi2, param.dsize, param.dcolor, ...
     [param.screenCenX, param.screenCenY+4], 1);
 Screen('DrawTexture', w, stimuli.texture, stimRect, stimPosition);
@@ -125,6 +126,7 @@ switch param.do_attentaskstr
     case 'fixation'
         Screen('FillRect', w, param.forecolor, param.fixarray);
 end
+ptb_drawcirclearray(param);
 Screen('DrawDots', w, param.prfposi2, param.dsize, param.dcolor, ...
     [param.screenCenX, param.screenCenY+4], 1);
 if param.trialDuration > param.stimDuration
