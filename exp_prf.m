@@ -164,6 +164,7 @@ param.do_stim = @prf_stim;
 param.do_output = @ptb_outtable;
 param.do_ed = @prf_doed;
 param.do_attentask = @prf_nbackletter;
+param.do_custombg = @prf_background;
 
 % run the fmri experiment in block design
 try

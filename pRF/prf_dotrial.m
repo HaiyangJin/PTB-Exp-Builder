@@ -77,9 +77,7 @@ if isfield(param, 'letterstimuli')
 end
 
 % display the stimulus
-ptb_bgarray(param);
-Screen('DrawDots', w, param.prfposi2, param.dotva.pi, param.dcolor, ...
-    [param.screenCenX, param.screenCenY], 1);
+prf_background(param);
 Screen('DrawTexture', w, stimuli.texture, stimRect, stimPosition);
 switch param.do_attentaskstr
     case 'fixation'
@@ -88,12 +86,12 @@ switch param.do_attentaskstr
         Screen('DrawDots', w, [0,0], letterTrg.pi*1.15, [255;51;51], ...
             [param.screenCenX, param.screenCenY], 1); % red dot background
         if isfield(param, 'letterstimuli')
+            % draw images 
             Screen('DrawTexture', w, thisletter.texture, letterRect, letterPosition);
         else
+            % draw texts
             DrawFormattedText(w, thestim, param.screenCenX-7, ...
                 param.screenCenY+7, param.forecolor);
-%             DrawFormattedText2(['<size=40><color=000000>' thestim], 'win', w, ...
-%                 'sx','center','sy','center','xalign','center','yalign','center');
         end
 end
 stimBeganAt = Screen('Flip', w);
@@ -152,9 +150,7 @@ switch param.do_attentaskstr
     case 'fixation'
         Screen('FillRect', w, param.forecolor, param.fixarray);
 end
-ptb_bgarray(param);
-Screen('DrawDots', w, param.prfposi2, param.dotva.pi, param.dcolor, ...
-    [param.screenCenX, param.screenCenY], 1);
+prf_background(param);
 if param.trialDuration > param.stimDuration
     stimEndAt = Screen('Flip', w);
 else

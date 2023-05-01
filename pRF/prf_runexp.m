@@ -77,7 +77,7 @@ Screen('Flip', param.w);
 
 %% Run blocks
 % fixations at the beginning
-[outDummy, quitNow] = fmri_dummyvol(param, param.runStartTime);
+[outDummy, quitNow] = fmri_dummyvol(param, param.runStartTime, param.do_custombg);
 dummyTable = struct2table(outDummy, 'AsArray', true);
 dummyTableEnd = table; % save fixation data (before)
 
@@ -118,7 +118,7 @@ end % quitNow
 if ~quitNow
     basetime = (param.bn+param.fixBlockN) * param.stimBloDuration + ...
         param.dummyDuration + param.runStartTime;
-    [outDummyEnd, quitNow] = fmri_dummyvol(param, basetime);
+    [outDummyEnd, quitNow] = fmri_dummyvol(param, basetime, param.do_custombg);
     dummyTableEnd = struct2table(outDummyEnd, 'AsArray', true);
 end
 

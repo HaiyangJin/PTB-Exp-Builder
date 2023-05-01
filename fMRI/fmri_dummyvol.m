@@ -1,11 +1,15 @@
-function [output, quitNow] = fmri_dummyvol(param, basetime)
-% [output, quitNow] = fmri_dummyvol(param)
+function [output, quitNow] = fmri_dummyvol(param, basetime, do_custom)
+% [output, quitNow] = fmri_dummyvol(param, basetime, do_custom)
 %
 % This function displays fixation screen for dummy volume at the beginning
 % of the run (or the end).
 %
 % Inputs:
 %     param             <struct> experiment parameter structure
+%     basetime          <num> the start time relative to the beginning of
+%                        the run. 
+%     do_custom        <function handle> function handle to draw contents
+%                        for dummy volumnes. 
 %
 % Output:
 %     output            <struct> output structure
@@ -30,8 +34,14 @@ if param.dummyDuration == 0 && param.dummyDurationEnd == 0
     return;
 end
 
-%%% Fixation %%%
-Screen('FillRect', param.w, param.forecolor, param.fixarray); % 
+if ~exist('do_custom', 'var') || isempty(do_custom)
+    %%% Fixation %%%
+    Screen('FillRect', param.w, param.forecolor, param.fixarray); %
+else
+    % draw custom contents for dummy volumes
+    do_custom(param);
+end
+
 stimBeganAt = Screen('Flip', param.w);
 
 % process some trial information
