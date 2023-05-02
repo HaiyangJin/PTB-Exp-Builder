@@ -10,11 +10,20 @@ function [ApFrm, Objects] = prf_aps(dtTable, varargin)
 %    .stimshape      <str> the shape of the stimulus. Default to
 %                     'rectangle', (or 'oval').
 %    .framepersec    <int> number of frames per second, default to 1.
+%                     {.framepersec} will be saved for each second in the
+%                     actual experiment. For instance, when {.framepersec}
+%                     is 2, every 0.5 second in the actual experiment was
+%                     saved as one frame/one layer along the third
+%                     dimension in {ApFrm}. It is different from 
+%                     {Framerate} in samsrf_apmovie(), where {Framerate}
+%                     refers to the number of frames/layers along the third
+%                     dimension to be displayed in one second in the video
+%                     generated.                     
 %    .condorder      <cell str> the order of the conditions saved in
 %                     [Objects]. Default to the order starting with
 %                     'fixation' and then in alphabet order.
 %    .corrtime       <num> time to be applied to correct the precision
-%                     issue. Default to 0.1 .
+%                     issue. Default to 0.05.
 %    .apfn           <str> file name. 
 %
 % Outputs:
@@ -35,8 +44,8 @@ defaultOpts = struct( ...
     'stimshape', 'rectangle', ...
     'framepersec', 1, ...
     'condorder', {''}, ...
-    'corrtime', .1, ...
-    'apfn', ['ap_prf_' datestr(now, 'yyyymmddHHMM')] ...
+    'corrtime', .05, ...
+    'apfn', ['ap_prf_' char(datetime('now', 'Format', 'yyyyMMddHHmm'))] ...
     );
 opts = ptb_mergestruct(defaultOpts, varargin);
 
@@ -70,15 +79,15 @@ apXY(isnan(apXY))=[];
 
 % number of frames in final ap
 frames = 0: 1/opts.framepersec: secTotal;
-therows = arrayfun(@(x) find((x + opts.corrtime) >= onsets, 1, 'last'), frames);
-
-% make the aperture for each frame
-apFrm = arrayfun(@(x) mkap(dtTable.StimPosiRela(x, :), ...
-    dtTable.StimXY(x, :), apXY, opts.stimshape), therows, 'uni', false);
+therows = arrayfun(@(x) find((x + opts.corrtime) >= onsets, 1, 'last'), frames(2:end));
 
 % condition names and numbers
 objStr = dtTable.StimCategory(therows);
 objInt = cellfun(@(x) find(strcmp(x, condOrder))-1, objStr);
+
+% make the aperture for each frame
+apFrm = arrayfun(@(x) mkap(objInt(x, :), dtTable.StimPosiRela(x, :), ...
+    dtTable.StimXY(x, :), apXY, opts.stimshape), therows, 'uni', false);
 
 % save the final output
 ApFrm = cat(3, apFrm{:});
@@ -100,12 +109,17 @@ save(apfn, 'ApFrm', 'Objects', '-v7.3');
 end % function prf_aps()
 
 %% function to make aperture
-function ap = mkap(stimPosiRela, stimXY, apXY, shape)
+function ap = mkap(stimCond, stimPosiRela, stimXY, apXY, shape)
+% stimPosiRela  <num vec> stimulus position relative to the center of the
+%                screen.
+% stimXY        <num vec> height and width of the stimulus.
+% apXY          <num vec> hieght and width of the aperature.
+% shape         <str> shape of the stimulus. 'rectangle' or 'oval'.
 
 % default to not showing stimuli
 ap = zeros(apXY);
 
-if isnan(stimPosiRela)
+if any(isnan(stimPosiRela)) || stimCond==0
     return
 end
 
