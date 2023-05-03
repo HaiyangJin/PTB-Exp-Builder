@@ -1,12 +1,18 @@
 function [ApFrm, Objects] = prf_aps(dtTable, varargin)
 % [ApFrm, Objects] = prf_aps(dtTable, varargin)
 %
+% Make aperture file. 
+%
 % Inputs:
 %    dtTable         <table> the data table saved from exp_prf().
 %                 OR <struct> a struct with the field .dtTable.
 %                 OR <str> filename of the data file saved by exp_prf().
 % 
 % Varargin:
+%    .unit           <str> the unit for the output {ApFrm}. Default to
+%                     'va' (i.e., visual angle) [if the relevant
+%                     information {.distance, .cmperpi} is avaiable].
+%                     Alternatively, default to 'pi' (i.e., pixels).
 %    .stimshape      <str> the shape of the stimulus. Default to
 %                     'rectangle', (or 'oval').
 %    .framepersec    <int> number of frames per second, default to 1.
@@ -22,21 +28,31 @@ function [ApFrm, Objects] = prf_aps(dtTable, varargin)
 %    .condorder      <cell str> the order of the conditions saved in
 %                     [Objects]. Default to the order starting with
 %                     'fixation' and then in alphabet order.
+%    .distance       <num> distance from the participant to the screen in
+%                     centimeter. Default to 0.
+%    .cmperpi        <num> size (in centimeter) per pixel. Default to 0.
 %    .corrtime       <num> time to be applied to correct the precision
 %                     issue. Default to 0.1.
 %    .apfn           <str> the file name of the output aperture. 
 %
 % Outputs:
-%    ApFrm           <boo mat> the aperture matrix.
+%    ApFrm           <boo mat> the aperture matrix, which can be visualized
+%                     via samsrf_apmovie() or ViewAperture() in SamSrf toolbox. 
 %    Objects         <int vec> condition numbers.
 %
 % Created by Haiyang Jin (2023-Feb-26)
+%
+% See also:
+% samsrf_apmovie(); ViewApertures();
 
 %% Deal with inputs
 defaultOpts = struct( ...
+    'unit', 'pi', ...
     'stimshape', 'rectangle', ...
     'framepersec', 1, ...
     'condorder', {''}, ...
+    'distance', 0, ...
+    'cmperpi', 0, ...
     'corrtime', .1, ...
     'apfn', ['ap_' char(datetime('now', 'Format', 'yyyyMMddHHmm'))] ...
     );
@@ -50,8 +66,22 @@ elseif exist(dtTable, 'file')
     % load and retrieve the dtTable
     tmp = load(dtTable);
     dtTable = tmp.dtTable;
+
+    if isfield(tmp, 'distance') && ~isempty(tmp.distance)
+        defaultOpts.distance = tmp.distance;
+    end
+    if isfield(tmp, 'cmperpi') && ~isempty(tmp.cmperpi)
+        defaultOpts.cmperpi = tmp.cmperpi;
+    end
 end
 
+% Update the .va default if needed
+if (~isempty(defaultOpts.distance) && defaultOpts.cmperpi>0) && ...
+    (~isempty(defaultOpts.cmperpi) && defaultOpts.cmperpi>0)
+    defaultOpts.unit = 'va';
+end
+
+% integrate default and custom options
 opts = ptb_mergestruct(defaultOpts, varargin);
 
 % condition orders
@@ -82,7 +112,21 @@ secTotal = round(onsets(nRow) + dtTable.StimDuration(nRow));
 apXY = unique(dtTable.apXY, 'rows'); % apXY
 apXY(isnan(apXY))=[];
 
-% number of frames in final ap
+% calculate the visual angle based on pixel
+if (~isempty(opts.distance) && opts.cmperpi>0) && ...
+    (~isempty(opts.cmperpi) && opts.cmperpi>0) && strcmp(opts.unit,'va')
+
+    fprintf('\nSave the aperture in the unit of visual angle...\n');
+
+    % aperture X and Y in visual angle
+    apXY = round(ptb_visualangle(apXY*opts.cmperpi, opts.distance) * 100)+20;
+    % convert to visual angle
+    dtTable.StimPosiRela = round(ptb_visualangle(dtTable.StimPosiRela*opts.cmperpi, opts.distance) * 100);
+    dtTable.StimXY = round(ptb_visualangle(dtTable.StimXY*opts.cmperpi, opts.distance) * 100);
+    
+end
+
+% number of frames in final aperture
 frames = 0: 1/opts.framepersec: secTotal;
 therows = arrayfun(@(x) find((x + opts.corrtime) >= onsets, 1, 'last'), frames(1:end-1));
 
@@ -153,13 +197,7 @@ switch shape
                     ap(x,y) = 1;
                 end
             end
-        end
-
-%         [canvasXs, canvasYs] = ndgrid(1:apXY(1), 1:apXY(2));
-%         ovalmask = arrayfun(@(x,y) ((y-stimPosiX)^2)/((stimXY(2)/2))^2 + ...
-%             ((x-stimPosiY)^2)/((stimXY(1)/2))^2 <= 1, ...
-%             canvasXs, canvasYs);
-%         ap(ovalmask) = 1;       
+        end  
 end % switch shape
 
 end % function mkap()
