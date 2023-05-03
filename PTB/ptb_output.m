@@ -38,12 +38,13 @@ if param.isDebug
 end
 
 if ~exist('fnExtra', 'var') || isempty(fnExtra)
-    fnExtra = datestr(now,'yyyy-mm-dd-HHMM');
+    fnExtra = char(datetime('now', 'Format', 'yyyyMMddHHmm'));
 end
 
 if ~exist('outPath', 'var') || isempty(outPath)
-    outPath = pwd;
+    outPath = fullfile(pwd, '0_BehaData');
 end
+if ~exist(outPath, 'dir'); mkdir(outPath); end
 
 %% file names
 csvPath = fullfile(outPath, 'data');
