@@ -9,10 +9,10 @@ function [ApFrm, Objects] = prf_aps(dtTable, varargin)
 %                 OR <str> filename of the data file saved by exp_prf().
 % 
 % Varargin:
-%    .unit           <str> the unit for the output {ApFrm}. Default to
-%                     'va' (i.e., visual angle) [if the relevant
-%                     information {.distance, .cmperpi} is avaiable].
-%                     Alternatively, default to 'pi' (i.e., pixels).
+%    .asva           <boo> whether save the output with the unit of visual 
+%                     angle. Default to 1 [if the relevant information 
+%                     {.distance, .cmperpi} is avaiable (and positive)].
+%                     Alternatively, default to 0 (i.e., pixels).
 %    .stimshape      <str> the shape of the stimulus. Default to
 %                     'rectangle', (or 'oval').
 %    .framepersec    <int> number of frames per second, default to 1.
@@ -47,7 +47,7 @@ function [ApFrm, Objects] = prf_aps(dtTable, varargin)
 
 %% Deal with inputs
 defaultOpts = struct( ...
-    'unit', 'pi', ...
+    'asva', 0, ...
     'stimshape', 'rectangle', ...
     'framepersec', 1, ...
     'condorder', {''}, ...
@@ -75,10 +75,10 @@ elseif exist(dtTable, 'file')
     end
 end
 
-% Update the .va default if needed
+% Update the .asva default if needed
 if (~isempty(defaultOpts.distance) && defaultOpts.cmperpi>0) && ...
     (~isempty(defaultOpts.cmperpi) && defaultOpts.cmperpi>0)
-    defaultOpts.unit = 'va';
+    defaultOpts.asva = 1;
 end
 
 % integrate default and custom options
@@ -114,9 +114,9 @@ apXY(isnan(apXY))=[];
 
 % calculate the visual angle based on pixel
 if (~isempty(opts.distance) && opts.cmperpi>0) && ...
-    (~isempty(opts.cmperpi) && opts.cmperpi>0) && strcmp(opts.unit,'va')
+    (~isempty(opts.cmperpi) && opts.cmperpi>0) && opts.asva
 
-    fprintf('\nSave the aperture in the unit of visual angle...\n');
+    fprintf('\nSave the aperture in the visual angle unit...\n');
 
     % aperture X and Y in visual angle
     apXY = round(ptb_visualangle(apXY*opts.cmperpi, opts.distance) * 100)+20;
