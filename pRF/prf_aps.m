@@ -23,8 +23,8 @@ function [ApFrm, Objects] = prf_aps(dtTable, varargin)
 %                     [Objects]. Default to the order starting with
 %                     'fixation' and then in alphabet order.
 %    .corrtime       <num> time to be applied to correct the precision
-%                     issue. Default to 0.05.
-%    .apfn           <str> file name. 
+%                     issue. Default to 0.1.
+%    .apfn           <str> the file name of the output aperture. 
 %
 % Outputs:
 %    ApFrm           <boo mat> the aperture matrix.
@@ -33,20 +33,25 @@ function [ApFrm, Objects] = prf_aps(dtTable, varargin)
 % Created by Haiyang Jin (2023-Feb-26)
 
 %% Deal with inputs
-if isstruct(dtTable) && isfield(param, 'dtTable')
-    dtTable = param.dtTable;
-elseif exist(dtTable, 'file')
-    tmp = load(dtTable);
-    dtTable = tmp.dtTable;
-end
-
 defaultOpts = struct( ...
     'stimshape', 'rectangle', ...
     'framepersec', 1, ...
     'condorder', {''}, ...
-    'corrtime', .05, ...
-    'apfn', ['ap_prf_' char(datetime('now', 'Format', 'yyyyMMddHHmm'))] ...
+    'corrtime', .1, ...
+    'apfn', ['ap_' char(datetime('now', 'Format', 'yyyyMMddHHmm'))] ...
     );
+
+if isstruct(dtTable) && isfield(param, 'dtTable')
+    dtTable = param.dtTable;
+elseif exist(dtTable, 'file')
+    % use the input file name as the {.apfnextra}
+    [~,inputfn] = fileparts(dtTable);
+    defaultOpts.apfn = ['ap_' inputfn];
+    % load and retrieve the dtTable
+    tmp = load(dtTable);
+    dtTable = tmp.dtTable;
+end
+
 opts = ptb_mergestruct(defaultOpts, varargin);
 
 % condition orders
@@ -79,14 +84,14 @@ apXY(isnan(apXY))=[];
 
 % number of frames in final ap
 frames = 0: 1/opts.framepersec: secTotal;
-therows = arrayfun(@(x) find((x + opts.corrtime) >= onsets, 1, 'last'), frames(2:end));
+therows = arrayfun(@(x) find((x + opts.corrtime) >= onsets, 1, 'last'), frames(1:end-1));
 
 % condition names and numbers
 objStr = dtTable.StimCategory(therows);
 objInt = cellfun(@(x) find(strcmp(x, condOrder))-1, objStr);
 
 % make the aperture for each frame
-apFrm = arrayfun(@(x) mkap(objInt(x, :), dtTable.StimPosiRela(x, :), ...
+apFrm = arrayfun(@(x) mkap(dtTable.StimCategory(x, :), dtTable.StimPosiRela(x, :), ...
     dtTable.StimXY(x, :), apXY, opts.stimshape), therows, 'uni', false);
 
 % save the final output
@@ -102,6 +107,12 @@ if ~strcmp(ext, '.mat')
     ext = '.mat';
 end
 apfn = fullfile(filepath, [name, ext]);
+% make sure not overwrite files
+apfn0 = 0;
+while exist(apfn, 'file')
+    apfn0 = apfn0 + 1;
+    apfn = fullfile(filepath, [name '_' num2str(apfn0), ext]);
+end
 
 % save the file locally
 save(apfn, 'ApFrm', 'Objects', '-v7.3');
@@ -119,7 +130,7 @@ function ap = mkap(stimCond, stimPosiRela, stimXY, apXY, shape)
 % default to not showing stimuli
 ap = zeros(apXY);
 
-if any(isnan(stimPosiRela)) || stimCond==0
+if any(isnan(stimPosiRela)) || strcmp(stimCond, 'fixation')
     return
 end
 
