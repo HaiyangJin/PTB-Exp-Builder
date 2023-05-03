@@ -1,15 +1,19 @@
 function vi_mov2wmv(movfn, mmpath)
 % vi_mov2wmv(movfn, mmpath)
 %
-% Convert *.mov (or other files that can be read via VideoReader() into 
+% Convert *.mov (or other files that can be read via VideoReader()) into 
 % *.wmv. This function has to be run in WINDOWS (with 
 % K-Lite_Codec_Pack_1687_Full.exe installed).
 %
-% movfn           <str> (path and) file name of the video file that can be
-%                  read by VideoReader(). 
-% mmpath          <str> path to the mmwrite toolbox.
+% Inputs:
+%    movfn           <str> (path and) file name of the video file that can 
+%                     be read by VideoReader(). 
+%    mmpath          <str> path to the mmwrite toolbox.
 %
 % Created by Haiyang Jin (2023-May-3)
+%
+% See also:
+% vi_mov2mat(); vi_mat2wmv()
 
 assert(IsWin, 'vi_mov2wmv() only works in Windows.');
 
