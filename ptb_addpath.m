@@ -22,7 +22,7 @@ function pathlist = ptb_addpath(add, ptbpath, folderlist)
 % Created by Haiyang Jin (2021-11-22)
 
 if ~exist('folderlist', 'var') || isempty(folderlist)
-    folderlist = {'PTB/', 'fMRI/', 'ImageTools/', 'Utilities/'};
+    folderlist =  {filesep}; % {'PTB/', 'fMRI/', 'ImageTools/', 'Utilities/'};
 end
 if ischar(folderlist)
     folderlist = {folderlist};
@@ -47,14 +47,16 @@ end
 pathlist = fullfile(ptbpath, folderlist)';
 
 if add
-    cellfun(@addpath, pathlist);
+    cellfun(@(x) addpath(genpath(x)), pathlist);
 else
-    cellfun(@rmpath, pathlist);
+    cellfun(@(x) rmpath(genpath(x)), pathlist);
+    addpath(ptbpath);
 end
 
 % display message
 dirstr = {'removed from', 'added to'};
-fprintf('\nFollowing directories have been %s Matlab path:\n%s', ...
+fprintf(['\nFollowing directories (and its subdirectories) have been' ...
+    ' %s Matlab path:\n%s'], ...
     dirstr{add+1}, sprintf('%s\n', pathlist{:}));
 
 end
