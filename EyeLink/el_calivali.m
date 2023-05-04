@@ -1,8 +1,10 @@
 function el_calivali(param)
-% do calibration and validation
 
+% do calibration and validation
+RestrictKeysForKbCheck(param.elopts.elkeycodes); % enable keys
 EyelinkDoTrackerSetup(param.el); %Calibrate
 % EyelinkDoDriftCorrection(el); %Drift correction
+RestrictKeysForKbCheck(KbName('escape'));
 
 %% This seems to be unnecessary.
 % BUT REMEMBER, after each time you calibrate and correct for drift, you must

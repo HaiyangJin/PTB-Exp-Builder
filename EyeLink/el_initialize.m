@@ -5,6 +5,10 @@ function param = el_initialize(param)
 
 % initialize the struct for opts
 elopts = struct;
+% keys to be used during calibration and validation
+elopts.elkeynames = {'c','v','a','escape','return','space'};
+elkeycodes = cellfun(@KbName, elopts.elkeynames, 'uni', false);
+elopts.elkeycodes = horzcat(elkeycodes{:});
 
 %% STEP 1
 % Open a graphics window on the main screen
@@ -43,10 +47,9 @@ fprintf('Running experiment on a ''%s'' tracker.\n', elopts.vs);
 
 %% STEP 5
 % Name Eyelinke file and open it to record data 
-edffn = [param.expAbbv, param.subjCode, '.edf']; 
-edffolder = fullfile(pwd, '0_ELData');
-if ~exist(edffolder, 'dir'); mkdir(edffolder); end
-elopts.edfFile = fullfile(edffolder, edffn);
+elopts.edfFile = [param.expAbbv, param.subjCode, '.edf']; 
+fprintf(['The output EDF file (%s) will be saved in the current ' ...
+    'working directory.\n', elopts.edfFile]);
 
 i = Eyelink('Openfile', elopts.edfFile);
 if i~=0
@@ -120,9 +123,9 @@ EyelinkUpdateDefaults(el);
 
 % Hide the mouse cursor;
 % Screen('HideCursorHelper', window);
-fprintf('Before.\n' );
-EyelinkDoTrackerSetup(el);
-fprintf('Tracker.\n' );
+fprintf('Do calibration and validation...\n');
+el_calivali(param);
+fprintf('Calibration and validation are done.\n');
 
 % save the el and opts in param
 param.el = el;

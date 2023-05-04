@@ -54,9 +54,6 @@ param.queueKeyList = keyList;
 % Instruction
 ptb_instruction(param);
 
-% Calibration and validation (if needed)
-if param.isEyelink; el_calivali(param); end
-
 % Fixations
 param.fixarray = ptb_fixcross(param.screenX, param.screenY, ...
     param.widthFix, param.lengthFix);
