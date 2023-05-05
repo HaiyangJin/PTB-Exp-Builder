@@ -1,22 +1,38 @@
-function vi_mov2avi(infile)
+function vi_mov2avi(movfn)
+% vi_mov2avi(movfn)
+%
+% Convert mov (in Mac) to *.avi.
+% 
+% Input:
+%    movfn           <str> (path and) file name of the video file that can 
+%                     be read by VideoReader(). 
+%
+% % Created by Haiyang Jin (2023-May-3)
+%
+% See also:
+% vi_mat2wmv(); vi_mov2wmv()
 
 % Read Video
-videoFReader = VideoReader(infile);
-[inpath, infn] = fileparts(infile);
+movReader = VideoReader(movfn);
+[inpath, infn] = fileparts(movfn);
 
 % Write Video
-videoFWrite = VideoWriter([inpath, infn, '.avi']);
+viWrite = VideoWriter([inpath, infn, '.avi'], 'Motion JPEG AVI');
 
-open(videoFWrite);
+% set the frame rate
+viWrite.FrameRate = movReader.FrameRate;
 
-for count = 1:abs(videoFReader.Duration*videoFReader.FrameRate)
-    key_frame = read(videoFReader,count);
-    writeVideo(videoFWrite,key_frame);
+% Save frame into the writer
+open(viWrite);
+
+for count = 1:abs(movReader.Duration*movReader.FrameRate)
+    key_frame = read(movReader,count);
+    writeVideo(viWrite,key_frame);
 end
 
 % Release video object
-% close(videoFReader);
-close(videoFWrite);
-disp('COMPLETED');
+close(movReader);
+close(viWrite);
+fprintf('The conversion is completed.\n');
 
 end
