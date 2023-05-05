@@ -15,8 +15,8 @@ function el_transferimg(param)
 if ~isfield(param, 'transferDir') || isempty(param.transferDir)
     param.transferDir = param.imgDir;
 elseif ischar(param.transferDir)
-    % it is better to use relative path
-    param.transferDir = im_dir(param.transferDir); 
+    % use relative path
+    param.transferDir = im_dir(param.transferDir, [], [], 1); 
 end
 
 % save the to-be-transfered images as *.bmp if they are not
@@ -28,7 +28,7 @@ if ~all(isbmp)
     % save the image as *.bmp
     im_writedir(imgdir, 'TransferImg', 'matrix', 'bmp');
     % re-dir the TransferImg
-    param.transferDir = im_dir('TransferImg', 'bmp');
+    param.transferDir = im_dir('TransferImg', 'bmp', [], 1);
 end
 
 % transfer all images
