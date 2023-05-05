@@ -15,7 +15,20 @@ function el_transferimg(param)
 if ~isfield(param, 'transferDir') || isempty(param.transferDir)
     param.transferDir = param.imgDir;
 elseif ischar(param.transferDir)
-    param.transferDir = im_dir(param.transferDir);
+    % it is better to use relative path
+    param.transferDir = im_dir(param.transferDir); 
+end
+
+% save the to-be-transfered images as *.bmp if they are not
+% (the transparent layer will not be saved.)
+isbmp = cellfun(@(x) endsWith(x, '.bmp'), {param.transferDir.name});
+if ~all(isbmp)
+    % load the images
+    imgdir = im_readdir(param.transferDir);
+    % save the image as *.bmp
+    im_writedir(imgdir, 'TransferImg', 'matrix', 'bmp');
+    % re-dir the TransferImg
+    param.transferDir = im_dir('TransferImg', 'bmp');
 end
 
 % transfer all images
@@ -26,7 +39,6 @@ end % function el_transferimg
 
 function transferimg(imgfile)
 % transfer single image to Host PC
-
 imginfo=imfinfo(imgfile);
 
 % image file should be 24bit or 32bit bitmap
