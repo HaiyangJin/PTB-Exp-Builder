@@ -56,11 +56,11 @@ Screen('DrawTexture', param.w, stimuli(ttn).texture,[], ...
 stimBeganAt = Screen('Flip', param.w, stimBeginsWhen);
 respBeginsWhen = stimBeganAt + param.stimDuration - param.flipSlack;
 if param.isEyelink
-    Eyelink('Message', ['Trial_' num2str(ttn)]);
+    Eyelink('Message', 'Trial_%d', ttn);
     %%%%% load the IA file for this trial %%%%%
     Eyelink('Message', '!V IAREA File %s', iaFilename); % ROI file
-    Eyelink('Message', sprintf('!V CLEAR %d %d %d', param.backcolor));
-    Eyelink('Message', '!V IMGLOAD TOP_LEFT %s %d %d', ...
+    Eyelink('Message', '!V CLEAR %d %d %d', param.backcolor);
+    Eyelink('Message', '!V IMGLOAD TOP_LEFT %s %d %d', ... CENTER
         fullfile(stimuli(ttn).folder, stimuli(ttn).fn), ...
         stimXPosition+jitterX, stimYPosition+jitterY); % image to show in Eyelink
 end
@@ -69,12 +69,12 @@ end
 responseBegins = Screen('Flip', param.w, respBeginsWhen);
 
 %%%%%%%%%% Response (keys) %%%%%%%%%%
-RestrictKeysForKbCheck([respKeys(:)', param.expKey]);  % , KbName('5')
+RestrictKeysForKbCheck([respKeys(:)', param.expKey]); 
 [pressTime, keyCode] = KbWait([],0);
 
 if param.isEyelink
-    Eyelink('Message', ['Response_', num2str(ttn)]);
-    Eyelink('Message', sprintf('!V CLEAR %d %d %d', param.backcolor));
+    Eyelink('Message', 'Response_%d', ttn);
+    Eyelink('Message', '!V CLEAR %d %d %d', param.backcolor);
     % stop the recording of eye-movements for the current trial
     Eyelink('StopRecording');
 end

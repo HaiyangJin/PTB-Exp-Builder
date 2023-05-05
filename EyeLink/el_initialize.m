@@ -104,6 +104,9 @@ if Eyelink('IsConnected')~=1 && param.eldummymode == 0
     return;
 end
 
+% transfer images to host PC
+el_transferimg(param);
+
 %% STEP 7
 % Setup the proper calibration parameters
 % setup the proper calibration foreground and background colors
@@ -121,15 +124,15 @@ el.drift_correction_success_beep=[800 0.5 0.25];
 % you must call this function to apply the changes above
 EyelinkUpdateDefaults(el);
 
+% save the el and opts in param
+param.el = el;
+param.elopts = elopts;
+
 % Hide the mouse cursor;
 % Screen('HideCursorHelper', window);
 fprintf('Do calibration and validation...\n');
 el_calivali(param);
 fprintf('Calibration and validation are done.\n');
-
-% save the el and opts in param
-param.el = el;
-param.elopts = elopts;
 
 %% STEP 8
 % Now starts running individual trials;

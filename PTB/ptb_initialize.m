@@ -37,12 +37,12 @@ whichScreen = param.whichscreen;
 % Define black and white (white will be 1 and black 0). This is because
 % in general luminace values are defined between 0 and 1 with 255 steps in
 % between. All values in Psychtoolbox are defined between 0 and 1
-colorCode.white = WhiteIndex(whichScreen) * 255;
+colorCode.white = WhiteIndex(whichScreen)*255;
 colorCode.black = BlackIndex(whichScreen);
 
 % Do a simply calculation to calculate the luminance value for grey. This
 % will be half the luminace values for white
-colorCode.grey = colorCode.white / 2; % 128 
+colorCode.grey = (colorCode.white+1)/2; % 128 
 
 param.forecolor = colorconverter(param.forecolor, colorCode);
 param.backcolor = colorconverter(param.backcolor, colorCode);
@@ -112,13 +112,12 @@ if ischar(colorString)
             color = colorCode.white;
         case 'black'
             color = colorCode.black;
-        case 'gray'
-            color = colorCode.grey;
-        case 'grey'
+        case {'gray', 'grey'}
             color = colorCode.grey;
         otherwise
             error('Failed to identify the color...');
     end
+    color = repmat(color, 1, 3);
 elseif ~isnumeric(colorString)
     error('Failed to identify the color...');
 end

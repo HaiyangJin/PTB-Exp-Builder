@@ -59,7 +59,7 @@ Eyelink('Command', 'set_idle_mode');
 % clear tracker display
 Eyelink('Command', 'clear_screen 0')
 % define the start and end of RT
-Eyelink('Command', 'V_RT MESSAGE TestFace_%d Response_%d', ttn, ttn);
+Eyelink('Command', 'V_RT MESSAGE Trial_%d Response_%d', ttn, ttn);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % transfer study image to host
@@ -107,7 +107,6 @@ trialBeginsAt = GetSecs;
 
 % record a few samples before we actually start displaying
 % otherwise you may lose a few msec of data
-
 param.elopts.eye_used = Eyelink('EyeAvailable'); % get eye that's tracked
 if param.elopts.eye_used == param.el.BINOCULAR % if both eyes are tracked
     param.elopts.eye_used = param.el.LEFT_EYE; % use left eye
