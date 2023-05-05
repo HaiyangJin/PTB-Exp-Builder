@@ -15,14 +15,14 @@ function vi_mov2wmv(movfn, mmpath)
 % See also:
 % vi_mov2mat(); vi_mat2wmv()
 
-assert(IsWin, 'vi_mov2wmv() only works in Windows.');
+assert(~isunix, 'vi_mov2wmv() only works in Windows.');
 
 [thepath, fn] = fileparts(movfn);
 outfn = fullfile(thepath, [fn '.wmv']);
 
 % add necessary paths for external toolboxes
 if ~exist('mmpath', 'var') || isempty(mmpath)
-    mmpath = fullfile(pwd, 'External Toolboxes');
+    mmpath = fullfile(pwd, 'mmwrite');
 end
 addpath(genpath(mmpath));
 
