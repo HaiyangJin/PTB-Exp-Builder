@@ -17,7 +17,7 @@ movReader = VideoReader(movfn);
 [inpath, infn] = fileparts(movfn);
 
 % Write Video
-viWrite = VideoWriter([inpath, infn, '.avi'], 'Motion JPEG AVI');
+viWrite = VideoWriter([inpath, infn, '.avi']);
 
 % set the frame rate
 viWrite.FrameRate = movReader.FrameRate;
@@ -31,7 +31,6 @@ for count = 1:abs(movReader.Duration*movReader.FrameRate)
 end
 
 % Release video object
-close(movReader);
 close(viWrite);
 fprintf('The conversion is completed.\n');
 
