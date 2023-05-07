@@ -16,6 +16,7 @@ quitNow = 0;
 
 % experiment design
 stimuli = param.stimuli;
+transferstimuli = param.transferDir;
 respKeys = param.respKeys;
 
 correctAns = 1;
@@ -61,7 +62,7 @@ if param.isEyelink
     Eyelink('Message', '!V IAREA File %s', iaFilename); % ROI file
     Eyelink('Message', '!V CLEAR %d %d %d', param.backcolor);
     Eyelink('Message', '!V IMGLOAD TOP_LEFT %s %d %d', ... CENTER
-        fullfile(stimuli(ttn).folder, stimuli(ttn).fn), ...
+        fullfile(transferstimuli(ttn).folder, transferstimuli(ttn).fn), ...
         stimXPosition+jitterX, stimYPosition+jitterY); % image to show in Eyelink
 end
 

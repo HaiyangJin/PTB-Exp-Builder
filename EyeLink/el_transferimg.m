@@ -45,7 +45,7 @@ imginfo=imfinfo(imgfile);
 % parameters of ImageTransfer:
 % (imagePath, xPosition, yPosition, width, height, 
 % trackerXPosition, trackerYPosition, xferoptions)
-transferStatus = Eyelink('ImageTransfer',imginfo.Filename,0,0,...
+transferStatus = Eyelink('ImageTransfer',imgfile,0,0,... imginfo.Filename
     imginfo.Width,imginfo.Height); % ,screenCenterX, screenCenterY,1
 if transferStatus ~= 0
     fprintf('*****Image (%s) transfer Failed*****-------\n', ...
