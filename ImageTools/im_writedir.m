@@ -81,7 +81,7 @@ else
 end
 
 % creat the folder and subfolders
-cellfun(@mkdir, tempFolders);
+cellfun(@ptb_mkdir, tempFolders);
 
 % number of images to be written
 nImg = numel(stimDir);

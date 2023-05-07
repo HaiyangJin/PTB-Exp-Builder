@@ -44,7 +44,7 @@ end
 if ~exist('outPath', 'var') || isempty(outPath)
     outPath = fullfile(pwd, '0_BehaData');
 end
-if ~exist(outPath, 'dir'); mkdir(outPath); end
+ptb_mkdir(outPath);
 
 %% file names
 csvPath = fullfile(outPath, 'data');

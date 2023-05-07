@@ -24,12 +24,12 @@ end
 if ~exist('outPath', 'var') || isempty(outPath)
     outPath = fullfile(pwd, 'Videos_resized');
 end
-fm_mkdir(outPath);
+ptb_mkdir(outPath);
 
 % make subdir if needed
 subfolders = unique({fileDir.condition});
 subfolders(strcmp(subfolders, 'main')) = [];
-cellfun(@fm_mkdir, fullfile(outPath, subfolders));
+cellfun(@ptb_mkdir, fullfile(outPath, subfolders));
 
 nVd = length(fileDir);
 
