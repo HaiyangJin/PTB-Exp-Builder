@@ -24,6 +24,10 @@ function [outTable, eventTable] = fmri_parevent(input, varargin)
 %                       files used in FreeSurfer. 2: only output the event
 %                       tsv files used in BIDS. 3: will output both types
 %                       of files.
+%     first0           <boo> force the onset of the first trial/block to 0.
+%                       Default to 0.
+%     toround          <boo> whether round the onsets and durations. 
+%                       Default to 0.
 %     outpath          <str> where to save the output file; default is pwd.
 %
 % Output:
@@ -122,7 +126,8 @@ nRowPar = sum(blockRows);
 
 % stimlus/block onsets
 onset = dtTable{blockRows, 'StimOnsetRela'};
-% onset(1) = 0; % force the first onset to be 0
+% force the first onset to be 0
+if opts.first0; onset(1) = 0; end
 % stimulus category names
 trial_type = blockNames(blockRows);
 % stimulus identifier
@@ -138,9 +143,13 @@ end
 Weight = ones(numel(trial_type), 1);
 
 % combine data together
+if opts.round
+    onset = round(onset);
+    duration= round(duration);
+end
 outTable = table(onset, Identifier, duration, Weight, trial_type);
 
-%% add dummy volumes if needed
+ %% add dummy volumes if needed
 
 % fill the gaps between trials if needed
 needFix = arrayfun(@(x) onset(x) + duration(x) ~= onset(x+1), 1:nRowPar-1);
