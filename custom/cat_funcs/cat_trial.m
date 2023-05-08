@@ -36,17 +36,6 @@ if param.isEyelink
         param.screenX, param.screenY));
 end
 
-<<<<<<< HEAD:custom/demo1_funcs/demo1_trial.m
-[~,stimBeginsWhen] = ptb_flip(param, [], param.fixDuration);
-% fixationBeganAt = Screen('Flip', param.w);
-% stimBeginsWhen = fixationBeganAt + param.fixDuration - param.flipSlack;
-
-%%%%%%%%%%%%%% stimuli %%%%%%%%%%%%%%
-Screen('DrawTexture', param.w, stimuli(ttn).texture,[]); %OffsetRect(faceTopRect,100*(1-ed(ttn).isAligned)*(1-ed(ttn).topIsCued),0)
-[~,respBeginsWhen] = ptb_flip(param, stimBeginsWhen, param.stimDuration);
-% stimBeganAt = Screen('Flip', param.w, stimBeginsWhen);
-% respBeginsWhen = stimBeganAt + param.stimDuration - param.flipSlack;
-=======
 % stim position
 stimXPosition = param.screenCenX - size(stimuli(ttn).matrix,2)/2;
 stimYPosition = param.screenCenY - size(stimuli(ttn).matrix,1)/2;
@@ -79,8 +68,7 @@ if param.isEyelink
 end
 
 %%%%%%%%%%%%%% response %%%%%%%%%%%%%%
-[~,responseBegins] = ptb_flip(param, respBeginsWhen, 1);
-% responseBegins = Screen('Flip', param.w, respBeginsWhen);
+responseBegins = Screen('Flip', param.w, respBeginsWhen);
 
 %%%%%%%%%% Response (keys) %%%%%%%%%%
 RestrictKeysForKbCheck([respKeys(:)', param.expKey]); 
@@ -125,7 +113,7 @@ end
 
 % display feedback if necessary
 if param.isFeedback
-    ptb_feedback(ACC, param.w);
+    ptb_feedback(ACC, param);
 end
 
 %% STEP 8.7 AOI and conditions
