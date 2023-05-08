@@ -1,6 +1,8 @@
-function param = cate_iafiles(param)
-
-
+function param = cat_iafiles(param)
+% param = cat_iafiles(param)
+%
+% Create interest areas files.
+%
 %% Default ROI (without jitters)
 % assume all stimuli are the same size
 stimX=size(param.stimuli(1).matrix,2);

@@ -1,4 +1,4 @@
-function exp_cate(subjCode, isEyelink)
+function exp_cat(subjCode, isEyelink)
 % Example experiment main body.
 %
 % An experiment for categorization.
@@ -32,7 +32,7 @@ param.isEyelink = isEyelink;
 
 % add the functions folder to the path
 % clc;
-paths = {'PTB', 'ImageTools', 'Utilities/', 'custom/cate_funcs'};
+paths = {'PTB', 'ImageTools', 'Utilities/', 'custom/cat_funcs'};
 if isEyelink; paths=horzcat(paths, {'Eyelink'}); end
 cellfun(@addpath, paths);
 % addpath(genpath('functions/'));
@@ -102,11 +102,11 @@ param.textColor = 255;
 
 %% Eyelink
 param.eldummymode = ~isEyelink;
-param.do_roi = []; % @cate_roi;
-param.do_iafile = @cate_iafiles;
+param.do_roi = []; % @cat_roi;
+param.do_iafile = @cat_iafiles;
 
 %% Run the Experiment
-param.do_trial = @cate_trial;
+param.do_trial = @cat_trial;
 param.do_output = @ptb_outtable;
 
 ptb_runexp(param);

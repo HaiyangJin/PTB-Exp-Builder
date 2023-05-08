@@ -1,4 +1,6 @@
-function [output, quitNow] = cate_trial(ttn, param)
+function [output, quitNow] = cat_trial(ttn, param)
+% [output, quitNow] = cat_trial(ttn, param)
+% 
 % Example do trial.
 %
 % Inputs:
@@ -75,7 +77,6 @@ if param.isEyelink
         fullfile(param.transferDir(ttn).folder, param.transferDir(ttn).name), ...
         stimXPosition+jitterX, stimYPosition+jitterY); % image to show in Eyelink
 end
->>>>>>> eyelink:custom/cate_funcs/cate_trial.m
 
 %%%%%%%%%%%%%% response %%%%%%%%%%%%%%
 [~,responseBegins] = ptb_flip(param, respBeginsWhen, 1);
