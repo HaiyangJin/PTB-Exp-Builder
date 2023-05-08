@@ -14,6 +14,8 @@ ListenChar(2);
 
 % Initilize the screen
 param = ptb_initialize(param);
+% initialize EL if needed
+if param.isEyelink; param = el_initialize(param); end
 
 % Load stimuli
 param.stimuli = ptb_loadstimdir(param.imgDir, param.w);
@@ -30,6 +32,13 @@ if ~isfield(param, 'ed')
     param.ed = ptb_expdesignbuilder(param.conditionsArray, ...
         param.randBlock, param.sortBlock);
     param.tn = size(param.ed, 1);  % trial number
+end
+
+% prepare Eyelink AOIs if needed
+% create IA files to be displayed in Eyelink
+if param.isEyelink && ...
+        isfield(param, 'do_iafile') && ~isempty(param.do_iafile)
+    param = param.do_iafile(param);
 end
 
 % Keys
@@ -54,15 +63,15 @@ expStartTime = GetSecs();
 
 dtTable = table;
 
-for ttn = 1 : param.tn  % this trial number 
-    
+for ttn = 1 : param.tn  % this trial number
+
     % run each trial
     [output, quitNow] = param.do_trial(ttn, param);
-    dtTable(ttn, :) = struct2table(output, 'AsArray', true); 
-    
+    dtTable(ttn, :) = struct2table(output, 'AsArray', true);
+
     % break check
     ptb_checkbreak(ttn, param);
-    
+
     if (quitNow), break; end
 end
 
@@ -82,7 +91,7 @@ if nRowInfo > 1
     ExpCode = repmat({param.expCode}, nRowInfo, 1);
     SubjCode = repmat({param.subjCode}, nRowInfo, 1);
     expInfoTable = table(ExpAbbv, ExpCode, SubjCode);
-    
+
     % process the output
     param.dtTable = param.do_output(dtTable, expInfoTable);
 else
@@ -104,11 +113,13 @@ if isfield(param, 'record') && param.record
     Screen('CloseMovie');
 end
 
+% quit EL if needed
+if param.isEyelink; el_end(param); end
 % close all screens
 Screen('CloseAll');
 
 % display informations
-fprintf('\nThe current session lasts %2.2f minutes.\n', param.expDuration/60); 
+fprintf('\nThe current session lasts %2.2f minutes.\n', param.expDuration/60);
 fprintf('Mean Accuracy: %s\n', num2str(acc, '%2.1f%%'));
 
 % start receiving typed characters

@@ -1,4 +1,4 @@
-function fileDir = im_dir(imgPath, imgExt, reformat)
+function fileDir = im_dir(imgPath, imgExt, reformat, relaPath)
 % fileDir = im_dir(imgPath, imgExt, reformat)
 %
 % This function get the directory information of all the images matching the
@@ -10,6 +10,8 @@ function fileDir = im_dir(imgPath, imgExt, reformat)
 %     reformat     <boo> if true, fileDir will be re-formated to multiple
 %                   columns and each column is one condition (folder). By
 %                   default reformat is false.
+%     relaPath     <boo> whether use the relative path (instead of full
+%                   path). Default to 0.
 % Output:
 %     fileDir      <struct> the dir structure with condition name. The
 %                   names of subfolders will be the condition names for the
@@ -35,8 +37,12 @@ if ~exist('reformat', 'var') || isempty(reformat)
     reformat = 0; % by deafult do not reformat fileDir
 end
 
+if ~exist('relaPath', 'var') || isempty(relaPath)
+    relaPath = 0;
+end
+
 %% dir information in the imgPath folder
-mainDir = dir_img(imgPath);
+mainDir = dir_img(imgPath, relaPath);
 
 % image files matching imgExt in the imgPath
 isExt = endsWith({mainDir.name}, imgExt);
@@ -50,7 +56,8 @@ subNames = {mainDir([mainDir.isdir]).name};
 subPath = fullfile(imgPath, subNames);
 
 [tempPath, tempExt] = ndgrid(subPath, imgExt);
-subDir = cellfun(@(x, y) dir_img(fullfile(x, ['*' y])), tempPath(:), tempExt(:), 'uni', false);
+subDir = cellfun(@(x, y) dir_img(fullfile(x, ['*' y]), relaPath), ...
+    tempPath(:), tempExt(:), 'uni', false);
 
 % add the condition names
 tempName = ndgrid(subNames, imgExt);
@@ -83,7 +90,7 @@ end
 end
 
 
-function thisDir = dir_img(thisPath)
+function thisDir = dir_img(thisPath, relaPath)
 % dir the path and remove the hidden files
 
 theDir = dir(thisPath);
@@ -92,6 +99,13 @@ theDir(cellfun(@(x) strcmp(x(1), '.'), {theDir.name})) = [];
 theDir(cellfun(@(x) startsWith(x, 'Icon'), {theDir.name})) = [];
 
 thisDir = theDir;
+
+% save relative path
+if relaPath
+    thepwd = fullfile(pwd, filesep);
+    relaTmp = cellfun(@(x) erase(x, thepwd), {thisDir.folder}, 'uni', false);
+    [thisDir.folder] = deal(relaTmp{:});
+end
 
 end
 
