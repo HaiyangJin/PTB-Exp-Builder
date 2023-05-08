@@ -16,7 +16,6 @@ quitNow = 0;
 
 % experiment design
 stimuli = param.stimuli;
-transferstimuli = param.transferDir;
 respKeys = param.respKeys;
 
 correctAns = 1;
@@ -60,9 +59,9 @@ if param.isEyelink
     Eyelink('Message', 'Trial_%d', ttn);
     %%%%% load the IA file for this trial %%%%%
     Eyelink('Message', '!V IAREA File %s', iaFilename); % ROI file
-    Eyelink('Message', '!V CLEAR %d %d %d', param.backcolor);
+    Eyelink('Message', sprintf('!V CLEAR %d %d %d', param.backcolor));
     Eyelink('Message', '!V IMGLOAD TOP_LEFT %s %d %d', ... CENTER
-        fullfile(transferstimuli(ttn).folder, transferstimuli(ttn).fn), ...
+        fullfile(param.transferDir(ttn).folder, param.transferDir(ttn).name), ...
         stimXPosition+jitterX, stimYPosition+jitterY); % image to show in Eyelink
 end
 
@@ -75,7 +74,7 @@ RestrictKeysForKbCheck([respKeys(:)', param.expKey]);
 
 if param.isEyelink
     Eyelink('Message', 'Response_%d', ttn);
-    Eyelink('Message', '!V CLEAR %d %d %d', param.backcolor);
+    Eyelink('Message', sprintf('!V CLEAR %d %d %d', param.backcolor));
     % stop the recording of eye-movements for the current trial
     Eyelink('StopRecording');
 end

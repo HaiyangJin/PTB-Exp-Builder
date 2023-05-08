@@ -105,7 +105,7 @@ if Eyelink('IsConnected')~=1 && param.eldummymode == 0
 end
 
 % transfer images to host PC
-el_transferimg(param);
+param = el_transferimg(param);
 
 %% STEP 7
 % Setup the proper calibration parameters

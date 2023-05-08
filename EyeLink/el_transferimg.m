@@ -1,5 +1,5 @@
-function el_transferimg(param)
-% el_transferimg(param)
+function param = el_transferimg(param)
+% param = el_transferimg(param)
 %
 % Transfer images to Eyelink/host, which will be used in 'IMGLOAD' later:
 % e.g., Eyelink('Message', '!V IMGLOAD CENTER...). By default, it will
