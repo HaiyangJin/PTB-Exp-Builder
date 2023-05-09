@@ -49,6 +49,12 @@ end
 video.frames = frames;
 
 % Write video using mmwrite function
-mmwrite(fn, video);
+try
+    mmwrite(fn, video);
+ catch error
+    fprintf(['Please make sure the mmwrite toolbox (%s) is set up properly.', ...
+        'https://www.mathworks.com/matlabcentral/fileexchange/15881-mmwrite']);
+    rethrow(error);
+end
 
 end

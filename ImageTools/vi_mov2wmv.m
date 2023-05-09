@@ -4,6 +4,8 @@ function vi_mov2wmv(movfn, mmpath)
 % Convert *.mov (or other files that can be read via VideoReader()) into 
 % *.wmv. This function has to be run in WINDOWS (with 
 % K-Lite_Codec_Pack_1687_Full.exe installed).
+% The mmwrite toolbox should be set up.
+% https://www.mathworks.com/matlabcentral/fileexchange/15881-mmwrite
 %
 % Inputs:
 %    movfn           <str> (path and) file name of the video file that can 
@@ -46,6 +48,12 @@ end
 wmv.frames = frames;
 
 %% Save wmv locally
-mmwrite(outfn, wmv);
+try
+    mmwrite(outfn, wmv);
+ catch error
+    fprintf(['Please make sure the mmwrite toolbox (%s) is set up properly.', ...
+        'https://www.mathworks.com/matlabcentral/fileexchange/15881-mmwrite']);
+    rethrow(error);
+end
 
 end
