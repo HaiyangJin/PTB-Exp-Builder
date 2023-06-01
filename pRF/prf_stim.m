@@ -56,8 +56,7 @@ param.thispixelperva = round(pixelperva.pi);
 facev = param.thispixelperva * param.facevva;
 param.faceratio = facev/size(param.stimuli(1).matrix,1);
 
-facebtw = param.thispixelperva * param.facebtw;
-param.canvasxy = param.prfNxy * facebtw * 2;
+param.facebtw = param.thispixelperva * param.facebtw;
 
 param.dotva = param.thispixelperva * param.dva;
 

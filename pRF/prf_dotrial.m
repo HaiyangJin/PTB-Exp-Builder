@@ -77,8 +77,8 @@ if isfield(param, 'letterstimuli')
 end
 
 % display the stimulus
-prf_background(param);
 Screen('DrawTexture', w, stimuli.texture, stimRect, stimPosition);
+param.do_custombg(param); 
 switch param.do_attentaskstr
     case 'fixation'
         Screen('FillRect', w, param.forecolor, param.fixarray);
@@ -150,7 +150,7 @@ switch param.do_attentaskstr
     case 'fixation'
         Screen('FillRect', w, param.forecolor, param.fixarray);
 end
-prf_background(param);
+param.do_custombg(param); % draw line array
 if param.trialDuration > param.stimDuration
     stimEndAt = Screen('Flip', w);
 else

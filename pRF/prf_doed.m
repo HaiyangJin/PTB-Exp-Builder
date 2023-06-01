@@ -10,8 +10,8 @@ function param = prf_doed(param)
 
 % Faked experimental design for fixation (transparent image)
 transEd = param.ed(1);
-transEd.stimPosiX = 1; % the first position (random nubmer)
-transEd.stimPosiY = 1; % the first position (random nubmer)
+% transEd.stimPosiX = 1; % the first position (random nubmer)
+% transEd.stimPosiY = 1; % the first position (random nubmer)
 transEd.stimCategory = 0;
 transEd.repeated = 0;
 

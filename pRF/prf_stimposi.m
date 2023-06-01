@@ -37,7 +37,7 @@ if ~isfield(param, 'prfNxy')
 else
     prfNxy = param.prfNxy;
 end
-if ~isfield(param, 'canvasxy')
+if ~isfield(param, 'canvasxy') && ~isfield(param, 'facebtw')
     oneside = floor(min(param.screenRect(3:4)) * .7);
     param.canvasxy = [oneside, oneside];
 end
@@ -45,6 +45,9 @@ end
 % generate the positions of stimulus centers
 switch prfcoorsys
     case {'Cartesian', 'cartesian', 'carte', 'cart'}
+        if ~isfield(param, 'canvasxy') && isfield(param, 'facebtw')
+            param.canvasxy = (param.prfNxy-1) * param.facebtw; 
+        end
         [param.prfposi, param.prfposi2] = prfposi_carte(prfNxy, param.canvasxy);
 
     case {'Polar', 'polar', 'pola'}
@@ -53,6 +56,9 @@ switch prfcoorsys
             phase = 0;
         else
             phase = param.phase;
+        end
+        if ~isfield(param, 'canvasxy') && isfield(param, 'facebtw')
+            param.canvasxy = param.prfNxy * param.facebtw * 2;
         end
         [param.prfposi, param.prfposi2] = prfposi_polar(prfNxy, param.canvasxy, phase);
 
@@ -113,6 +119,7 @@ outposi = arrayfun(@(x) rotatecarte(distances, x), angles, 'uni', false);
 % save as one cell
 prfposi = horzcat(outposi{:});
 prfposi2 = vertcat(prfposi{:})';
+prfposi2 = unique(prfposi2','rows','stable')'; % get unique columns
 
 end
 
