@@ -17,7 +17,7 @@ function ptb_bgarray(param)
 % Created by Haiyang Jin (2023-May-1)
 
 if ~isfield(param, 'bgarraycolor') || isempty(param.bgarraycolor)
-    param.bgarraycolor = [200, 200, 200];
+    param.bgarraycolor = [165, 165, 165];
 end
 
 if ~isfield(param, 'circleva') || isempty(param.circleva)
