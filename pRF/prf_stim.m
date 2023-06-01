@@ -49,13 +49,17 @@ stimCell(param.imageBlockNum) = imgCell;
 param.stimuli = horzcat(stimCell{:});
 
 %% Calculate stimulus size and positions
-facev = ptb_va2pixel(param.facevva, param.distance, param.pipercm);
-param.faceratio = facev.pi/size(param.stimuli(1).matrix,1);
+% use 1 degree as the conversion rate
+pixelperva = ptb_va2pixel(1, param.distance, param.pipercm);
+param.thispixelperva = round(pixelperva.pi);
 
-facebtw = ptb_va2pixel(param.facebtw, param.distance, param.pipercm);
-param.canvasxy = (param.prfNxy-1) * facebtw.pi;
+facev = param.thispixelperva * param.facevva;
+param.faceratio = facev/size(param.stimuli(1).matrix,1);
 
-param.dotva = ptb_va2pixel(param.dva, param.distance, param.pipercm);
+facebtw = param.thispixelperva * param.facebtw;
+param.canvasxy = param.prfNxy * facebtw * 2;
+
+param.dotva = param.thispixelperva * param.dva;
 
 %% Load letter images
 if isfield(param, 'imgLetterDir')

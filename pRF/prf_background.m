@@ -8,7 +8,7 @@ function prf_background(param)
 % draw line array
 ptb_bgarray(param);
 % draw dot array
-Screen('DrawDots', param.w, param.prfposi2, param.dotva.pi, param.dcolor, ...
+Screen('DrawDots', param.w, param.prfposi2, param.dotva, param.dcolor, ...
     [param.screenCenX, param.screenCenY], 1);
 
 end
