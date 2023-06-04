@@ -1,5 +1,5 @@
-function ptb_bgarray(param)
-% ptb_bgarray(param)
+function prf_bgarray(param)
+% prf_bgarray(param)
 % 
 % Draw array of circles as background.
 %
