@@ -78,11 +78,14 @@ param.dva = 0.25;
 param.dcolor = [255; 255; 100; 128]; % transparent yellow
 param.circleva = 0.5:3:100;
 
+stimPosiIdx = prod(param.prfNxy) + strcmp(param.prfcoorsys, 'polar');
+
 % experiment design array
 clear param.conditionsArray;
 param.conditionsArray = {...
-    'stimPosiX', 1:param.prfNxy(2); ...
-    'stimPosiY', 1:param.prfNxy(1); ...
+    'stimPosiIdx', 1:stimPosiIdx; ...
+%     'stimPosiX', 1:param.prfNxy(2); ...
+%     'stimPosiY', 1:param.prfNxy(1); ...
     'stimCategory', 1:param.nStimCat; ... % stimlus (category) conditions
     'repeated', 1:param.nRepetition; % block repeated times
     };
@@ -112,8 +115,8 @@ param.instructText = sprintf(['Welcome to this experiment... \n\n\n' ...
     keyStr, continueStr); 
 
 %% Dummy volumes
-param.dummyDuration = 1; % seconds; fixation duration before any block/trial
-param.dummyDurationEnd = 1; % fixation duration after all blocks/trials
+param.dummyDuration = 5; % seconds; fixation duration before any block/trial
+param.dummyDurationEnd = 5; % fixation duration after all blocks/trials
 
 %% Trial parameters
 % stimuli
@@ -141,7 +144,7 @@ param.forecolor = 'white';  % (white, black, grey or numbers)
 param.backcolor = 'grey';   % (white, black, grey or numbers)
 param.winrect = [];         % [] Window Rect; % default [100 100 1300 900];  %[100 100 600 600];
 param.whichscreen = [];     % which screen to display stimuli
-param.distance = 139;        % distance to the screen (cm)
+param.distance = 57;        % distance to the screen (cm) 88
 
 %% Parameters of fonts used in this exp
 param.textSize = 20;
