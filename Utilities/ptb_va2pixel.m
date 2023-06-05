@@ -40,6 +40,6 @@ stim.cm = tan(deg2rad(va))*dist;
 % stimulus in points
 stim.pt = stim.cm * (72/2.54);
 % stimulus in pixels
-stim.pi = round(pipercm * stim.cm);
+stim.pi = pipercm * stim.cm;
 
 end

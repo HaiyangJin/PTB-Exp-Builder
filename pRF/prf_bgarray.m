@@ -40,7 +40,7 @@ assert(isfield(param, 'pipercm'), ['Please use ptb_screensize() to get ' ...
 %% Draw circles
 % pixels for each circle
 pixels_size = arrayfun(@(x) ptb_va2pixel(x, param.distance, param.pipercm), param.circleva);
-pixels = [pixels_size.pi];
+pixels = round([pixels_size.pi]);
 
 % rects for all circles
 circlearray=[param.screenCenX-pixels;
