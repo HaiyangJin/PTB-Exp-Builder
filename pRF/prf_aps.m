@@ -59,7 +59,7 @@ defaultOpts = struct( ...
     'distance', 0, ...
     'cmperpi', 0, ...
     'corrtime', .1, ...
-    'apfn', ['ap_' char(datetime('now', 'Format', 'yyyyMMddHHmm'))] ...
+    'apfn', ['aps_' char(datetime('now', 'Format', 'yyyyMMddHHmm'))] ...
     );
 
 if isstruct(dtTable) && isfield(param, 'dtTable')
@@ -67,7 +67,7 @@ if isstruct(dtTable) && isfield(param, 'dtTable')
 elseif exist(dtTable, 'file')
     % use the input file name as the {.apfnextra}
     [~,inputfn] = fileparts(dtTable);
-    defaultOpts.apfn = ['ap_' inputfn];
+    defaultOpts.apfn = ['aps_' inputfn];
     % load and retrieve the dtTable
     tmp = load(dtTable);
     dtTable = tmp.dtTable;
@@ -80,14 +80,14 @@ elseif exist(dtTable, 'file')
     end
 end
 
-% Update the .asva default if needed
-if (~isempty(defaultOpts.distance) && defaultOpts.cmperpi>0) && ...
-    (~isempty(defaultOpts.cmperpi) && defaultOpts.cmperpi>0)
-    defaultOpts.asva = 1;
-end
-
 % integrate default and custom options
 opts = ptb_mergestruct(defaultOpts, varargin);
+
+% Update the .asva default if needed
+if (~isempty(opts.distance) && opts.cmperpi>0) && ...
+    (~isempty(opts.cmperpi) && opts.cmperpi>0)
+    opts.asva = 1;
+end
 
 % condition orders
 condOrder = opts.condorder;
@@ -116,6 +116,7 @@ secTotal = round(onsets(nRow) + dtTable.StimDuration(nRow));
 % canvas for the aperture
 apXY = unique(dtTable.apXY, 'rows'); % apXY
 apXY(isnan(apXY))=[];
+apXY = repmat(ceil(max(apXY)*1.1), 1, 2);
 
 % use custom stim size if needed
 if ischar(opts.stimsize)
@@ -123,6 +124,9 @@ if ischar(opts.stimsize)
 else
     stimSize = opts.stimsize;
 end
+
+% reverse the coordinates of Y
+dtTable.StimPosiRela = dtTable.StimPosiRela .* [1, -1];
 
 % calculate the visual angle based on pixel
 if (~isempty(opts.distance) && opts.cmperpi>0) && ...
@@ -155,7 +159,7 @@ apFrm = arrayfun(@(x) mkap(dtTable.StimCategory(x, :), dtTable.StimPosiRela(x, :
 ApFrm = cat(3, apFrm{:});
 Objects = objInt;
 
-%% Save the ap_*.mat file
+%% Save the aps_*.mat file
 [filepath, name, ext] = fileparts(opts.apfn);
 if ~startsWith(name, 'aps_')
     name = ['aps_', name];
@@ -163,12 +167,12 @@ end
 if ~strcmp(ext, '.mat')
     ext = '.mat';
 end
-apfn = fullfile(filepath, [name, ext]);
+apfn = fullfile(filepath, [name, '_', opts.stimshape, ext]);
 % make sure not overwrite files
 apfn0 = 0;
 while exist(apfn, 'file')
     apfn0 = apfn0 + 1;
-    apfn = fullfile(filepath, [name '_' num2str(apfn0), ext]);
+    apfn = fullfile(filepath, [name '_' opts.stimshape '_' num2str(apfn0), ext]);
 end
 
 % save the file locally
@@ -176,7 +180,7 @@ save(apfn, 'ApFrm', 'Objects', '-v7.3');
 
 end % function prf_aps()
 
-%% function to make aperture
+%% function to make an aperture
 function ap = mkap(stimCond, stimPosiRela, stimXY, apXY, shape)
 % stimPosiRela  <num vec> stimulus position relative to the center of the
 %                screen.
@@ -202,7 +206,7 @@ switch shape
         ap(stimPosiY-stimXY(1)/2+1 : stimPosiY+stimXY(1)/2, ...
             stimPosiX-stimXY(2)/2+1 : stimPosiX+stimXY(2)/2) = 1;
 
-    case 'oval'
+    case {'oval', 'circle'}
         for y = 1:apXY(1)
             for x = 1:apXY(2)
                 if ((x-stimPosiX)^2)/((stimXY(2)/2))^2 + ...
@@ -223,14 +227,14 @@ switch shape
         end
 
 end % switch shape
-
 end % function mkap()
 
+%% Make special aperature (CF)
 function ap = ap_cf(stimPosiRela, stimXY, apXY, ismis)
 % stimPosiRela  <num vec> stimulus position relative to the center of the
 %                screen along x and y axis.
-% stimXY        <num vec> height and width of the stimulus.
-% apXY          <num vec> hieght and width of the aperature.
+% stimXY        <num vec> width and height of the stimulus.
+% apXY          <num vec> width and hieght of the aperature.
 % ismis         <int> 0: aligned; 1: bottom to left; 2: bottom to right
 
 % default to not showing stimuli
@@ -242,24 +246,24 @@ stimPosiY = apXY(1)/2 - stimPosiRela(2);
 
 % line
 lineratio = 3/259;
-lineh_half = lineratio * stimXY(1)/2;
+lineh_half = lineratio * stimXY(2)/2;
 
 % alignment
-oval_w = stimXY(2)*(1-(ismis~=0)*(1/3));
-mis = (ismis~=0)*(ismis - 1.5)*2*stimXY(2)/3/2;
+oval_w = stimXY(1)*(1-(ismis~=0)*(1/3));
+mis = (ismis~=0)*(1.5-ismis)*2*stimXY(1)/3/2;
 
 for y = 1:apXY(1)
     for x = 1:apXY(2)
         isInTopOval = ((x-stimPosiX-mis)^2)/(oval_w/2)^2 + ...
-            ((y-stimPosiY+lineh_half)^2)/((stimXY(1)/2))^2 <= 1 && ...
+            ((y-stimPosiY+lineh_half)^2)/((stimXY(2)/2))^2 <= 1 && ...
             y-stimPosiY+lineh_half < 0; % top oval
         isInBotOval = ((x-stimPosiX+mis)^2)/(oval_w/2)^2 + ...
-            ((y-stimPosiY-lineh_half)^2)/((stimXY(1)/2))^2 <= 1 && ...
-            y-stimPosiY-lineh_half > 0;
+            ((y-stimPosiY-lineh_half)^2)/((stimXY(2)/2))^2 <= 1 && ...
+            y-stimPosiY-lineh_half > 0; % bottom oval
         isInLine = y > stimPosiY-lineh_half && ...
             y < stimPosiY+lineh_half && ...
-            x > stimPosiX-stimXY(2)/2 && ...
-            x < stimPosiX+stimXY(2)/2; 
+            x > stimPosiX-stimXY(1)/2 && ...
+            x < stimPosiX+stimXY(1)/2; % the line between two halves
 
         ap(y,x) = (isInTopOval + isInBotOval + isInLine)>0;
     end
