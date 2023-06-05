@@ -17,7 +17,7 @@ function prf_bgarray(param)
 % Created by Haiyang Jin (2023-May-1)
 
 if ~isfield(param, 'bgarraycolor') || isempty(param.bgarraycolor)
-    param.bgarraycolor = [165, 165, 165];
+    param.bgarraycolor = [165, 165, 165, 200];
 end
 
 if ~isfield(param, 'circleva') || isempty(param.circleva)
@@ -53,7 +53,7 @@ Screen('FrameOval', param.w, param.bgarraycolor, circlearray);
 
 %% Draw radants
 alinemat = ones(1,param.screenX,3)*param.bgarraycolor(1);
-alinealpha = ones(1,param.screenX)*255;
+alinealpha = ones(1,param.screenX)*200;
 alinealpha(:,param.screenCenX-pixels(1):param.screenCenX+pixels(1)) = 0;
 aline = Screen('MakeTexture', param.w, cat(3,alinemat, alinealpha));
 % Screen('Drawline', aline, param.bgarraycolor, ...); % x, y in tex coordinates

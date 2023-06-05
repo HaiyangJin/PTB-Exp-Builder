@@ -58,7 +58,7 @@ switch prfcoorsys
             phase = param.phase;
         end
         if ~isfield(param, 'canvasxy') && isfield(param, 'facebtw')
-            param.canvasxy = param.prfNxy * param.facebtw * 2;
+            param.canvasxy = param.prfNxy(1) * param.facebtw * 2;
         end
         [param.prfposi, param.prfposi2] = prfposi_polar(prfNxy, param.canvasxy, phase);
 
