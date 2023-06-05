@@ -87,7 +87,7 @@ if ~quitNow
     for iBlock = 1:param.bn+param.fixBlockN
 
         param.BlockNum = iBlock;
-        thisPosi = param.prfposi2(:,param.alled(iBlock).stimPosiIdx);
+        thisPosi = param.prfposi2(param.alled(iBlock).stimPosiIdx, :);
 
         for tn = 1 : param.nStimPerBlock
             

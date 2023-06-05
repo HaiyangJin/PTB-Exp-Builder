@@ -227,7 +227,7 @@ output.StimDuration = stimEndAt - stimBeganAt;
 % stimulus
 output.StimCategory = stimuli.condition;
 output.StimName = stimuli.fn;
-output.StimXY = size(stimuli.matrix, 1:2);
+output.StimXY = [stimXtrg, stimYtrg];
 output.StimPosiRela = stimPosi;
 output.StimPosition = stimPosition;
 output.apXY = param.canvasxy + output.StimXY;

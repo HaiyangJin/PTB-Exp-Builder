@@ -85,7 +85,7 @@ ys = (0 : distxy(2) : canvasxy(2)) - canvasxy(2)/2;
 
 % coordinates for all stim positions
 prfposi = arrayfun(@(x,y) [x,y], x, y, 'uni', false);
-prfposi2 = [x(:),y(:)]';
+prfposi2 = [x(:),y(:)];
 
 end
 
@@ -119,7 +119,7 @@ outposi = arrayfun(@(x) rotatecarte(distances, x), angles, 'uni', false);
 % save as one cell
 prfposi = horzcat(outposi{:});
 prfposi2 = vertcat(prfposi{:})';
-prfposi2 = unique(prfposi2','rows','stable')'; % get unique columns
+prfposi2 = unique(prfposi2','rows','stable'); % get unique columns
 
 end
 
