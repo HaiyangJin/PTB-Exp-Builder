@@ -114,7 +114,9 @@ param.screenY = screenY;
 param.flipSlack = flipSlack;
 
 % the actual size of the screen
-param = ptb_screensize(param);
+if ~isfield(param, 'pipercm')
+    param = ptb_screensize(param);
+end
 
 end
 

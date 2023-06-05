@@ -26,6 +26,12 @@ end
 if ~exist('whichscreen', 'var') || isempty(whichscreen)
     whichscreen = 0; % the default (main) screen
 elseif isstruct(whichscreen) && isfield(whichscreen, 'whichscreen')
+    if isempty(whichscreen.whichscreen)
+        % use the external monitor
+        rootinfo=get(groot);
+        whichscreen.whichscreen=size(rootinfo.MonitorPositions,1)-1;
+    end
+
     ssize = whichscreen; % backup the struct
     whichscreen = whichscreen.whichscreen;
 end
