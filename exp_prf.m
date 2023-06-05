@@ -25,7 +25,7 @@ param.dispPress = 1;
 %% Experiment inforamtion
 param.expCode = '999';
 param.expAbbv = 'pRFfaces';
-param.outpath= 'Output';
+param.outpath= 'output';
 
 %% Process the in-arguments
 % subject code

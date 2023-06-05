@@ -28,6 +28,10 @@ function [ApFrm, Objects] = prf_aps(dtTable, varargin)
 %    .condorder      <cell str> the order of the conditions saved in
 %                     [Objects]. Default to the order starting with
 %                     'fixation' and then in alphabet order.
+%    .stimsize       <vec> the size of the stimlus in pixels for each trial. 
+%                     Default to dtTable.StimXY(x, :), i.e., the stimulus 
+%                     size in pixels.
+%                OR  <str> the field name in dtTable.
 %    .distance       <num> distance from the participant to the screen in
 %                     centimeter. Default to 0.
 %    .cmperpi        <num> size (in centimeter) per pixel. Default to 0.
@@ -51,6 +55,7 @@ defaultOpts = struct( ...
     'stimshape', 'rectangle', ...
     'framepersec', 1, ...
     'condorder', {''}, ...
+    'stimsize', 'StimXY', ...
     'distance', 0, ...
     'cmperpi', 0, ...
     'corrtime', .1, ...
@@ -112,6 +117,13 @@ secTotal = round(onsets(nRow) + dtTable.StimDuration(nRow));
 apXY = unique(dtTable.apXY, 'rows'); % apXY
 apXY(isnan(apXY))=[];
 
+% use custom stim size if needed
+if ischar(opts.stimsize)
+    stimSize = dtTable.(opts.stimsize);
+else
+    stimSize = opts.stimsize;
+end
+
 % calculate the visual angle based on pixel
 if (~isempty(opts.distance) && opts.cmperpi>0) && ...
     (~isempty(opts.cmperpi) && opts.cmperpi>0) && opts.asva
@@ -122,7 +134,7 @@ if (~isempty(opts.distance) && opts.cmperpi>0) && ...
     apXY = round(ptb_visualangle(apXY*opts.cmperpi, opts.distance) * 100)+20;
     % convert to visual angle
     dtTable.StimPosiRela = round(ptb_visualangle(dtTable.StimPosiRela*opts.cmperpi, opts.distance) * 100);
-    dtTable.StimXY = round(ptb_visualangle(dtTable.StimXY*opts.cmperpi, opts.distance) * 100);
+    stimSize = round(ptb_visualangle(stimSize*opts.cmperpi, opts.distance) * 100);
     
 end
 
@@ -136,7 +148,8 @@ objInt = cellfun(@(x) find(strcmp(x, condOrder))-1, objStr);
 
 % make the aperture for each frame
 apFrm = arrayfun(@(x) mkap(dtTable.StimCategory(x, :), dtTable.StimPosiRela(x, :), ...
-    dtTable.StimXY(x, :), apXY, opts.stimshape), therows, 'uni', false);
+    stimSize(x, :), apXY, opts.stimshape), therows, 'uni', false);
+% to update StimXY
 
 % save the final output
 ApFrm = cat(3, apFrm{:});
@@ -144,8 +157,8 @@ Objects = objInt;
 
 %% Save the ap_*.mat file
 [filepath, name, ext] = fileparts(opts.apfn);
-if ~startsWith(name, 'ap_')
-    name = ['ap_', name];
+if ~startsWith(name, 'aps_')
+    name = ['aps_', name];
 end
 if ~strcmp(ext, '.mat')
     ext = '.mat';
@@ -179,8 +192,8 @@ if any(isnan(stimPosiRela)) || strcmp(stimCond, 'fixation')
 end
 
 % position of stimulus centers
-stimPosiX = apXY(2)/2 + stimPosiRela(2);
-stimPosiY = apXY(1)/2 - stimPosiRela(1);
+stimPosiX = apXY(2)/2 + stimPosiRela(1);
+stimPosiY = apXY(1)/2 - stimPosiRela(2);
 
 % stimulus shape
 switch shape
@@ -190,14 +203,66 @@ switch shape
             stimPosiX-stimXY(2)/2+1 : stimPosiX+stimXY(2)/2) = 1;
 
     case 'oval'
-        for x = 1:apXY(1)
-            for y = 1:apXY(2)
-                if ((y-stimPosiX)^2)/((stimXY(2)/2))^2 + ...
-                        ((x-stimPosiY)^2)/((stimXY(1)/2))^2 <= 1
-                    ap(x,y) = 1;
+        for y = 1:apXY(1)
+            for x = 1:apXY(2)
+                if ((x-stimPosiX)^2)/((stimXY(2)/2))^2 + ...
+                        ((y-stimPosiY)^2)/((stimXY(1)/2))^2 <= 1
+                    ap(y,x) = 1;
                 end
             end
         end  
+
+    case 'cf'
+        switch stimCond{1} 
+            case 'aligned'
+                ap = ap_cf(stimPosiRela, stimXY, apXY, 0);
+        case 'misaligned_l'
+            ap = ap_cf(stimPosiRela, stimXY, apXY, 1);
+        case 'misaligned_r'
+            ap = ap_cf(stimPosiRela, stimXY, apXY, 2);
+        end
+
 end % switch shape
 
 end % function mkap()
+
+function ap = ap_cf(stimPosiRela, stimXY, apXY, ismis)
+% stimPosiRela  <num vec> stimulus position relative to the center of the
+%                screen along x and y axis.
+% stimXY        <num vec> height and width of the stimulus.
+% apXY          <num vec> hieght and width of the aperature.
+% ismis         <int> 0: aligned; 1: bottom to left; 2: bottom to right
+
+% default to not showing stimuli
+ap = NaN(apXY);
+
+% position of stimulus centers
+stimPosiX = apXY(2)/2 + stimPosiRela(1);
+stimPosiY = apXY(1)/2 - stimPosiRela(2);
+
+% line
+lineratio = 3/259;
+lineh_half = lineratio * stimXY(1)/2;
+
+% alignment
+oval_w = stimXY(2)*(1-(ismis~=0)*(1/3));
+mis = (ismis~=0)*(ismis - 1.5)*2*stimXY(2)/3/2;
+
+for y = 1:apXY(1)
+    for x = 1:apXY(2)
+        isInTopOval = ((x-stimPosiX-mis)^2)/(oval_w/2)^2 + ...
+            ((y-stimPosiY+lineh_half)^2)/((stimXY(1)/2))^2 <= 1 && ...
+            y-stimPosiY+lineh_half < 0; % top oval
+        isInBotOval = ((x-stimPosiX+mis)^2)/(oval_w/2)^2 + ...
+            ((y-stimPosiY-lineh_half)^2)/((stimXY(1)/2))^2 <= 1 && ...
+            y-stimPosiY-lineh_half > 0;
+        isInLine = y > stimPosiY-lineh_half && ...
+            y < stimPosiY+lineh_half && ...
+            x > stimPosiX-stimXY(2)/2 && ...
+            x < stimPosiX+stimXY(2)/2; 
+
+        ap(y,x) = (isInTopOval + isInBotOval + isInLine)>0;
+    end
+end
+
+end % ap_cf
