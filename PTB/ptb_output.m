@@ -56,8 +56,32 @@ outFn = [param.subjCode '_' param.expCode '_' param.expAbbv '_' fnExtra];
 theCSVFile = fullfile(csvPath, [outFn '.csv']);
 theMatlabFile = fullfile(matPath, [outFn '.mat']);
 
+%% remove matrix in param.stimuli
+allfields = fieldnames(param);
+toclear = cellfun(@(x) startsWith(x,'stimuli'), allfields);
+for ifield = allfields(toclear)'
+    param.(ifield{1}) = removematcell(param.(ifield{1}));
+end
+
 %% save the files
 save(theMatlabFile, '-struct', 'param');
 writetable(param.dtTable, theCSVFile);
+
+end
+
+function stimuli = removematcell(stimuli)
+% just in case some stimuli is cell instead of struct
+    if isstruct(stimuli)
+        stimuli = removemat(stimuli);
+    elseif iscell(stimuli)
+        stimuli = cellfun(@removemat, stimuli, 'uni', false);
+    end
+end
+
+function stimuli = removemat(stimuli)
+% empty .matrix and .alpha
+emptycell = repmat({[]}, size(stimuli));
+[stimuli.matrix] = deal(emptycell{:});
+[stimuli.alpha] = deal(emptycell{:});
 
 end
