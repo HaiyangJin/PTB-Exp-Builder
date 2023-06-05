@@ -78,13 +78,14 @@ Screen('Flip', param.w);
 %% Run blocks
 % fixations at the beginning
 [outDummy, quitNow] = fmri_dummyvol(param, param.runStartTime, param.do_custombg);
-dummyTable = struct2table(outDummy, 'AsArray', true);
+dummyTable = table;
 dummyTableEnd = table; % save fixation data (before)
+if ~isempty(outDummy); dummyTable = struct2table(outDummy, 'AsArray', true); end
 
 % quit if experimenter key is pressed
 if ~quitNow
 
-    for iBlock = 1:param.bn+param.fixBlockN
+    for iBlock = 1:param.tbn
 
         param.BlockNum = iBlock;
         thisPosi = param.prfposi2(param.alled(iBlock).stimPosiIdx, :);
@@ -118,7 +119,7 @@ if ~quitNow
     basetime = (param.bn+param.fixBlockN) * param.stimBloDuration + ...
         param.dummyDuration + param.runStartTime;
     [outDummyEnd, quitNow] = fmri_dummyvol(param, basetime, param.do_custombg);
-    dummyTableEnd = struct2table(outDummyEnd, 'AsArray', true);
+    if ~isempty(outDummyEnd); dummyTableEnd = struct2table(outDummyEnd, 'AsArray', true); end
 end
 
 %% Finishing screen
@@ -141,7 +142,11 @@ if isempty(dtStimTable)
 else
 
     % combine fixation and stimulus tables
-    dtTable = outerjoin(dtStimTable, dummyTable, 'MergeKeys',true);
+    if ~isempty(dummyTable)
+        dtTable = outerjoin(dtStimTable, dummyTable, 'MergeKeys',true);
+    else
+        dtTable = dtStimTable;
+    end
     if ~isempty(dummyTableEnd)
         dtTable = outerjoin(dtTable, dummyTableEnd, 'MergeKeys',true);
     end

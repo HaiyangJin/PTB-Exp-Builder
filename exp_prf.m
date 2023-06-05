@@ -115,8 +115,8 @@ param.instructText = sprintf(['Welcome to this experiment... \n\n\n' ...
     keyStr, continueStr); 
 
 %% Dummy volumes
-param.dummyDuration = 5; % seconds; fixation duration before any block/trial
-param.dummyDurationEnd = 5; % fixation duration after all blocks/trials
+param.dummyDuration = 0; % seconds; fixation duration before any block/trial
+param.dummyDurationEnd = 0; % fixation duration after all blocks/trials
 
 %% Trial parameters
 % stimuli
@@ -137,6 +137,8 @@ param.fixDuration = param.stimBloDuration;
 
 % the block numbers for fixation
 param.fixBlockN = 2; % randomly interleaved with experimental blocks
+param.fixBlockDummy = 2; % 4s per block (16s)
+param.fixBlockOverrun = 2; % 4s per block (16s)
 
 %% Setting for the screen
 param.frameExpected = 60;

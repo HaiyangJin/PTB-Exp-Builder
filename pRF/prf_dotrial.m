@@ -1,5 +1,5 @@
 function [output, quitNow] = prf_dotrial(ttn, param, stimuli, stimPosi)
-% [output, quitNow] = fmri_doblocktrial(ttn, param, stimuli)
+% [output, quitNow] = fmri_doblocktrial(ttn, param, stimuli, stimPosi)
 %
 % Run the fixation blocks and the trials in the stimulus blocks (with
 % images). For displaying videos, see fmri_block_dovtrial().

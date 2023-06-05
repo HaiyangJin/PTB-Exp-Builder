@@ -41,8 +41,11 @@ end
 
 %% Combine fixation and images
 % obtain the trial numbers for fixations
-param.imageBlockNum = sort(randperm(param.bn + param.fixBlockN, param.bn));
-stimCell = repmat({transBlock}, param.bn + param.fixBlockN, 1);
+% add dummy blocks and overrun blocks
+param.imageBlockNum = sort(randperm(param.bn + param.fixBlockN, param.bn)) ...
+    + param.fixBlockDummy;
+param.tbn = param.bn + param.fixBlockN + param.fixBlockDummy + param.fixBlockOverrun;
+stimCell = repmat({transBlock}, param.tbn, 1);
 stimCell(param.imageBlockNum) = imgCell;
 
 % saveas struct
