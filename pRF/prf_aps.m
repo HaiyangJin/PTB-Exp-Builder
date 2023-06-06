@@ -32,11 +32,11 @@ function [ApFrm, Objects] = prf_aps(dtTable, varargin)
 %                     Default to dtTable.StimXY(x, :), i.e., the stimulus 
 %                     size in pixels.
 %                OR  <str> the field name in dtTable.
-%    .distance       <num> distance from the participant to the screen in
-%                     centimeter. Default to 0.
-%    .cmperpi        <num> size (in centimeter) per pixel. Default to 0.
+%    .pixelperva    <num> number of pixels per visual angle. Default to 0.
+%                     If .thispixelperva is avaiable in dtTable (when it is
+%                     a struct), it will be used as the default.
 %    .corrtime       <num> time to be applied to correct the precision
-%                     issue. Default to 0.1.
+%                     issue for identifying the stimulus, . Default to 0.1.
 %    .apfn           <str> the file name of the output aperture. 
 %
 % Outputs:
@@ -56,8 +56,7 @@ defaultOpts = struct( ...
     'framepersec', 1, ...
     'condorder', {''}, ...
     'stimsize', 'StimXY', ...
-    'distance', 0, ...
-    'cmperpi', 0, ...
+    'pixelperva', 0, ...
     'corrtime', .1, ...
     'apfn', ['aps_' char(datetime('now', 'Format', 'yyyyMMddHHmm'))] ...
     );
@@ -72,22 +71,18 @@ elseif exist(dtTable, 'file')
     tmp = load(dtTable);
     dtTable = tmp.dtTable;
 
-    if isfield(tmp, 'distance') && ~isempty(tmp.distance)
-        defaultOpts.distance = tmp.distance;
+    if isfield(tmp, 'thispixelperva') && ~isempty(tmp.thispixelperva)
+        defaultOpts.pixelperva = tmp.thispixelperva;
     end
-    if isfield(tmp, 'cmperpi') && ~isempty(tmp.cmperpi)
-        defaultOpts.cmperpi = tmp.cmperpi;
-    end
+end
+
+% Update the .asva default if needed
+if ~isempty(defaultOpts.pixelperva) && defaultOpts.pixelperva>0
+    defaultOpts.asva = 1;
 end
 
 % integrate default and custom options
 opts = ptb_mergestruct(defaultOpts, varargin);
-
-% Update the .asva default if needed
-if (~isempty(opts.distance) && opts.cmperpi>0) && ...
-    (~isempty(opts.cmperpi) && opts.cmperpi>0)
-    opts.asva = 1;
-end
 
 % condition orders
 condOrder = opts.condorder;
@@ -116,7 +111,7 @@ secTotal = round(onsets(nRow) + dtTable.StimDuration(nRow));
 % canvas for the aperture
 apXY = unique(dtTable.apXY, 'rows'); % apXY
 apXY(isnan(apXY))=[];
-apXY = repmat(ceil(max(apXY)*1.1), 1, 2);
+apXY = repmat(ceil(max(apXY)), 1, 2);
 
 % use custom stim size if needed
 if ischar(opts.stimsize)
@@ -129,16 +124,15 @@ end
 dtTable.StimPosiRela = dtTable.StimPosiRela .* [1, -1];
 
 % calculate the visual angle based on pixel
-if (~isempty(opts.distance) && opts.cmperpi>0) && ...
-    (~isempty(opts.cmperpi) && opts.cmperpi>0) && opts.asva
+if (~isempty(opts.pixelperva) && opts.pixelperva>0) && opts.asva
 
     fprintf('\nSave the aperture in the visual angle unit...\n');
 
     % aperture X and Y in visual angle
-    apXY = round(ptb_visualangle(apXY*opts.cmperpi, opts.distance) * 100)+20;
+    apXY = round(apXY/opts.pixelperva * 100)+20;
     % convert to visual angle
-    dtTable.StimPosiRela = round(ptb_visualangle(dtTable.StimPosiRela*opts.cmperpi, opts.distance) * 100);
-    stimSize = round(ptb_visualangle(stimSize*opts.cmperpi, opts.distance) * 100);
+    dtTable.StimPosiRela = round(dtTable.StimPosiRela/opts.pixelperva * 100);
+    stimSize = round(stimSize /opts.pixelperva * 100);
     
 end
 
@@ -250,7 +244,7 @@ lineh_half = lineratio * stimXY(2)/2;
 
 % alignment
 oval_w = stimXY(1)*(1-(ismis~=0)*(1/3));
-mis = (ismis~=0)*(1.5-ismis)*2*stimXY(1)/3/2;
+mis = (ismis~=0)*(1.5-ismis)*2*stimXY(1)/3/2; % left: 1, right: -1
 
 for y = 1:apXY(1)
     for x = 1:apXY(2)
