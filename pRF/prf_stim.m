@@ -45,6 +45,7 @@ end
 param.imageBlockNum = sort(randperm(param.bn + param.fixBlockN, param.bn)) ...
     + param.fixBlockDummy;
 param.tbn = param.bn + param.fixBlockN + param.fixBlockDummy + param.fixBlockOverrun;
+param.tn = param.tbn; % will be used in el_trial().
 stimCell = repmat({transBlock}, param.tbn, 1);
 stimCell(param.imageBlockNum) = imgCell;
 
@@ -58,17 +59,16 @@ param.thispixelperva = pixelperva.pi;
 
 facev = param.thispixelperva * param.facevva;
 param.faceratio = facev/size(param.stimuli(1).matrix,1);
-
-param.facebtw = round(param.thispixelperva * param.facebtw);
-
-param.dotva = round(param.thispixelperva * param.dva);
+param.facebtwpi = round(param.thispixelperva * param.facebtwva);
+param.dotpi = round(param.thispixelperva * param.dotva);
+param.warnoffpi = param.thispixelperva * param.warnoffva;
 
 %% Load letter images
 if isfield(param, 'imgLetterDir')
-    param.letterstimuli = ptb_loadstimdir(param.imgLetterDir, param.w);
-    transImg.matrix = ones(size(param.letterstimuli(1).matrix)) * .5; % a grey color
-    transImg.alpha = zeros(size(param.letterstimuli(1).alpha));
-    param.letterstimuli(27) = transImg;
+    param.stimuliletter = ptb_loadstimdir(param.imgLetterDir, param.w);
+    transImg.matrix = ones(size(param.stimuliletter(1).matrix)) * .5; % a grey color
+    transImg.alpha = zeros(size(param.stimuliletter(1).alpha));
+    param.stimuliletter(27) = transImg;
 end
 
 end

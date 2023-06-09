@@ -19,7 +19,7 @@ lettStim = repmat({''}, size(stimuli));
 answers = NaN(size(stimuli));
 
 % all letters
-if isfield(param, 'letterstimuli')
+if isfield(param, 'stimuliletter')
     letters = 1:26;
     lettStim(size(lettStim,1), :) = {27};
 else

@@ -57,15 +57,15 @@ stimPosition = [stimPosi(1)-stimXtrg/2+param.screenCenX ...
     stimPosi(1)+stimXtrg/2-1+param.screenCenX ...
     stimPosi(2)+stimYtrg/2-1+param.screenCenY];
 
-if isfield(param, 'letterstimuli')
+if isfield(param, 'stimuliletter')
     % get this letter image information
-    thisletter = param.letterstimuli(thestim);
+    thisletter = param.stimuliletter(thestim);
     [letterY, letterX, ~] = size(thisletter.matrix);
     letterRect = [0 0 letterX letterY];
 
     % calculate the ratio
     letterTrg = ptb_va2pixel(param.lettervva, param.distance, param.pipercm);
-    param.letterratio = letterTrg.pi/size(param.letterstimuli(1).matrix,1);
+    param.letterratio = letterTrg.pi/size(param.stimuliletter(1).matrix,1);
 
     % letter image position
     letterXtrg = letterX*param.letterratio;
@@ -85,7 +85,7 @@ switch param.do_attentaskstr
     case 'prf_nbackletter'
         Screen('DrawDots', w, [0,0], letterTrg.pi*1.15, [255;51;51], ...
             [param.screenCenX, param.screenCenY], 1); % red dot background
-        if isfield(param, 'letterstimuli')
+        if isfield(param, 'stimuliletter')
             % draw images 
             Screen('DrawTexture', w, thisletter.texture, letterRect, letterPosition);
         else
@@ -99,8 +99,21 @@ stimBeganAt = Screen('Flip', w);
 % only response and experimenter keys are allowed
 RestrictKeysForKbCheck([param.respKeys(:)', param.expKey]);
 
+% prepare for Eyelink
+EyeCalibration = NaN(4100, 2);
+iE = 0;
+
 % check response while the stimulus is on
 while checkTime < param.stimDuration - param.flipSlack
+
+    if param.isEyelink && Eyelink('NewFloatSampleAvailable') > 0
+        Eye = Eyelink('NewestFloatSample');
+        ex = Eye.gx(param.elopts.eye_used+1);
+        ey = Eye.gy(param.elopts.eye_used+1);
+        % ep = Eye.pa(Eye_used+1);
+        iE = iE + 1;
+        EyeCalibration(iE, :) = [ex ey];
+    end
 
     if ~param.isEmulated && ~isempty(param.respButton)
         theout = param.do_trigger('resp', param.respButton);
@@ -228,6 +241,8 @@ output.StimDuration = stimEndAt - stimBeganAt;
 output.StimCategory = stimuli.condition;
 output.StimName = stimuli.fn;
 output.StimXY = [stimXtrg, stimYtrg];
+output.StimBGXY = [stimXtrg*400/500, stimYtrg*400/500];
+output.StimCFXY = [stimXtrg*200/500*(1+0.5*contains(stimuli.fn, 'mis')) stimYtrg*259/500]; 
 output.StimPosiRela = stimPosi;
 output.StimPosition = stimPosition;
 output.apXY = param.canvasxy + output.StimXY;
@@ -241,4 +256,13 @@ output.isCorrect = ACC;
 output.isCorrectBlock = ACCBlock;
 output.RespTime = RT;
 
+% Eyelink output
+output.GazePosition = mean(EyeCalibration, 1, 'omitnan');
+output.GazePositionRela = output.GazePosition - [param.screenCenX, param.screenCenY];
+
+if any(output.GazePositionRela > param.warnoffpi)
+    warning('The gaze deviates from the center (X_off: %d, Y_off: %d).', ...
+        output.GazePositionRela(1), output.GazePositionRela(2));
 end
+
+end % function prf_dotrial()
