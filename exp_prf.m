@@ -1,10 +1,11 @@
-function exp_prf(subjCode, isEmulated, runCode)
-% exp_prf(subjCode, isEmulated, runCode)
+function exp_prf(subjCode, isEyelink, isEmulated, runCode)
+% exp_prf(subjCode, isEyelink, isEmulated, runCode)
 %
 % Run fMRI pRF for category stimuli. 
 %
 % Input:
 %    subjCode           <str> subject code
+%    isEyelink          <boo> 0: whether to use EyeLink.
 %    isEmulated         <boo> 1: emulated and will not wait for MRI
 %                       trigger (default). 0: will wait for MRI trigger.
 %    runCode            <int> the run code/number. It can be generated
@@ -35,6 +36,10 @@ elseif isnumeric(subjCode)  % the subjCode should be a string
     subjCode = num2str(subjCode);
 end
 
+if ~exist('isEyelink', 'var') || isempty(isEyelink)
+    isEyelink = 0;
+end
+
 % by default, emulated mode is on... (will not wait for fMRI trigger)
 if ~exist('isEmulated', 'var') || isempty(isEmulated)
     isEmulated = 1;
@@ -51,6 +56,7 @@ else
 end
 param.subjCode = subjCode;
 param.isDebug = isDebug;
+param.isEyelink = isEyelink;
 param.isEmulated = isEmulated;
 
 % run Code
@@ -72,10 +78,10 @@ param.nRepetition = 1;
 % pRF designs (to be used in prf_stimposi())
 param.prfcoorsys = 'carte'; 
 param.prfNxy = [3, 3]; % number of columns and rows
-param.facevva = 3.2;   % (vertical) visual angle 
-param.facebtw = 1.5;   % between faces 
-param.dva = 0.25;
-param.dcolor = [255; 255; 100; 128]; % transparent yellow
+param.facevva = 3.2;   % (vertical) visual angle 3.2
+param.facebtwva = 1.5;   % between faces 
+param.dotva = 0.2;
+param.dotcolor = [255; 255; 100; 128]; % transparent yellow
 param.circleva = 0.5:3:100;
 
 stimPosiIdx = prod(param.prfNxy) + strcmp(param.prfcoorsys, 'polar');
@@ -162,6 +168,10 @@ param.ratio = 0.5; % percentage of blocks have the .nback task
 % load letter images
 param.imgLetterDir = im_dir('custom/stimuli/letters/');
 param.lettervva = 0.4;
+
+%% Eyelink
+param.eldummymode = ~isEyelink;
+param.warnoffva = 1; % throw warining if average gaze deviate from this visual angle on X or Y
 
 %% Run the Experiment
 param.do_trigger = @fmri_vpixx; % mandatory to work with MRI

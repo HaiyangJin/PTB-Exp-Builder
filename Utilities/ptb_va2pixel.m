@@ -28,7 +28,7 @@ end
 if ~exist('pipercm', 'var') || isempty(pipercm)
     pipercm = 0; % the default (main) screen
 end
-if isint(pipercm)
+if isinteger(pipercm)
     % get the parameters for the screen
     ssize = ptb_screensize(pipercm);
     pipercm = ssize.pipercm;

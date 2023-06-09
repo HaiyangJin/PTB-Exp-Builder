@@ -37,7 +37,7 @@ if ~isfield(param, 'prfNxy')
 else
     prfNxy = param.prfNxy;
 end
-if ~isfield(param, 'canvasxy') && ~isfield(param, 'facebtw')
+if ~isfield(param, 'canvasxy') && ~isfield(param, 'facebtwpi')
     oneside = floor(min(param.screenRect(3:4)) * .7);
     param.canvasxy = [oneside, oneside];
 end
@@ -45,8 +45,8 @@ end
 % generate the positions of stimulus centers
 switch prfcoorsys
     case {'Cartesian', 'cartesian', 'carte', 'cart'}
-        if ~isfield(param, 'canvasxy') && isfield(param, 'facebtw')
-            param.canvasxy = (param.prfNxy-1) * param.facebtw; 
+        if ~isfield(param, 'canvasxy') && isfield(param, 'facebtwpi')
+            param.canvasxy = (param.prfNxy-1) * param.facebtwpi; 
         end
         [param.prfposi, param.prfposi2] = prfposi_carte(prfNxy, param.canvasxy);
 
@@ -57,8 +57,8 @@ switch prfcoorsys
         else
             phase = param.phase;
         end
-        if ~isfield(param, 'canvasxy') && isfield(param, 'facebtw')
-            param.canvasxy = param.prfNxy(1) * param.facebtw * 2;
+        if ~isfield(param, 'canvasxy') && isfield(param, 'facebtwpi')
+            param.canvasxy = param.prfNxy(1) * param.facebtwpi * 2;
         end
         [param.prfposi, param.prfposi2] = prfposi_polar(prfNxy, param.canvasxy, phase);
 
