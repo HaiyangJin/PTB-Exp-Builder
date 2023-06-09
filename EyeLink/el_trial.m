@@ -1,4 +1,8 @@
-function [trialBeginsAt, param] = el_trial(ttn, param)
+function [trialBeginsAt, param] = el_trial(ttn, param, driftcor)
+
+if ~exist('dirftcor', 'var') || isempty(driftcor)
+    drfitcor = true;
+end
 
 % (here)
 % topOvalX = 1:10;
@@ -91,7 +95,7 @@ Eyelink('Command', 'V_RT MESSAGE Trial_%d Response_%d', ttn, ttn);
 % Do a drift correction at the beginning of each trial
 % Performing drift correction (checking) is optional for
 % EyeLink 1000 eye trackers.
-EyelinkDoDriftCorrection(param.el);
+if drfitcor; EyelinkDoDriftCorrection(param.el); end
 
 % STEP 8.3
 % start recording eye position (preceded by a short pause so that
@@ -99,7 +103,7 @@ EyelinkDoDriftCorrection(param.el);
 % The paramerters for the 'StartRecording' call controls the
 % file_samples, file_events, link_samples, link_events availability
 Eyelink('Command', 'set_idle_mode');
-WaitSecs(0.05);
+% WaitSecs(0.05);
 
 Eyelink('StartRecording');
 % trail begins from here

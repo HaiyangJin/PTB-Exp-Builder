@@ -7,7 +7,7 @@ function el_end(param)
 % End of Experiment; close the file first
 % close graphics window, close data file and shut down tracker
 Eyelink('Command', 'set_idle_mode');
-WaitSecs(0.5);
+% WaitSecs(0.05);
 Eyelink('CloseFile');
 
 % download data file
@@ -18,9 +18,14 @@ try
     if status > 0
         fprintf('ReceiveFile status %d\n', status);
     end
-    if 2==exist(edfFile, 'file')
+    if exist(edfFile, 'file')==2
         fprintf('Data file ''%s'' can be found in ''%s''\n', edfFile, pwd);
     end
+
+    % move the edf file to a subfodler called "edf" in param.output
+    ptb_mkdir(fullfile(param.outpath, 'edf'));
+    movefile(edfFile, fullfile(param.outpath, 'edf', edfFile));
+    
 catch
     fprintf('Problem receiving data file ''%s''\n', edfFile);
 end

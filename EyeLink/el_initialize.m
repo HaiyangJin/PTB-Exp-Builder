@@ -48,8 +48,9 @@ fprintf('Running experiment on a ''%s'' tracker.\n', elopts.vs);
 %% STEP 5
 % Name Eyelinke file and open it to record data 
 elopts.edfFile = [param.expAbbv, param.subjCode, '.edf']; 
-fprintf(['The output EDF file (%s) will be saved in the current ' ...
-    'working directory.\n', elopts.edfFile]);
+assert(strlength(elopts.edfFile)<=12, ['The string length of the edf ' ...
+    'filename cannot be longer than 8 (now: %d).'], ...
+    strlength(elopts.edfFile)-4);
 
 i = Eyelink('Openfile', elopts.edfFile);
 if i~=0
@@ -99,7 +100,7 @@ end
 % make sure we're still connected.
 if Eyelink('IsConnected')~=1 && param.eldummymode == 0
     fprintf('not connected, clean up\n');
-    Eyelink( 'Shutdown');
+    Eyelink('Shutdown');
     Screen('CloseAll');
     return;
 end

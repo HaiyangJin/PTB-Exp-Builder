@@ -12,8 +12,12 @@ function param = el_transferimg(param)
 %
 % Created by Haiyang Jin (2023-May-5)
 
-if ~isfield(param, 'transferDir') || isempty(param.transferDir)
-    param.transferDir = param.imgDir;
+if ~isfield(param, 'transferDir') || isempty(param.transferDir) 
+    if ~isfield(param, 'imgDir') || isempty(param.imgDir)
+        param.transferDir = param.imgDir;
+    else
+        return
+    end
 elseif ischar(param.transferDir)
     % use relative path
     param.transferDir = im_dir(param.transferDir, [], [], 1); 

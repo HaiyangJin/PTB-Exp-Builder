@@ -43,6 +43,7 @@ end
 
 if ~exist('outPath', 'var') || isempty(outPath)
     outPath = fullfile(pwd, '0_BehaData');
+    param.outpath = outPath;
 end
 ptb_mkdir(outPath);
 
