@@ -30,9 +30,6 @@ if isfield(param, 'do_stim') && ~isempty(param.do_stim)
     param = param.do_stim(param);
 end
 % apply additional function to ed if needed
-if isfield(param, 'do_ed') && ~isempty(param.do_ed)
-    param = param.do_ed(param);
-end
 if isfield(param, 'do_attentask') && ~isempty(param.do_attentask)
     % generate stimuli for extra task (attention)
     param = param.do_attentask(param);
