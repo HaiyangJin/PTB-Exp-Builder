@@ -1,17 +1,18 @@
 function [ApFrm, Objects] = prf_aps(dtTable, varargin)
 % [ApFrm, Objects] = prf_aps(dtTable, varargin)
 %
-% Make aperture file. 
+% Make aperture file.
 %
 % Inputs:
 %    dtTable         <table> the data table saved from exp_prf().
 %                 OR <struct> a struct with the field .dtTable.
 %                 OR <str> filename of the data file saved by exp_prf().
-% 
+%
 % Varargin:
-%    .asva           <boo> whether save the output with the unit of visual 
-%                     angle. Default to 1 [if the relevant information 
-%                     {.distance, .cmperpi} is avaiable (and positive)].
+%    .unit           <str> the unit of the aperture. Default to 'standard',
+%                     i.e., 100 * 100 [if the relevant information
+%                     {.pixelperva} is avaiable (and positive)]. Other
+%                     option is 'va' (visual angle) and 'pixel'.
 %                     Alternatively, default to 0 (i.e., pixels).
 %    .stimshape      <str> the shape of the stimulus. Default to
 %                     'rectangle', (or 'oval').
@@ -20,16 +21,16 @@ function [ApFrm, Objects] = prf_aps(dtTable, varargin)
 %                     actual experiment. For instance, when {.framepersec}
 %                     is 2, every 0.5 second in the actual experiment was
 %                     saved as one frame/one layer along the third
-%                     dimension in {ApFrm}. It is different from 
+%                     dimension in {ApFrm}. It is different from
 %                     {Framerate} in samsrf_apmovie(), where {Framerate}
 %                     refers to the number of frames/layers along the third
 %                     dimension to be displayed in one second in the video
-%                     generated.                     
+%                     generated.
 %    .condorder      <cell str> the order of the conditions saved in
 %                     [Objects]. Default to the order starting with
 %                     'fixation' and then in alphabet order.
-%    .stimsize       <vec> the size of the stimlus in pixels for each trial. 
-%                     Default to dtTable.StimXY(x, :), i.e., the stimulus 
+%    .stimsize       <vec> the size of the stimlus in pixels for each trial.
+%                     Default to dtTable.StimXY(x, :), i.e., the stimulus
 %                     size in pixels.
 %                OR  <str> the field name in dtTable.
 %    .pixelperva    <num> number of pixels per visual angle. Default to 0.
@@ -37,11 +38,11 @@ function [ApFrm, Objects] = prf_aps(dtTable, varargin)
 %                     a struct), it will be used as the default.
 %    .corrtime       <num> time to be applied to correct the precision
 %                     issue for identifying the stimulus, . Default to 0.1.
-%    .apfn           <str> the file name of the output aperture. 
+%    .apfn           <str> the file name of the output aperture.
 %
 % Outputs:
 %    ApFrm           <boo mat> the aperture matrix, which can be visualized
-%                     via samsrf_apmovie() or ViewAperture() in SamSrf toolbox. 
+%                     via samsrf_apmovie() or ViewAperture() in SamSrf toolbox.
 %    Objects         <int vec> condition numbers.
 %
 % Created by Haiyang Jin (2023-Feb-26)
@@ -51,7 +52,7 @@ function [ApFrm, Objects] = prf_aps(dtTable, varargin)
 
 %% Deal with inputs
 defaultOpts = struct( ...
-    'asva', 0, ...
+    'unit', 'standard', ...
     'stimshape', 'rectangle', ...
     'framepersec', 1, ...
     'condorder', {''}, ...
@@ -124,16 +125,36 @@ end
 dtTable.StimPosiRela = dtTable.StimPosiRela .* [1, -1];
 
 % calculate the visual angle based on pixel
-if (~isempty(opts.pixelperva) && opts.pixelperva>0) && opts.asva
+if (~isempty(opts.pixelperva) && opts.pixelperva>0)
 
-    fprintf('\nSave the aperture in the visual angle unit...\n');
+    switch opts.unit
 
-    % aperture X and Y in visual angle
-    apXY = round(apXY/opts.pixelperva * 100)+20;
-    % convert to visual angle
-    dtTable.StimPosiRela = round(dtTable.StimPosiRela/opts.pixelperva * 100);
-    stimSize = round(stimSize /opts.pixelperva * 100);
-    
+        case {'va', 'visual angle', 'visual'}
+
+            fprintf('\nSave the aperture in the visual angle unit...\n');
+
+            apXY = round(apXY/opts.pixelperva * 10);
+            % convert to visual angle
+            dtTable.StimPosiRela = round(dtTable.StimPosiRela/opts.pixelperva * 100);
+            stimSize = round(stimSize /opts.pixelperva * 100);
+
+        case {'standard'}
+
+            % save as standard unit
+
+            fprintf('\nSave the aperture in the standard unit (100*100)...\n');
+            % aperture X and Y in visual angle
+            apXY_va = ceil(apXY/opts.pixelperva);
+            fprintf('The maximal eccentricy is %d.\n', apXY_va/2);
+
+            to_standard_ratio = 100 ./ apXY_va;
+            % convert to standard unit
+            apXY = [100, 100];
+            dtTable.StimPosiRela = round(dtTable.StimPosiRela .* to_standard_ratio);
+            stimSize = round(stimSize .* to_standard_ratio);
+
+    end
+
 end
 
 % number of frames in final aperture
@@ -170,7 +191,7 @@ while exist(apfn, 'file')
 end
 
 % save the file locally
-save(apfn, 'ApFrm', 'Objects', '-v7.3');
+save(apfn, 'ApFrm', 'Objects');
 
 end % function prf_aps()
 
@@ -208,16 +229,16 @@ switch shape
                     ap(y,x) = 1;
                 end
             end
-        end  
+        end
 
     case 'cf'
-        switch stimCond{1} 
+        switch stimCond{1}
             case 'aligned'
                 ap = ap_cf(stimPosiRela, stimXY, apXY, 0);
-        case 'misaligned_l'
-            ap = ap_cf(stimPosiRela, stimXY, apXY, 1);
-        case 'misaligned_r'
-            ap = ap_cf(stimPosiRela, stimXY, apXY, 2);
+            case 'misaligned_l'
+                ap = ap_cf(stimPosiRela, stimXY, apXY, 1);
+            case 'misaligned_r'
+                ap = ap_cf(stimPosiRela, stimXY, apXY, 2);
         end
 
 end % switch shape
