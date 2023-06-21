@@ -14,6 +14,11 @@ function [ApFrm, Objects] = prf_aps(dtTable, varargin)
 %                     {.pixelperva} is avaiable (and positive)]. Other
 %                     option is 'va' (visual angle) and 'pixel'.
 %                     Alternatively, default to 0 (i.e., pixels).
+%    .binary         <bool> whether to use binary image. Default to false,
+%                     where the aperture was created with the orignal pixel
+%                     size and re-size to the target size. If true,
+%                     aperture is created with the target size directly
+%                     (then it is a binary aperture).
 %    .stimshape      <str> the shape of the stimulus. Default to
 %                     'rectangle', (or 'oval').
 %    .framepersec    <int> number of frames per second, default to 1.
@@ -53,6 +58,7 @@ function [ApFrm, Objects] = prf_aps(dtTable, varargin)
 %% Deal with inputs
 defaultOpts = struct( ...
     'unit', 'standard', ...
+    'binary', false, ...
     'stimshape', 'rectangle', ...
     'framepersec', 1, ...
     'condorder', {''}, ...
@@ -126,23 +132,25 @@ dtTable.StimPosiRela = dtTable.StimPosiRela .* [1, -1];
 
 Scaling_factor = NaN;
 % calculate the visual angle based on pixel
-if (~isempty(opts.pixelperva) && opts.pixelperva>0)
+if opts.binary && (~isempty(opts.pixelperva) && opts.pixelperva>0)
+
+    fprintf('\nMaking binary aperture...\n');
 
     switch opts.unit
 
         case {'va', 'visual angle', 'visual'}
 
-            fprintf('\nSave the aperture in the visual angle unit...\n');
+            fprintf('Making aperture in the unit of visual angle...\n');
 
-            apXY = round(apXY/opts.pixelperva * 10);
+            apXY = apXY/opts.pixelperva * 10;
             % convert to visual angle
-            dtTable.StimPosiRela = round(dtTable.StimPosiRela/opts.pixelperva * 100);
-            stimSize = round(stimSize /opts.pixelperva * 100);
+            dtTable.StimPosiRela = dtTable.StimPosiRela/opts.pixelperva * 100;
+            stimSize = stimSize /opts.pixelperva * 100;
 
         case {'standard'}
 
             % save as standard unit
-            fprintf('\nSave the aperture in the standard unit (100*100)...\n');
+            fprintf('\nMaking aperture in the standard unit (100*100)...\n');
             % aperture X and Y in visual angle
             apXY_va = apXY/opts.pixelperva;
             Scaling_factor = max(apXY_va)/2;
@@ -151,12 +159,11 @@ if (~isempty(opts.pixelperva) && opts.pixelperva>0)
             apXY = [100, 100];
             to_standard_ratio = apXY / apXY_va;
             % convert to standard unit
-            dtTable.StimPosiRela = round(dtTable.StimPosiRela / opts.pixelperva * to_standard_ratio);
-            stimSize = round(stimSize / opts.pixelperva * to_standard_ratio);
+            dtTable.StimPosiRela = dtTable.StimPosiRela / opts.pixelperva * to_standard_ratio;
+            stimSize = stimSize / opts.pixelperva * to_standard_ratio;
 
-    end
-
-end
+    end % switch opts.unit
+end % binary && (~isempty(opts.pixelperva) && opts.pixelperva>0)
 
 % number of frames in final aperture
 frames = 0: 1/opts.framepersec: secTotal;
@@ -170,6 +177,35 @@ objInt = cellfun(@(x) find(strcmp(x, condOrder))-1, objStr);
 apFrm = arrayfun(@(x) mkap(dtTable.StimCategory(x, :), dtTable.StimPosiRela(x, :), ...
     stimSize(x, :), apXY, opts.stimshape), therows, 'uni', false);
 % to update StimXY
+
+if ~opts.binary && (~isempty(opts.pixelperva) && opts.pixelperva>0)
+
+    switch opts.unit
+
+        case {'va', 'visual angle', 'visual'}
+
+            fprintf('\nMaking non-binary aperture...\n');
+            fprintf('\nMaking aperture in the unit of visual angle...\n');
+
+            trgsize = max(apXY/opts.pixelperva * 10);
+            apFrm = cellfun(@(x) imresize(x, [trgsize, trgsize]), apFrm, 'uni', false);
+            apFrm = cellfun(@(x) max(x,0), apFrm, 'uni', false); % convert all negative values to 0
+
+        case {'standard'}
+
+            % save as standard unit
+            fprintf('\nMaking non-binary aperture...\n');
+            fprintf('\nMaking aperture in the standard unit (100*100)...\n');
+            % aperture X and Y in visual angle
+            apXY_va = max(apXY/opts.pixelperva);
+            Scaling_factor = apXY_va/2;
+            fprintf('The maximal eccentricy is %d.\n', apXY_va/2);
+
+            apFrm = cellfun(@(x) imresize(x, [100, 100]), apFrm, 'uni', false);
+            apFrm = cellfun(@(x) max(x,0), apFrm, 'uni', false); % convert all negative values to 0
+    end
+    
+end
 
 % save the final output
 ApFrm = cat(3, apFrm{:});
