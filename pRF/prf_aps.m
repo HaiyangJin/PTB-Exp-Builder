@@ -124,6 +124,7 @@ end
 % reverse the coordinates of Y
 dtTable.StimPosiRela = dtTable.StimPosiRela .* [1, -1];
 
+Scaling_factor = NaN;
 % calculate the visual angle based on pixel
 if (~isempty(opts.pixelperva) && opts.pixelperva>0)
 
@@ -141,17 +142,17 @@ if (~isempty(opts.pixelperva) && opts.pixelperva>0)
         case {'standard'}
 
             % save as standard unit
-
             fprintf('\nSave the aperture in the standard unit (100*100)...\n');
             % aperture X and Y in visual angle
-            apXY_va = ceil(apXY/opts.pixelperva);
-            fprintf('The maximal eccentricy is %d.\n', apXY_va/2);
+            apXY_va = apXY/opts.pixelperva;
+            Scaling_factor = max(apXY_va)/2;
+            fprintf('The maximal eccentricy is %d.\n', max(apXY_va)/2);
 
-            to_standard_ratio = 100 ./ apXY_va;
-            % convert to standard unit
             apXY = [100, 100];
-            dtTable.StimPosiRela = round(dtTable.StimPosiRela .* to_standard_ratio);
-            stimSize = round(stimSize .* to_standard_ratio);
+            to_standard_ratio = apXY / apXY_va;
+            % convert to standard unit
+            dtTable.StimPosiRela = round(dtTable.StimPosiRela / opts.pixelperva * to_standard_ratio);
+            stimSize = round(stimSize / opts.pixelperva * to_standard_ratio);
 
     end
 
@@ -191,7 +192,7 @@ while exist(apfn, 'file')
 end
 
 % save the file locally
-save(apfn, 'ApFrm', 'Objects');
+save(apfn, 'ApFrm', 'Objects', 'Scaling_factor');
 
 end % function prf_aps()
 
