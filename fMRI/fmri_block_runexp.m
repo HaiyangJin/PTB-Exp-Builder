@@ -190,10 +190,12 @@ end
 % save the output
 param.expEndTime = GetSecs;
 param.expDuration = param.expEndTime - param.expStartTime;
-[acc, nResp] = ptb_output(param, sprintf('Run%d', param.runCode), param.outpath);
+[acc, nResp, param] = ptb_output(param, ...
+    sprintf('run-%d_duration-%d', param.runCode, round(param.runDuration)), ...
+    param.outpath);
 
 % save par files used in FreeSurfer
-fmri_parevent(param, 'outpath', param.outpath);
+fmri_parevent(param, 'outfn', param.outfn, 'outpath', param.outpath);
 
 %% Finishing...
 % colse vpixx

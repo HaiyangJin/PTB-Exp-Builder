@@ -181,7 +181,7 @@ end
 
 % display feedback if necessary
 if param.isFeedback
-    ptb_feedback(ACC, param.w);
+    ptb_feedback(ACC, param);
 end
 
 %% Clean up

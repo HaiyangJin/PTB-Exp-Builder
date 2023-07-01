@@ -1,4 +1,4 @@
-function exp_cat(subjCode, isEyelink)
+function demo_cat(subjCode, isEyelink)
 % Example experiment main body.
 %
 % An experiment for categorization.

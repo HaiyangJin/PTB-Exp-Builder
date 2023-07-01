@@ -1,5 +1,5 @@
-function exp_fmri_block(subjCode, isEmulated, runCode)
-% exp_fmri_block(subjCode, isEmulated, runCode)
+function demo_fmri_block(subjCode, isEmulated, runCode)
+% demo_fmri_block(subjCode, isEmulated, runCode)
 %
 % Run fMRI localizer (block design).
 %
@@ -24,8 +24,8 @@ param.dispPress = 1;
 
 %% Experiment inforamtion
 param.expCode = '999';
-param.expAbbv = 'fMRI_block';
-param.outpath= 'Output';
+param.expAbbv = 'fMRIblock';
+param.outpath= 'output';
 
 %% Process the in-arguments
 % subject code
@@ -55,9 +55,10 @@ param.isEmulated = isEmulated;
 
 % run Code
 if ~exist('runCode', 'var') || isempty(runCode)
-    runCode = fmri_runcode(param);
+    runCode = fmri_runcode(param, 35);
 end
 param.runCode = runCode;
+fprintf('\nRun code: %d\n\n', runCode);
 
 %% Stimuli
 % load the stimulus

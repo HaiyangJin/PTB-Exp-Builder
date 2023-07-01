@@ -15,6 +15,7 @@ ListenChar(2);
 % Initilize the screen
 param = ptb_initialize(param);
 % initialize EL if needed
+if ~isfield(param, 'isEyelink'); param.isEyelink=0; end
 if param.isEyelink; param = el_initialize(param); end
 
 % Load stimuli

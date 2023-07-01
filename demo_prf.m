@@ -1,5 +1,5 @@
-function exp_prf(subjCode, isEyelink, isEmulated, runCode)
-% exp_prf(subjCode, isEyelink, isEmulated, runCode)
+function demo_prf(subjCode, isEyelink, isEmulated, runCode)
+% demo_prf(subjCode, isEyelink, isEmulated, runCode)
 %
 % Run fMRI pRF for category stimuli. 
 %
@@ -64,6 +64,7 @@ if ~exist('runCode', 'var') || isempty(runCode)
     runCode = fmri_runcode(param, 48);
 end
 param.runCode = runCode;
+fprintf('\nRun code: %d\n\n', runCode);
 
 %% Stimuli
 % load the stimulus
