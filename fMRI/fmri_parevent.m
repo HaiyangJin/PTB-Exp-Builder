@@ -18,6 +18,9 @@ function [outTable, eventTable] = fmri_parevent(input, varargin)
 %                       trial are treated as stimuli (boxcar); 0: stimuli
 %                       and blank in the same trial are estimated
 %                       separately. [blank will be treated as fixations]
+%     outfn            <str> the output file name. Default to '', and it
+%                       will use the default name with `extrafan`. If not
+%                       empty, `extrafn` will be ignored.
 %     extrafn          <str> extra strings to be added at the end of
 %                       the par filename; default is ''.
 %     type             <int> 1, 2, 3 (default). 1: only output the par
@@ -80,7 +83,8 @@ blockNames = dtTable{:, 'StimCategory'};
 defaultOpts = struct(...
     'condorder', [], ...
     'boxcar', 1, ...
-    'extrafn', [], ...
+    'outfn', '', ...
+    'extrafn', '', ...
     'type', 3, ...
     'first0', 0, ...
     'toround', 0, ...
@@ -105,7 +109,7 @@ end
 
 % the default strings to be added at the end of the par file name
 extraFn = opts.extrafn;
-if ~isempty(extraFn) && ~startsWith(extraFn, '_extra-')
+if ~isempty(extraFn) && ~contains(extraFn, '-')
     extraFn = ['_extra-' extraFn];
 end
 
@@ -178,8 +182,12 @@ if ~iscell(subjCode) && isint(subjCode); subjCode = {num2str(subjCode)};end
 runCode = unique(dtTable.RunCode);
 if ~iscell(runCode) && isint(runCode); runCode = {num2str(runCode)};end
 expAbbv = unique(dtTable.ExpAbbv);
-outFn = sprintf('sub-%s_task-%s_run-%s%s', ...
-    subjCode{1}, expAbbv{1}, runCode{1}, extraFn);
+if ~isempty(opts.outfn)
+    [~, outFn] = fileparts(opts.outfn);
+else
+    outFn = sprintf('sub-%s_task-%s_run-%s%s', ...
+        subjCode{1}, expAbbv{1}, runCode{1}, extraFn);
+end
 
 % Save par files used in FreeSurfer
 if ismember('fs', type)

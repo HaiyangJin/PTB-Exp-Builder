@@ -47,10 +47,8 @@ fprintf('Running experiment on a ''%s'' tracker.\n', elopts.vs);
 
 %% STEP 5
 % Name Eyelinke file and open it to record data 
-elopts.edfFile = [param.expAbbv, param.subjCode, '.edf']; 
-assert(strlength(elopts.edfFile)<=12, ['The string length of the edf ' ...
-    'filename cannot be longer than 8 (now: %d).'], ...
-    strlength(elopts.edfFile)-4);
+tmpedffile = [param.expAbbv, param.subjCode];
+elopts.edfFile = [tmpedffile(1:min(8,length(tmpedffile))) '.edf']; 
 
 i = Eyelink('Openfile', elopts.edfFile);
 if i~=0

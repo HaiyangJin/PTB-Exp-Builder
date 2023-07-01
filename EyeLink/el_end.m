@@ -2,6 +2,9 @@ function el_end(param)
 % el_end(param)
 %
 % This function finish eyelink.
+% Inputs:
+%     param         <struc> experiment parameters.
+%     fnExtra       <str> unique strings at the end of the file name.
 
 % STEP 9
 % End of Experiment; close the file first
@@ -23,8 +26,15 @@ try
     end
 
     % move the edf file to a subfodler called "edf" in param.output
+    if isfield(param, 'outfn') && ~isempty(param.outfn)
+        outFn = param.outfn;
+    else
+        outFn = sprintf('sub-%s_task-%s_timestamp-%s', ...
+            param.subjCode, param.expAbbv, ...
+            char(datetime('now', 'Format', 'yyyyMMddHHmm')));
+    end
     ptb_mkdir(fullfile(param.outpath, 'edf'));
-    movefile(edfFile, fullfile(param.outpath, 'edf', edfFile));
+    movefile(edfFile, fullfile(param.outpath, 'edf', [outFn '.edf']));
     
 catch
     fprintf('Problem receiving data file ''%s''\n', edfFile);

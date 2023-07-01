@@ -1,5 +1,5 @@
-function runCode = fmri_runcode(param, extrawc, outPath)
-% runCode = frmi_runcode(param, extrawc, outPath)
+function runCode = fmri_runcode(param, duration, outPath)
+% runCode = frmi_runcode(param, fnExtra, outPath)
 %
 % This function generates the run code based on how many similar output
 % files are in the Matlab Data/ folder.
@@ -7,7 +7,7 @@ function runCode = fmri_runcode(param, extrawc, outPath)
 % Inputs:
 %     param         <struct> the experiment parameters. [only use .SubjCode,
 %                    .expCode, .expAbbv]
-%     extrawc       <str> additional wildcard to identify run information.
+%     duration      <str> expected duration in seconds.
 %     outPath       <str> the path to save the output files.
 %
 % Output:
@@ -15,8 +15,8 @@ function runCode = fmri_runcode(param, extrawc, outPath)
 % 
 % Created by Haiyang Jin (27-Feb-2020)
 
-if ~exist('extrawc', 'var') || isempty(extrawc)
-    extrawc = '';
+if isnumeric(duration)
+    duration = num2str(duration);
 end
 
 if ~exist('outPath', 'var') || isempty(outPath)
@@ -25,10 +25,11 @@ if ~exist('outPath', 'var') || isempty(outPath)
 end
 
 % outputfilename
-outputFn = sprintf('%s_%s_%s_Run*%s', param.subjCode, param.expCode, param.expAbbv, extrawc);
+outFn = sprintf('sub-%s_task-%s_run-*_duration-%s', param.subjCode, param.expAbbv, duration);
+if ~endsWith(outFn, '*'); outFn = [outFn, '*']; end
 
 % dir the similar output files
-matDir = dir(fullfile(outPath, 'MatBackup', outputFn));
+matDir = dir(fullfile(outPath, 'MatBackup', outFn));
 
 % number of output files with similar names
 nFiles = size(matDir, 1);

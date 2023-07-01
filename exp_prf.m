@@ -61,7 +61,7 @@ param.isEmulated = isEmulated;
 
 % run Code
 if ~exist('runCode', 'var') || isempty(runCode)
-    runCode = fmri_runcode(param);
+    runCode = fmri_runcode(param, 48);
 end
 param.runCode = runCode;
 

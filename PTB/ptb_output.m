@@ -1,5 +1,5 @@
-function [acc, nResp] = ptb_output(param, fnExtra, outPath)
-% [acc, nResp] = ptb_output(param, fnExtra, outPath)
+function [acc, nResp, param] = ptb_output(param, fnExtra, outPath)
+% [acc, nResp, param] = ptb_output(param, fnExtra, outPath)
 %
 % Save the experiment parameters, stimuli structure, and save the output as
 % *.xlsx and *.csv.
@@ -19,6 +19,7 @@ function [acc, nResp] = ptb_output(param, fnExtra, outPath)
 if isempty(param.dtTable)
     acc = 0;
     nResp = 0;
+    param.outfn = '';
     return;
 else
     acc = NaN;
@@ -38,7 +39,7 @@ if param.isDebug
 end
 
 if ~exist('fnExtra', 'var') || isempty(fnExtra)
-    fnExtra = char(datetime('now', 'Format', 'yyyyMMddHHmm'));
+    fnExtra = ['timestamp-' char(datetime('now', 'Format', 'yyyyMMddHHmm'))];
 end
 
 if ~exist('outPath', 'var') || isempty(outPath)
@@ -53,7 +54,8 @@ matPath = fullfile(outPath, 'MatBackup');
 ptb_mkdir(csvPath);
 ptb_mkdir(matPath);
 
-outFn = [param.subjCode '_' param.expCode '_' param.expAbbv '_' fnExtra];
+outFn = sprintf('sub-%s_task-%s_%s', param.subjCode, lower(param.expAbbv), fnExtra);
+param.outfn = outFn;
 theCSVFile = fullfile(csvPath, [outFn '.csv']);
 theMatlabFile = fullfile(matPath, [outFn '.mat']);
 

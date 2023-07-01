@@ -219,12 +219,12 @@ end
 if ~strcmp(ext, '.mat')
     ext = '.mat';
 end
-apfn = fullfile(filepath, [name, '_', opts.stimshape, ext]);
+apfn = fullfile(filepath, [name, '_shape-', opts.stimshape, ext]);
 % make sure not overwrite files
 apfn0 = 0;
 while exist(apfn, 'file')
     apfn0 = apfn0 + 1;
-    apfn = fullfile(filepath, [name '_' opts.stimshape '_' num2str(apfn0), ext]);
+    apfn = fullfile(filepath, [name '_shape-' opts.stimshape '_' num2str(apfn0), ext]);
 end
 
 % save the file locally
