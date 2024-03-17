@@ -4,14 +4,14 @@ function [output, quitNow] = cf_trial(ttn, param)
 % do the trial for composite face task.
 %
 % Inputs:
-%     ttn         <double> this trial number
-%     param       <structure> parameters about this experiment
+%     ttn         <num> this trial number
+%     param       <struct> parameters about this experiment
 %
 % Outputs:
-%     output      <structure> the output of this trial
-%     quitNow     <logical> quit after this trial
+%     output      <struct> the output of this trial
+%     quitNow     <boo> quit after this trial
 %
-% Created by Haiyang Jin (10-Feb-2020)
+% Created by Haiyang Jin (2020-Feb-10)
 
 % gather information from param
 stimuli = param.stimuli;
@@ -22,6 +22,12 @@ flipSlack = param.flipSlack;
 forecolor = param.forecolor;
 respKeys = param.respKeys;
 alpha = param.alpha;
+
+isUpright = 1;
+if isfield(ed, 'isUpright')
+    isUpright = ed.isUpright;
+end
+orieAngle = (1-isUpright)*180;
 
 % preparation for KbQuene
 KbQueueCreate([], param.queueKeyList);
@@ -39,6 +45,15 @@ faceStudyBott = stimuli(thisFaceSet(2),ed.faceGroup);
 faceTestTop = stimuli(thisFaceSet(3),ed.faceGroup);
 faceTestBott = stimuli(thisFaceSet(4),ed.faceGroup);
 
+% top and bottom positions
+if isUpright
+    faceTopPosition = param.faceTopPosition;
+    faceBottomPosition = param.faceBottomPosition;
+else
+    faceTopPosition = param.faceBottomPosition;
+    faceBottomPosition = param.faceTopPosition;
+end
+
 % Random offset for test faces
 offsets = -param.nOffset : param.nOffset;
 xOffsetRand = offsets(randperm(numel(offsets),1))*5; %
@@ -46,21 +61,23 @@ yOffsetRand = offsets(randperm(numel(offsets),1))*5; %
 
 alignTestOffset = param.faceX * param.misalignPerc * (1-ed.isTestAligned);
 
-% study faces
+% study faces offset
 xStudyTopOffset = alignTestOffset * (1-ed.isTopCued) * param.isStudyOffset;
 xStudyBottomOffset = alignTestOffset * ed.isTopCued * param.isStudyOffset;
 yStudyTopOffset = 0;
 yStudyBottomOffset = 0;
 
-% test faces
+% test faces offset
 xTestTopOffset = xOffsetRand + alignTestOffset * (1-ed.isTopCued);
 xTestBottomOffset = xOffsetRand + alignTestOffset * ed.isTopCued;
 yTestTopOffset = yOffsetRand;
 yTestBottomOffset = yOffsetRand;
 
-% test cues
-yTestCue = yOffsetRand + (-2*ed.isTopCued+1) * (param.cuePosition+param.faceY/2);
-yTestCueLR = yTestCue + (2*ed.isTopCued-1) * param.cueSideLength/2;
+% test cues & offset
+yTestCue = yOffsetRand + (-2*ed.isTopCued+1) * (2*isUpright-1) * ...
+    (param.cuePosition+param.faceY/2);
+yTestCueLR = yTestCue + (2*ed.isTopCued-1) * (2*isUpright-1) * ...
+    param.cueSideLength/2;
 
 % trial began time
 trialBeginsAt = GetSecs;
@@ -78,15 +95,15 @@ studyBeginWhen = blankBeganAt + param.blankDuration - flipSlack ;
 
 %%% Study Face %%%
 % Preparation for study face
-topStudyPosition = OffsetRect(param.faceTopPosition, ...
+topStudyPosition = OffsetRect(faceTopPosition, ...
     xStudyTopOffset,yStudyTopOffset);
-bottomStudyPosition = OffsetRect(param.faceBottomPosition,...
+bottomStudyPosition = OffsetRect(faceBottomPosition,...
     xStudyBottomOffset,yStudyBottomOffset);
 
 Screen('DrawTexture', w, faceStudyTop.texture, param.faceTopRect,...
-    topStudyPosition, [], [], alpha);
+    topStudyPosition, orieAngle, [], alpha);
 Screen('DrawTexture', w, faceStudyBott.texture, param.faceBottomRect,...
-    bottomStudyPosition, [], [], alpha);
+    bottomStudyPosition, orieAngle, [], alpha);
 Screen('FillRect', w, forecolor, param.lineRect);
 
 % draw study face
@@ -107,14 +124,14 @@ maskBeganAt = Screen('Flip', w, maskBeginWhen);
 testBeginWhen = maskBeganAt + param.maskDuration - flipSlack;
 
 %%% test face %%%
-topTestPosition = OffsetRect(param.faceTopPosition, xTestTopOffset, yTestTopOffset);
-bottomTestPosition = OffsetRect(param.faceBottomPosition, ...
+topTestPosition = OffsetRect(faceTopPosition, xTestTopOffset, yTestTopOffset);
+bottomTestPosition = OffsetRect(faceBottomPosition, ...
     xTestBottomOffset, yTestBottomOffset);
 
 Screen('DrawTexture', w, faceTestTop.texture, param.faceTopRect,...
-    topTestPosition, [], [], alpha);
+    topTestPosition, orieAngle, [], alpha);
 Screen('DrawTexture', w, faceTestBott.texture, param.faceBottomRect,...
-    bottomTestPosition, [], [], alpha);
+    bottomTestPosition, orieAngle, [], alpha);
 Screen('FillRect', w, forecolor, OffsetRect(param.lineRect, xOffsetRand, yOffsetRand));
 
 if param.showCue
@@ -188,6 +205,7 @@ end
 RestrictKeysForKbCheck([]);
 
 output.Trial = ttn;
+output.Orientation = isUpright;
 output.Cue = ed.isTopCued;
 output.Congruency = ed.isCongruent;
 output.Alignment = ed.isTestAligned;

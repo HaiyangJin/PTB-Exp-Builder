@@ -81,6 +81,7 @@ param.expAbbv = 'CF';
 % experiment design (ed)
 clear param.conditionsArray;
 param.conditionsArray = {...
+    'isUpright', 1; ... % 1 = upright; 0 = inverted
     'isTestAligned', 0:1; ... % 0 = misaligned; 1 = aligned
     'isTopCued', isTopCued;... %  0 = bottom is cued; 1 = top is cued
     'isCongruent', 0:1;...  % 0 = incongruent; 1 = congruent
