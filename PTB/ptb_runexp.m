@@ -105,8 +105,7 @@ acc = ptb_output(param);
 
 %% Finishing screen
 if (~quitNow)
-    doneText = sprintf('The current session is finished!\n \nPlease contact the experimenter.');
-    ptb_disptext(param, doneText, param.instructKey);
+    ptb_disptext(param, param.expEnd, param.instructKey);
 end
 
 if isfield(param, 'record') && param.record

@@ -154,7 +154,7 @@ end
 %%% Response screen %%%
 if ~pressed
     [pressed, firstPress] = KbQueueCheck();
-    DrawFormattedText(w, sprintf('Respond?'), 'center', 'center', forecolor);
+    DrawFormattedText(w, param.responseText, 'center', 'center', forecolor);
     Screen('Flip', w);
 end
 
@@ -183,14 +183,11 @@ else
     
     if any(firstPress(param.expKey))  % quit as expKey is pressed
         quitNow = 1;
-        noRespText = sprintf(['The experiment will quit now. \n\n'...
-            'Please press any key to continue...']);
+        noRespText = param.forceQuitText;
     elseif ~pressed
-        noRespText = sprintf(['Please respond as quickly and accurately as possible. \n\n'...
-            'Please press any key to continue...']);
+        noRespText = param.noRespReminder;
     else
-        noRespText = sprintf(['Something wrong happended... \n\n'...
-            'Please press any key to continue...']);
+        noRespText = param.noRespText;
     end
     beep;
     ptb_disptext(param, noRespText);
@@ -226,7 +223,7 @@ output.bottomStudyOffset = [xStudyBottomOffset,yStudyBottomOffset];
 output.topTestOffset = [xTestTopOffset, yTestTopOffset];
 output.bottomTestOffset = [xTestBottomOffset, yTestBottomOffset];
 output.TrialDuration = totalTrialDuration;
-output.trialEndTime = datestr(now,'yyyy-mm-dd-HH:MM:SS');
+output.trialEndTime = datetime('now', 'Format', 'yyyyMMdd_HHmmSS');
 
 % trial intervals
 WaitSecs(param.ITInterval);

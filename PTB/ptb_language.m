@@ -17,7 +17,10 @@ switch param.language
     case 'en'
 
         param.loadingText = sprintf('Experiment is loading... Please wait...');
+        param.responseText = sprintf('Please respond as quickly and accurately as possible.');
         param.forceQuitText = sprintf(['The experiment will quit now. \n\n'...
+            'Please press any key to continue...']);
+        param.noRespReminder = sprintf(['Please respond as quickly and accurately as possible. \n\n'...
             'Please press any key to continue...']);
         param.noRespText = sprintf(['Something wrong happended... \n\n'...
             'Please press any key to continue...']);
@@ -35,7 +38,10 @@ switch param.language
         Screen('TextFont',param.w,allfonts(26).number);
 
         param.loadingText = double('正在载入实验，请稍后...');
+        param.responseText = double('请尽量又快又准地按键反应。');
         param.forceQuitText = double(['正在退出实验... \n\n'...
+            '请按任意键继续...']);
+        param.noRespReminder = double(['请尽量又快又准地按键反应。 \n\n'...
             '请按任意键继续...']);
         param.noRespText = double(['未知错误... \n\n'...
             '请按任意键继续...']);

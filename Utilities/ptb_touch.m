@@ -25,7 +25,7 @@ assert(exist(source, 'dir'), '<source> should be a directory.');
 if ~exist('target', 'var') || isempty(target)
     if endsWith(source, filesep); source = source(1:end-1); end
     [~, srcfolder] = fileparts(source);
-    target = fullfile(source, '..', [srcfolder '_tmp']);
+    target = fullfile(source, '..', [srcfolder '_touch']);
 end
 
 if ~exist('istouch', 'var') || isempty(istouch)

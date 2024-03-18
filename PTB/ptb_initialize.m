@@ -95,7 +95,7 @@ end
 %% Set font, size, and color for texts
 param = ptb_language(param);
 Screen('TextSize', window, param.textSize);
-if ~ismac, Screen('TextFont', window, param.textFont); end
+Screen('TextFont', window, param.textFont); 
 Screen('TextColor', window, param.forecolor);
 
 %% Matlab is loading the program...

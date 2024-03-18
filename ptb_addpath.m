@@ -2,7 +2,7 @@ function pathlist = ptb_addpath(add, ptbpath, folderlist)
 % pathlist = ptb_addpath(add, ptbpath, folderlist)
 %
 % Adds functions to Matlab Path (useful when developing new programs). This
-% function is not recommended to be used in real experiments.
+% function is not recommended to be used in actual/main experiments.
 % 1. Functions in 'PTB-Exp-Builder/' will be added by default.
 % 2. If PTB-Exp-Builder/' is not avaiable in Matlab Path, 'functions/' in
 %    pwd (if available) will be added to Matlab Path.
