@@ -195,7 +195,7 @@ param.expDuration = param.expEndTime - param.expStartTime;
     param.outpath);
 
 % save par files used in FreeSurfer
-fmri_parevent(param, 'outfn', param.outfn, 'outpath', param.outpath);
+fmri_parevent(param, 'outpath', param.outpath);
 
 %% Finishing...
 % colse vpixx
