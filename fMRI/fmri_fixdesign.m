@@ -17,7 +17,7 @@ function fixBlockNum = fmri_fixdesign(nStimCat, nRepetition, nBtwFixBlock)
 % Output:
 %     fixBlockNum        <int vec> the block numbers of fixation blocks.
 %
-% Created by Haiyang (1-Mar-2020)
+% Created by Haiyang (2020-Mar-1)
 
 %% process inputs
 % if nStimCat is structure 

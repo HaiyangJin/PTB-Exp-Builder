@@ -92,7 +92,12 @@ switch status
         if ~isempty(respButton)
             out{1} = 1;
             out{2} = strcmp(respButton, corrButton);
-            out(4) = respButton; 
+
+            if length(respButton) > 1
+                out(4) = {strjoin(respButton, "+")};
+            else
+                out(4) = respButton;
+            end
         else
             out{1} = 0;
             out{2} = 0;
