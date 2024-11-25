@@ -91,11 +91,12 @@ switch status
         out = cell(1,4);
         if ~isempty(respButton)
             out{1} = 1;
-            out{2} = strcmp(respButton, corrButton);
 
             if length(respButton) > 1
+                out{2} = ismember(corrButton, respButton);
                 out(4) = {strjoin(respButton, "+")};
             else
+                out{2} = strcmp(respButton, corrButton);
                 out(4) = respButton;
             end
         else

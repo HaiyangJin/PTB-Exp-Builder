@@ -114,10 +114,9 @@ if ~quitNow
                 thisStim = stimuli(thisBlockStim(ttn), param.ed(tn).stimCategory);
 
                 % the correct answer
-                if ttn == 1
-                    thisStim.correctAns = NaN;
-                else
-                    thisStim.correctAns = thisBlockStim(ttn) == thisBlockStim(ttn-1);
+                thisStim.correctAns = NaN;
+                if ttn > 1 && thisBlockStim(ttn) == thisBlockStim(ttn-1)
+                    thisStim.correctAns = 1;
                 end
 
                 % do this trial
