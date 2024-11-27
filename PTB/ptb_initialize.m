@@ -137,6 +137,8 @@ if ischar(colorString)
     color = repmat(color, 1, 3);
 elseif ~isnumeric(colorString)
     error('Failed to identify the color...');
+else
+    color = colorString;
 end
 
 end
