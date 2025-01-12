@@ -132,6 +132,7 @@ end
 
 % apply custom contrast and luminance
 if any(opts.norm)
+    % does not seem to work well
     norm_filtered = (raw_filtered - mean(raw_filtered(:)))/std(raw_filtered(:));
     im_filtered = norm_filtered * opts.norm(1) + opts.norm(2);
 else
