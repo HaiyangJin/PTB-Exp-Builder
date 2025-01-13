@@ -14,11 +14,12 @@ function im_filtered = im_filter(imMatrix, varargin)
 % Varargin:
 %    'filter'    <str> 'low' for making low spatial frequency images (default);
 %                 'high' for making high spatial frequency images.
-%    'va'        <num> the angle size of the stimuli (width), default to 5.
-%    'cutoff'    <numeric> the cutoff to be used in filtering. Default to 8. 
+%    'vapi'      <num> the angle size of the stimuli (width), default to 5.
+%    'cutoff'    <num> the cutoff (cycles per image/face or cycles per 
+%                 digreees if vapi>0) to be used in filtering. Default to 8. 
 %                 Can be translated to the sigma of the Gaussian filter 
 %                 kernel. (Full-Width-Half-Maximum, FWHM)
-%                 To standardize images, use jointContrastNormalize().
+%                 To standardize multipel images, use jointContrastNormalize().
 %
 % Output:
 %    im_filtered <num array> (unstandardized) spatial frequency filtered 
@@ -28,7 +29,7 @@ function im_filtered = im_filter(imMatrix, varargin)
 
 defaultOpts = struct( ...
     'filter', 'low', ...
-    'va', 5, ...
+    'vapi', 5, ...
     'cutoff', 8);
 
 opts = ptb_mergestruct(defaultOpts, varargin{:});
@@ -41,7 +42,7 @@ end
 imsize = size(FS);
 
 % generate spatial frequency grids
-Fsamp = imsize ./ opts.va;
+Fsamp = imsize ./ opts.vapi;
 
 % The Gaussian filter is implemented by convolution in image space
 % we construct the sigma of the Gaussian kernel in image space
@@ -49,6 +50,7 @@ Fsamp = imsize ./ opts.va;
 % has its half maximum at the cutoff point
 factor = pi * sqrt(2 * log(2)); % FWHM = 2*sqrt(2*log(2) * sigma
 sigma = Fsamp / factor / opts.cutoff;
+% sigma = imsize / (opts.vapi * pi * sqrt(2 * log(2)) * opts.cutoff)
 
 % LSF: just filter with Gaussian
 LSF = imgaussfilt(FS,sigma,'FilterDomain','Spatial');
